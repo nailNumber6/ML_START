@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ML_START_1
 {
-    public abstract class LogHelper
+    internal abstract class LogHelper
     {
         public static void CreateLogDirectory(params LogEventLevel[] logEventLevels) 
         {
