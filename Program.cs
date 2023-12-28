@@ -31,6 +31,11 @@ namespace ML_START_1
             for (int i = 0; i < x.Length; i++)
             {
                 x[i] = random.Next(-12, 16) + random.NextDouble();
+                LogByTemplate(
+                    LogEventLevel.Information, 
+                    null, 
+                    $"Используется неявное приведение типа int в double, и записывается в элемент x[{i}]"
+                    );
             }
 
             double[,] k2 = new double[8, 13]; // 3
@@ -122,7 +127,7 @@ namespace ML_START_1
                     break;
                 }
 
-            info.AppendLine($"Файл: {frame.GetFileName()}\n");
+            info.AppendLine($"\nФайл: {frame.GetFileName()}\n");
             info.AppendLine($"Строка: {frame.GetFileLineNumber()}\n");
             info.AppendLine($"Столбец: {frame.GetFileColumnNumber()}\n");
             info.AppendLine($"Метод: {frame.GetMethod()}");
@@ -149,8 +154,7 @@ namespace ML_START_1
                         Log.Error(info.ToString());
                         break;
                     }
-            };
-            
+            };  
         }
     }
 }
