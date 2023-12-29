@@ -1,4 +1,5 @@
 ﻿using Serilog.Events;
+using Serilog;
 
 
 namespace ML_START_1
@@ -25,7 +26,7 @@ namespace ML_START_1
                 LogHelper.LogByTemplate(
                     LogEventLevel.Information, 
                     null, 
-                    $"Используется неявное приведение типа int в double, и записывается в элемент x[{i}]"
+                    $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]"
                     );
             }
 
@@ -68,8 +69,7 @@ namespace ML_START_1
             {
                 if (!File.Exists("config.txt")) // 4
                 {
-                    File.Create("config.txt");
-                    File.AppendAllText("config.txt", $"{6} {6}");
+                    File.WriteAllText("config.txt", $"{6} {6}");
                 }
 
                 string[] variables = File.ReadAllText("config.txt").Split();
