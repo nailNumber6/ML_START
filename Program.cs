@@ -7,6 +7,14 @@ namespace ML_START_1
     {
         static void Main(string[] args)
         {
+            if (!File.Exists("config.txt")) 
+            {
+                File.WriteAllText(
+                    "config.txt", 
+                    "N = 6\n" + "L = 6\n" + "Action timout = 1000"
+                    );
+            }
+
             LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
 
             Random random = new();
@@ -18,8 +26,7 @@ namespace ML_START_1
             {
                 x[i] = random.NextDouble(-12, 16);
                 LogHelper.LogByTemplate(Information,
-                            note: $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]"
-                            );
+                            note: $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]");
             }
 
             double[,] k2 = new double[8, 13]; // 3
@@ -58,15 +65,17 @@ namespace ML_START_1
             }
 
             try
-            {
-                if (!File.Exists("config.txt")) // 4
-                {
-                    File.WriteAllText("config.txt", $"{6} {6}");
-                }
+            { 
+                int N = 0, L = 0;
 
-                string[] variables = File.ReadAllText("config.txt").Split();
-                int N = int.Parse(variables[0]);
-                int L = int.Parse(variables[1]);
+                var configLines = File.ReadLines("config.txt"); // 4
+                foreach (string line in configLines)
+                {
+                    if (line.Contains("N"))
+                        N = int.Parse(line.Replace("N = ", "").Trim());
+                    else if (line.Contains("L"))
+                        L = int.Parse(line.Replace("L = ", "").Trim()); 
+                }
 
                 double[] subArray1 = Enumerable.Range(0, k2.GetLength(1))
                                 .Select(col => k2[N % 8, col])
