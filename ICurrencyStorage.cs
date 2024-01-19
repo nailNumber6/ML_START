@@ -4,8 +4,8 @@ namespace ML_START_1
 {
     internal interface ICurrencyStorage
     {
-        void Collect(CurrencyType currencyType, int count);
+        void ReceiveFrom(ICurrencyStorage sourceStorage, CurrencyType currencyType, int currencycount);
 
-        void Pull(CurrencyType currencyType, int count);
+        void RemoveTo(ICurrencyStorage destinationStorage, CurrencyType currencyType, int currencyCount);
     }
 }

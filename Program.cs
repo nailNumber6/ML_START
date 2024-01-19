@@ -7,6 +7,7 @@ namespace ML_START_1
     {
         static void Main(string[] args)
         {
+            var b = new Bank();
             if (!File.Exists("config.txt")) 
             {
                 File.WriteAllText(
