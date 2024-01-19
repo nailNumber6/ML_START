@@ -11,7 +11,7 @@ namespace ML_START_1
             {
                 File.WriteAllText(
                     "config.txt", 
-                    "N = 6\n" + "L = 6\n" + "Action timout = 1000"
+                    "N = 6\n" + "L = 6\n" + "Action delay = 1000"
                     );
             }
 
