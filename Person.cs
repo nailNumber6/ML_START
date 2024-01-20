@@ -2,22 +2,28 @@
 
 namespace ML_START_1
 {
-    internal abstract class Person //TODO: Реализовать метод покупки акций и наоборот
+    internal abstract class Person
     {
         private Pocket _pocket;
+        private IPlacement _location = null;
 
-        protected Person(int pocketCapacity)
+        protected Person(byte pocketCapacity) // Так как в кармане мало места, объем инвентаря записан в переменную типа byte
         {
             _pocket = new Pocket(pocketCapacity);
         }
 
-        public void ComeIn(IPlacement placement)
+        public void ComeIn(IPlacement destination) => _location = destination.IsEnableToEnter ? destination : null;
+
+        public void ComeOut() => _location = null;
+
+        public bool IsIndoors(IPlacement placement) => _location == placement;
+
+        public void RequestToExchange()
         {
-            if (placement.IsEnableToEnter)
-            {
-                // TODO: Реализовать метод входа в помещение
-            }
+            // TODO: Реализовать метод запроса на обмен валют в банке
         }
+
+        public int GetCurrencyCount(CurrencyType currencyType) => _pocket.GetCurrencyCount(currencyType);
 
         public void PutCurrency(ICurrencyStorage destinationStorage, CurrencyType currencyType, int currencyCount)
         {
@@ -32,13 +38,13 @@ namespace ML_START_1
         private class Pocket : ICurrencyStorage
         {
             private readonly int _storageCapacity; 
-            private Dictionary<CurrencyType, int> _storageArea;
+            private Dictionary<CurrencyType, byte> _storageArea;
 
-            public Pocket(int storageCapacity)
+            public Pocket(byte storageCapacity)
             {
                 _storageCapacity = storageCapacity;
 
-                _storageArea = new Dictionary<CurrencyType, int>();
+                _storageArea = new Dictionary<CurrencyType, byte>();
                 var currencyTypes = Enum.GetValues(typeof(CurrencyType));
 
                 foreach (CurrencyType currType in currencyTypes) // Добавляет все типы валют
@@ -50,7 +56,7 @@ namespace ML_START_1
                 sourceStorage.RemoveTo(this, currencyType, currencyCount);
 
                 if (_storageArea[currencyType] + currencyCount <= _storageCapacity)
-                    _storageArea[currencyType] += currencyCount;
+                    _storageArea[currencyType] += (byte)currencyCount;
                 else
                     Console.WriteLine("Недостаточно места");
             }
@@ -60,9 +66,11 @@ namespace ML_START_1
                 destinationStorage.ReceiveFrom(this, currencyType, currencyCount);
 
                 if (_storageArea[currencyType] - currencyCount >= 0)
-                    _storageArea[currencyType] -= currencyCount;
+                    _storageArea[currencyType] -= (byte)currencyCount;
                 else Console.WriteLine("Место хранения не насчитывает столько предметов");
             }
+
+            public int GetCurrencyCount(CurrencyType currencyType) => _storageArea[currencyType];
         }
     }
 
@@ -70,11 +78,11 @@ namespace ML_START_1
     {
         public string Name { get; private set; }
 
-        public MainCharacter(string name, int pocketCapacity) : base(pocketCapacity) => Name = name;
+        public MainCharacter(string name, byte pocketCapacity) : base(pocketCapacity) => Name = name;
     }
 
     internal class Extra : Person
     {
-        public Extra(int pocketCapacity) : base(pocketCapacity) { }
+        public Extra(byte pocketCapacity) : base(pocketCapacity) { }
     }
 }
