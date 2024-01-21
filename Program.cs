@@ -106,7 +106,6 @@ namespace ML_START_1
                     [CurrencyType.Fertings] = 1.0,
                     [CurrencyType.Stocks] = 4.0,
                 });
-            Console.WriteLine(exchangeRate);
 
             UpdateExchangeRate(exchangeRate, x);
             Console.WriteLine(exchangeRate);

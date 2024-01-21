@@ -5,12 +5,15 @@ namespace ML_START_1
     internal abstract class Person
     {
         private Pocket _pocket;
+
         private IPlacement _location = null;
 
         protected Person(byte pocketCapacity) // Так как в кармане мало места, объем инвентаря записан в переменную типа byte
         {
             _pocket = new Pocket(pocketCapacity);
         }
+        
+        public bool HasVehicle { get; private set; }
 
         public void ComeIn(IPlacement destination) => _location = destination.IsEnableToEnter ? destination : null;
 
@@ -74,15 +77,31 @@ namespace ML_START_1
         }
     }
 
-    internal class MainCharacter : Person 
+    internal class MainCharacter : Person, IMovable
     {
         public string Name { get; private set; }
 
         public MainCharacter(string name, byte pocketCapacity) : base(pocketCapacity) => Name = name;
+
+        public void GoTo(IPlacement placement)
+        {
+            if (HasVehicle)
+                Console.WriteLine($"{Name} доезжает до {placement}");
+            else
+                Console.WriteLine($"{Name} доходит до {placement}");
+        }
     }
 
-    internal class Extra : Person
+    internal class Extra : Person, IMovable
     {
         public Extra(byte pocketCapacity) : base(pocketCapacity) { }
+
+        public void GoTo(IPlacement placement)
+        {
+            if (HasVehicle)
+                Console.WriteLine($"Прохожий доезжает до {placement}");
+            else
+                Console.WriteLine($"Прохожий доходит до {placement}");
+        }
     }
 }
