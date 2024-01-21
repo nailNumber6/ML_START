@@ -21,59 +21,33 @@ namespace ML_START_1
 
         public bool IsIndoors(IPlacement placement) => _location == placement;
 
-        public void RequestToExchange()
+        public void RequestToExchange(CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
             // TODO: Реализовать метод запроса на обмен валют в банке
         }
 
         public int GetCurrencyCount(CurrencyType currencyType) => _pocket.GetCurrencyCount(currencyType);
 
-        public void PutCurrency(ICurrencyStorage destinationStorage, CurrencyType currencyType, int currencyCount)
+        public void PutCurrency(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
         {
             destinationStorage.ReceiveFrom(_pocket, currencyType, currencyCount);
         }
 
-        public void TakeCurrency(ICurrencyStorage sourceStorage, CurrencyType currencyType, int currencyCount)
+        public void TakeCurrency(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
         {
             sourceStorage.RemoveTo(_pocket, currencyType, currencyCount);
         }
 
-        private class Pocket : ICurrencyStorage
+        private class Pocket : CurrencyReceiver
         {
-            private readonly int _storageCapacity; 
-            private Dictionary<CurrencyType, byte> _storageArea;
-
-            public Pocket(byte storageCapacity)
+            public Pocket(byte storageCapacity) : base(storageCapacity)
             {
-                _storageCapacity = storageCapacity;
-
-                _storageArea = new Dictionary<CurrencyType, byte>();
-                var currencyTypes = Enum.GetValues(typeof(CurrencyType));
-
-                foreach (CurrencyType currType in currencyTypes) // Добавляет все типы валют
-                    _storageArea.Add(currType, 0);
             }
 
-            void ICurrencyStorage.ReceiveFrom(ICurrencyStorage sourceStorage, CurrencyType currencyType, int currencyCount)
+            public override string ToString()
             {
-                sourceStorage.RemoveTo(this, currencyType, currencyCount);
-
-                if (_storageArea[currencyType] + currencyCount <= _storageCapacity)
-                    _storageArea[currencyType] += (byte)currencyCount;
-                else
-                    Console.WriteLine("Недостаточно места");
+                return "Карман";
             }
-
-            void ICurrencyStorage.RemoveTo(ICurrencyStorage destinationStorage, CurrencyType currencyType, int currencyCount)
-            {
-                destinationStorage.ReceiveFrom(this, currencyType, currencyCount);
-
-                if (_storageArea[currencyType] - currencyCount >= 0)
-                    _storageArea[currencyType] -= (byte)currencyCount;
-                else Console.WriteLine("Место хранения не насчитывает столько предметов");
-            }
-
-            public int GetCurrencyCount(CurrencyType currencyType) => _storageArea[currencyType];
         }
     }
 
