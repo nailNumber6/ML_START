@@ -24,7 +24,7 @@ namespace ML_START_1
             return Array.TrueForAll(currencyTypes, currType => _storageArea[currType] != 0);
         }
 
-        void ReceiveFrom(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
+        public void ReceiveFrom(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
         {
             sourceStorage.RemoveTo(this, currencyType, currencyCount);
 
@@ -34,7 +34,7 @@ namespace ML_START_1
                 Console.WriteLine("Недостаточно места в " + ToString());
         }
 
-        void RemoveTo(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
+        public void RemoveTo(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
         {
             destinationStorage.ReceiveFrom(this, currencyType, currencyCount);
 

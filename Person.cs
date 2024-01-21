@@ -8,7 +8,7 @@ namespace ML_START_1
 
         private IPlacement _location = null;
 
-        protected Person(byte pocketCapacity) // Так как в кармане мало места, объем инвентаря записан в переменную типа byte
+        protected Person(int pocketCapacity)
         {
             _pocket = new Pocket(pocketCapacity);
         }
@@ -21,9 +21,14 @@ namespace ML_START_1
 
         public bool IsIndoors(IPlacement placement) => _location == placement;
 
-        public void RequestToExchange(CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
+        public void RequestToExchange(Bank bank, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
-            // TODO: Реализовать метод запроса на обмен валют в банке
+            if (GetCurrencyCount(inputCurrency) >= currencyCount)
+            {
+                bank.Exchange(this, inputCurrency, returnCurrency, currencyCount);
+            }
+            else
+                Console.WriteLine("Невозможно совершить операцию");
         }
 
         public int GetCurrencyCount(CurrencyType currencyType) => _pocket.GetCurrencyCount(currencyType);
@@ -40,7 +45,7 @@ namespace ML_START_1
 
         private class Pocket : CurrencyReceiver
         {
-            public Pocket(byte storageCapacity) : base(storageCapacity)
+            public Pocket(int storageCapacity) : base(storageCapacity)
             {
             }
 
@@ -55,7 +60,7 @@ namespace ML_START_1
     {
         public string Name { get; private set; }
 
-        public MainCharacter(string name, byte pocketCapacity) : base(pocketCapacity) => Name = name;
+        public MainCharacter(string name, int pocketCapacity) : base(pocketCapacity) => Name = name;
 
         public void GoTo(IPlacement placement)
         {
@@ -68,7 +73,7 @@ namespace ML_START_1
 
     internal class Extra : Person, IMovable
     {
-        public Extra(byte pocketCapacity) : base(pocketCapacity) { }
+        public Extra(int pocketCapacity) : base(pocketCapacity) { }
 
         public void GoTo(IPlacement placement)
         {

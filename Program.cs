@@ -7,7 +7,6 @@ namespace ML_START_1
     {
         static void Main(string[] args)
         {
-            var b = new Bank();
             if (!File.Exists("config.txt")) 
             {
                 File.WriteAllText(
@@ -106,7 +105,10 @@ namespace ML_START_1
                     [CurrencyType.Fertings] = 1.0,
                     [CurrencyType.Stocks] = 4.0,
                 });
+            
+            var b = new Bank(exchangeRate, 2, new int[] { 1000000, 1000000 }); // TODO: Реализовать повествование 
 
+            MainCharacter character1 = new("Коротышка", 1000);
             UpdateExchangeRate(exchangeRate, x);
             Console.WriteLine(exchangeRate);
         }

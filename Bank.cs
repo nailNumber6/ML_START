@@ -25,18 +25,14 @@ namespace ML_START_1
 
         public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
-            // TODO: Реализовать метод обмена валют
-            if (customer.GetCurrencyCount(inputCurrency) >= currencyCount)
-            {
-                var currentChest = _chests.Find(chest => chest.ContainsCurrency(inputCurrency, returnCurrency)); // Сундуки, содержащие валюту
+            var currentChest = _chests.Find(chest => chest.ContainsCurrency(inputCurrency, returnCurrency)); // Сундуки, содержащие валюту
 
-                double inputCurrencyPrice = _exchangeRate.ExchangeRates[inputCurrency];
-                double returnCurrencyPrice = _exchangeRate.ExchangeRates[returnCurrency];
-                int currencyToSpend = (int)Math.Round(currencyCount / inputCurrencyPrice);
+            double inputCurrencyPrice = _exchangeRate.ExchangeRates[inputCurrency];
+            double returnCurrencyPrice = _exchangeRate.ExchangeRates[returnCurrency];
+            int currencyToSpend = (int)Math.Round(currencyCount / inputCurrencyPrice);
 
-                customer.PutCurrency(currentChest, inputCurrency, currencyToSpend);
-                customer.TakeCurrency(currentChest, inputCurrency, currencyCount);
-            }
+            customer.PutCurrency(currentChest, inputCurrency, currencyToSpend);
+            customer.TakeCurrency(currentChest, inputCurrency, currencyCount);
         }
 
         private class BankChest : CurrencyReceiver
