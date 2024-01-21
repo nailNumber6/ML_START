@@ -14,6 +14,10 @@ namespace ML_START_1
         public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
             // TODO: Реализовать метод обмена валют
+            if (customer.GetCurrencyCount(inputCurrency) >= currencyCount)
+            {
+
+            }
         }
 
         private class BankChest : ICurrencyStorage // TODO: Реализовать класс
@@ -23,6 +27,7 @@ namespace ML_START_1
 
             public BankChest(int storageCapacity)
             {
+                _storageArea = new Dictionary<CurrencyType, int>();
                 _storageCapacity = storageCapacity;
             } 
 

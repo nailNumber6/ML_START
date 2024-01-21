@@ -99,6 +99,35 @@ namespace ML_START_1
             {
                 LogHelper.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
             }
-        } 
+
+            var exchangeRate = new ExchangeRate(
+                new Dictionary<CurrencyType, double> 
+                {
+                    [CurrencyType.Fertings] = 1.0,
+                    [CurrencyType.Stocks] = 4.0,
+                });
+            Console.WriteLine(exchangeRate);
+
+            UpdateExchangeRate(exchangeRate, x);
+            Console.WriteLine(exchangeRate);
+        }
+
+
+        static void UpdateExchangeRate(ExchangeRate actualRate, double[] priceChanges)
+        {
+            var random = new Random();
+            var newCurrencyPrices = new Dictionary<CurrencyType, double>(actualRate.ExchangeRates);
+
+            priceChanges = priceChanges.Where(n => n >= 0 && !double.IsNaN(n)).ToArray();
+
+            foreach (var currencyType in newCurrencyPrices.Keys)
+            {
+                double priceChange = priceChanges[random.Next(priceChanges.Length)];
+
+                newCurrencyPrices[currencyType] = actualRate.ExchangeRates[currencyType] += priceChange;
+            }
+            var updatedRate = actualRate with { ExchangeRates = newCurrencyPrices };
+            Thread.Sleep(1000);
+        }
     }
 }
