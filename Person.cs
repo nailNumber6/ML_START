@@ -2,20 +2,31 @@
 
 namespace ML_START_1
 {
-    internal abstract class Person
+    internal abstract class Person : IMovable
     {
         private Pocket _pocket;
 
-        private IPlacement _location = null;
+        private IPlacement? _location = null; // Не находится в помещении
 
-        protected Person(int pocketCapacity)
+        protected Person(int pocketCapacity, bool hasVehicle = false)
         {
             _pocket = new Pocket(pocketCapacity);
+            HasVehicle = hasVehicle;
         }
         
         public bool HasVehicle { get; private set; }
 
-        public void ComeIn(IPlacement destination) => _location = destination.IsEnableToEnter ? destination : null;
+        public void GoTo(IPlacement placement)
+        {
+            if (HasVehicle)
+                Console.WriteLine($"{ToString()} доезжает до {placement}");
+            else
+                Console.WriteLine($"{ToString()} доходит до {placement}");
+        }
+
+        public override string ToString() => "Человек";
+
+        public void ComeIn(IPlacement destination) => _location = destination.CanAccomodate(this) ? destination : null;
 
         public void ComeOut() => _location = null;
 
@@ -23,12 +34,14 @@ namespace ML_START_1
 
         public void RequestToExchange(Bank bank, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
-            if (GetCurrencyCount(inputCurrency) >= currencyCount)
+            if (_location == bank)
             {
-                bank.Exchange(this, inputCurrency, returnCurrency, currencyCount);
+                if (GetCurrencyCount(inputCurrency) >= currencyCount)
+                {
+                    bank.Exchange(this, inputCurrency, returnCurrency, currencyCount);
+                }
             }
-            else
-                Console.WriteLine("Невозможно совершить операцию");
+            else StoryTeller.AddSentence($"{ToString()} не находится в помещении {bank.ToString}");
         }
 
         public int GetCurrencyCount(CurrencyType currencyType) => _pocket.GetCurrencyCount(currencyType);
@@ -36,11 +49,13 @@ namespace ML_START_1
         public void PutCurrency(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
         {
             destinationStorage.ReceiveFrom(_pocket, currencyType, currencyCount);
+            StoryTeller.AddSentence($"{ToString()} выложил из {_pocket} валюту");
         }
 
         public void TakeCurrency(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
         {
             sourceStorage.RemoveTo(_pocket, currencyType, currencyCount);
+            StoryTeller.AddSentence($"{ToString()} положил валюту в {_pocket}");
         }
 
         private class Pocket : CurrencyReceiver
@@ -56,31 +71,19 @@ namespace ML_START_1
         }
     }
 
-    internal class MainCharacter : Person, IMovable
+    internal class MainCharacter : Person
     {
         public string Name { get; private set; }
 
-        public MainCharacter(string name, int pocketCapacity) : base(pocketCapacity) => Name = name;
+        public override string ToString() => Name;
 
-        public void GoTo(IPlacement placement)
-        {
-            if (HasVehicle)
-                Console.WriteLine($"{Name} доезжает до {placement}");
-            else
-                Console.WriteLine($"{Name} доходит до {placement}");
-        }
+        public MainCharacter(string name, int pocketCapacity) : base(pocketCapacity) => Name = name;
     }
 
-    internal class Extra : Person, IMovable
+    internal class Extra : Person
     {
         public Extra(int pocketCapacity) : base(pocketCapacity) { }
 
-        public void GoTo(IPlacement placement)
-        {
-            if (HasVehicle)
-                Console.WriteLine($"Прохожий доезжает до {placement}");
-            else
-                Console.WriteLine($"Прохожий доходит до {placement}");
-        }
+        public override string ToString() => "Прохожий";
     }
 }
