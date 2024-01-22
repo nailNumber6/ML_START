@@ -10,14 +10,14 @@ namespace ML_START_1
 
         public static void RemoveSentence(string sentence) => _story.Remove(sentence);
 
-        public static void Clear(string sentence) => _story.Clear();
+        public static void Clear() => _story.Clear();
 
-        public static async void Tell(int delay)
+        public static void Tell(int delayInMilliseconds)
         {
             foreach (string sentence in _story)
             {
                 Console.WriteLine(sentence);
-                await Task.Delay(delay);
+                Thread.Sleep(delayInMilliseconds);
             }
         }
     }

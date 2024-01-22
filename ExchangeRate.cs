@@ -8,8 +8,8 @@ namespace ML_START_1
     {
         public override string ToString()
         {
-            Console.WriteLine("Текущий курс валют:");
             var sb = new StringBuilder();
+            sb.AppendLine("Текущий курс валют:");
             foreach (var rate in ExchangeRates)
             {
                 sb.AppendLine($"{rate.Key}: {rate.Value}");

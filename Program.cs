@@ -106,11 +106,26 @@ namespace ML_START_1
                     [CurrencyType.Stocks] = 4.0,
                 });
             
-            var b = new Bank(exchangeRate, 2, new int[] { 1000000, 1000000 }); // TODO: Реализовать повествование 
+
+
+            var bank = new Bank(exchangeRate, 2, new int[] { 1000000, 1000000 }); // TODO: Реализовать повествование 
 
             MainCharacter character1 = new("Коротышка", 1000);
+            MainCharacter character2 = new("Незнайка", 1000);
+            MainCharacter character3 = new("Мига", 1000, true);
+
+            character1.ComeIn(bank);
+            character1.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+
+            character2.ComeIn(bank);
+            character3.ComeIn(bank);
+            character2.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+            character3.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+
             UpdateExchangeRate(exchangeRate, x);
-            Console.WriteLine(exchangeRate);
+            StoryTeller.AddSentence(exchangeRate.ToString());
+
+            StoryTeller.Tell(1000);
         }
 
 

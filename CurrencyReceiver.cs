@@ -6,9 +6,27 @@ namespace ML_START_1
         private Dictionary<CurrencyType, int> _storageArea;
         private int _storageCapacity;
 
-        public CurrencyReceiver(int storageCapacity)
+        public CurrencyReceiver(int storageCapacity, bool storageFillingOn = true)
         {
             _storageArea = new Dictionary<CurrencyType, int>();
+
+            CurrencyType[] currencyTypes = (CurrencyType[])Enum.GetValues(typeof(CurrencyType));
+
+            if (storageFillingOn)
+            {
+                foreach (CurrencyType currencyType in currencyTypes)
+                {
+                    _storageArea.Add(currencyType, storageCapacity);
+                }
+            }
+            else
+            {
+                foreach (CurrencyType currencyType in currencyTypes)
+                {
+                    _storageArea.Add(currencyType, 0);
+                }
+            }
+
             _storageCapacity = storageCapacity;
         }
 
@@ -26,7 +44,7 @@ namespace ML_START_1
 
         public void ReceiveFrom(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
         {
-            sourceStorage.RemoveTo(this, currencyType, currencyCount);
+            sourceStorage._storageArea[currencyType] -= currencyCount;
 
             if (_storageArea[currencyType] + currencyCount <= _storageCapacity)
                 _storageArea[currencyType] += currencyCount;
@@ -36,7 +54,7 @@ namespace ML_START_1
 
         public void RemoveTo(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
         {
-            destinationStorage.ReceiveFrom(this, currencyType, currencyCount);
+            destinationStorage._storageArea[currencyType] += currencyCount;
 
             if (_storageArea[currencyType] - currencyCount >= 0)
                 _storageArea[currencyType] -= currencyCount;

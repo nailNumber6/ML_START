@@ -77,12 +77,12 @@ namespace ML_START_1
 
         public override string ToString() => Name;
 
-        public MainCharacter(string name, int pocketCapacity) : base(pocketCapacity) => Name = name;
+        public MainCharacter(string name, int pocketCapacity, bool hasVehicle = false) : base(pocketCapacity) => Name = name;
     }
 
     internal class Extra : Person
     {
-        public Extra(int pocketCapacity) : base(pocketCapacity) { }
+        public Extra(int pocketCapacity, bool hasVehicle = false) : base(pocketCapacity) { }
 
         public override string ToString() => "Прохожий";
     }
