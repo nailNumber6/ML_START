@@ -32,6 +32,13 @@ namespace ML_START_1
             return _isOpen;
         }
 
+        public void ToggleBankStatus() => _isOpen = !_isOpen;
+
+        public override string ToString()
+        {
+            return "Банк";
+        }
+
         public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
             var currentChest = _chests.Find(chest => chest.ContainsCurrency(inputCurrency, returnCurrency)); // Сундуки, содержащие валюту
@@ -49,7 +56,7 @@ namespace ML_START_1
 
         private class BankChest : CurrencyReceiver
         {
-            public BankChest(int storageCapacity, bool storageFillingOn = true) : base(storageCapacity)
+            public BankChest(int storageCapacity, bool storageFillingOn = true) : base(storageCapacity, storageFillingOn)
             {
             }
 

@@ -19,9 +19,9 @@ namespace ML_START_1
         public void GoTo(IPlacement placement)
         {
             if (HasVehicle)
-                Console.WriteLine($"{ToString()} доезжает до {placement}");
+                StoryTeller.AddSentence($"{ToString()} доезжает до {placement}");
             else
-                Console.WriteLine($"{ToString()} доходит до {placement}");
+                StoryTeller.AddSentence($"{ToString()} доходит до {placement}");
         }
 
         public override string ToString() => "Человек";
@@ -49,7 +49,7 @@ namespace ML_START_1
         public void PutCurrency(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
         {
             destinationStorage.ReceiveFrom(_pocket, currencyType, currencyCount);
-            StoryTeller.AddSentence($"{ToString()} выложил из {_pocket} валюту");
+            StoryTeller.AddSentence($"{ToString()} положил валюту в {destinationStorage}");
         }
 
         public void TakeCurrency(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
@@ -77,7 +77,7 @@ namespace ML_START_1
 
         public override string ToString() => Name;
 
-        public MainCharacter(string name, int pocketCapacity, bool hasVehicle = false) : base(pocketCapacity) => Name = name;
+        public MainCharacter(string name, int pocketCapacity, bool hasVehicle = false) : base(pocketCapacity, hasVehicle) => Name = name;
     }
 
     internal class Extra : Person

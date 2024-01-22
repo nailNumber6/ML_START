@@ -10,5 +10,9 @@ namespace ML_START_1
             _owner = owner;
         }
         bool IPlacement.CanAccomodate(Person person) => person == _owner;
+        public override string ToString()
+        {
+            return "Дом";
+        }
     }
 }
