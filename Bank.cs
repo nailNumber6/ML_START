@@ -7,12 +7,14 @@ namespace ML_START_1
         private bool _isOpen;
         private ExchangeRate _exchangeRate;
         private List<BankChest> _chests;
+        private BankChest _reserveChest;
 
         public Bank(ExchangeRate exchangeRate, int chestsCount, int[] chestsCapacties, bool chestsFillingOn = true)
         {
             _exchangeRate = exchangeRate;
             _isOpen = true;
             TotalCapacity = chestsCapacties.Sum();
+            _reserveChest = new BankChest(chestsCapacties.Max(), false);
 
             _chests = new List<BankChest>();
 
@@ -46,7 +48,7 @@ namespace ML_START_1
             return "Банк";
         }
 
-        public bool HasCurrency() => _chests.TrueForAll(chest => chest.ContainsCurrency());
+        public bool HasCurrency() => !_reserveChest.ContainsCurrency();
 
         public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
@@ -59,7 +61,14 @@ namespace ML_START_1
             int currencyToSpend = (int)Math.Round(currencyCount / inputCurrencyPrice);
 
             StoryTeller.AddSentence($"{customer} обменял валюту");
-            customer.PutCurrency(currentChest, inputCurrency, currencyToSpend);
+
+            if (currencyToSpend + currentChest.GetCurrencyCount(inputCurrency) > currentChest.StorageCapacity) // Проверка того, что в сундук поместится данное кол-во валюты
+                customer.PutCurrency(currentChest, inputCurrency, currencyToSpend);
+            else
+            { 
+                customer.PutCurrency(_reserveChest, inputCurrency, currencyToSpend);
+            }
+
             customer.TakeCurrency(currentChest, inputCurrency, currencyCount);
         }
 

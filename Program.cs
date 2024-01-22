@@ -14,6 +14,7 @@ namespace ML_START_1
                     "N = 6\n" + "L = 6\n" + "Action delay = 1000"
                     );
             }
+            var configLines = File.ReadLines("config.txt");
 
             LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
 
@@ -71,8 +72,7 @@ namespace ML_START_1
             { 
                 int N = 0, L = 0;
 
-                var configLines = File.ReadLines("config.txt"); // 4
-                foreach (string line in configLines)
+                foreach (string line in configLines) // 4
                 {
                     if (line.Contains("N"))
                         N = int.Parse(line.Replace("N = ", "").Trim());
@@ -118,18 +118,30 @@ namespace ML_START_1
             House ch3House = new(character3);
             Wardrobe ch3Wardrobe = new(10000, false);
 
+            int actionDelay = 1000;
+            try
+            {
+                foreach (var line in configLines)
+                    actionDelay = int.Parse(line.Replace("Action delay = ", "").Trim());
+            }
+            catch 
+            {
+                LogHelper.LogByTemplate(Error, note:"Изменения в файле \"config.txt привели к моим ошибкам\"");
+            }
+
             StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {minElement + averageValue}°C");
 
             character1.ComeIn(bank);
-            character1.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+            character1.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
 
             StoryTeller.AddSentence("Наступило утро...");
-            character2.ComeIn(bank);
+            character2.GoTo(bank);
             character3.GoTo(bank);
             character3.ComeIn(bank);
-            character2.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+            character2.ComeIn(bank);
+            character2.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
 
-            character3.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+            character3.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
             character3.GoTo(ch3House);
             character3.ComeIn(ch3House);
             character3.PutCurrency(ch3Wardrobe, CurrencyType.Fertings, 0);
@@ -138,14 +150,13 @@ namespace ML_START_1
             bank.ToggleBankStatus();
             StoryTeller.Tell(1000);
 
-            Thread.Sleep(5000);
-            StoryTeller.Clear();
+            Thread.Sleep(3000);
             StoryTeller.AddSentence("Утро следующего дня...");
-
-            
 
             while (bank.HasCurrency())
             {
+                StoryTeller.Clear();
+                Console.Clear();
                 var crowd = new Queue<Extra>();
 
                 if (crowd.Count == 0)
@@ -158,21 +169,18 @@ namespace ML_START_1
                 currentCustomer.ComeIn(bank);
 
                 if (bank.IsOpen) 
-                    currentCustomer.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+                    currentCustomer.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 100000);
                 else
                 {
                     StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
-                    bank.ToggleBankStatus();
-                    continue;
+                    bank.ToggleBankStatus(); Console.WriteLine(bank.IsOpen);
                 }    
 
-                UpdateExchangeRate(exchangeRate, x);
-                StoryTeller.AddSentence(exchangeRate.ToString());
                 StoryTeller.Tell(1000);
                 Thread.Sleep(1000);
-                StoryTeller.Clear();
             }
             StoryTeller.Clear();
+            Console.Clear();
             StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
             StoryTeller.Tell(1000); // TODO: Сделать чтение таймаута из файла
         }

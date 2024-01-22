@@ -10,7 +10,10 @@ namespace ML_START_1
 
         public static void RemoveSentence(string sentence) => _story.Remove(sentence);
 
-        public static void Clear() => _story.Clear();
+        public static void Clear()
+        { 
+            _story.Clear(); 
+        }
 
         public static void Tell(int delayInMilliseconds)
         {

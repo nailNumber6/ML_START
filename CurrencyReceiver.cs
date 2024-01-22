@@ -30,6 +30,8 @@ namespace ML_START_1
             _storageCapacity = storageCapacity;
         }
 
+        public int StorageCapacity { get => _storageCapacity; }
+
         public override string ToString()
         {
             return "Место для хранения валют";
