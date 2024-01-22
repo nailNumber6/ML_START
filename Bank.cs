@@ -12,6 +12,7 @@ namespace ML_START_1
         {
             _exchangeRate = exchangeRate;
             _isOpen = true;
+            TotalCapacity = chestsCapacties.Sum();
 
             _chests = new List<BankChest>();
 
@@ -27,10 +28,16 @@ namespace ML_START_1
             }
         }
 
+        public int TotalCapacity { get; }
+
+        public bool IsOpen { get => _isOpen; }
+
         bool IPlacement.CanAccomodate(Person person)
         {
             return _isOpen;
         }
+
+        public int GetChestsCount() => _chests.Count;
 
         public void ToggleBankStatus() => _isOpen = !_isOpen;
 
@@ -38,6 +45,8 @@ namespace ML_START_1
         {
             return "Банк";
         }
+
+        public bool HasCurrency() => _chests.TrueForAll(chest => chest.ContainsCurrency());
 
         public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {

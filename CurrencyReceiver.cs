@@ -61,16 +61,4 @@ namespace ML_START_1
             else Console.WriteLine(ToString() + " не насчитывает столько предметов");
         }
     }
-
-    internal class Wardrobe : CurrencyReceiver
-    {
-        public Wardrobe(int storageCapacity) : base(storageCapacity)
-        {
-        }
-
-        public override string ToString()
-        {
-            return "Шкаф";
-        }
-    }
 }

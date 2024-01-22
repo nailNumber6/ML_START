@@ -64,6 +64,9 @@ namespace ML_START_1
                 }
             }
 
+            double minElement, averageValue;
+            minElement = 0; averageValue = 0;
+
             try
             { 
                 int N = 0, L = 0;
@@ -80,12 +83,12 @@ namespace ML_START_1
                 double[] subArray1 = Enumerable.Range(0, k2.GetLength(1))
                                 .Select(col => k2[N % 8, col])
                                 .ToArray();
-                double minElement = subArray1.Min(); // 5
+                minElement = subArray1.Min(); // 5
 
                 double[] subArray2 = Enumerable.Range(0, k2.GetLength(1))
                                 .Select(col => k2[L % 13, col])
                                 .ToArray();
-                double averageValue = subArray2.Average();
+                averageValue = subArray2.Average();
 
                 Console.WriteLine($"Минимальный элемент - {minElement:F4}"); // 6
                 Console.WriteLine($"Среднее число - {averageValue:F4}");
@@ -113,11 +116,14 @@ namespace ML_START_1
 
             MainCharacter character3 = new("Мига", 1000, true);
             House ch3House = new(character3);
-            Wardrobe ch3Wardrobe = new(10000);
+            Wardrobe ch3Wardrobe = new(10000, false);
+
+            StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {minElement + averageValue}°C");
 
             character1.ComeIn(bank);
             character1.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
 
+            StoryTeller.AddSentence("Наступило утро...");
             character2.ComeIn(bank);
             character3.GoTo(bank);
             character3.ComeIn(bank);
@@ -128,12 +134,48 @@ namespace ML_START_1
             character3.ComeIn(ch3House);
             character3.PutCurrency(ch3Wardrobe, CurrencyType.Fertings, 0);
 
-            UpdateExchangeRate(exchangeRate, x);
-            StoryTeller.AddSentence(exchangeRate.ToString());
+            StoryTeller.AddSentence("Наступил вечер...");
+            bank.ToggleBankStatus();
+            StoryTeller.Tell(1000);
 
-            StoryTeller.Tell(1000); // TODO: Сделать чтение таймаутп из файла
+            Thread.Sleep(5000);
+            StoryTeller.Clear();
+            StoryTeller.AddSentence("Утро следующего дня...");
+
+            
+
+            while (bank.HasCurrency())
+            {
+                var crowd = new Queue<Extra>();
+
+                if (crowd.Count == 0)
+                {
+                    for (int i = 0; i < 5; i++)
+                        crowd.Enqueue(new Extra(1000));
+                }
+
+                var currentCustomer = crowd.Dequeue();
+                currentCustomer.ComeIn(bank);
+
+                if (bank.IsOpen) 
+                    currentCustomer.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 0);
+                else
+                {
+                    StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
+                    bank.ToggleBankStatus();
+                    continue;
+                }    
+
+                UpdateExchangeRate(exchangeRate, x);
+                StoryTeller.AddSentence(exchangeRate.ToString());
+                StoryTeller.Tell(1000);
+                Thread.Sleep(1000);
+                StoryTeller.Clear();
+            }
+            StoryTeller.Clear();
+            StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
+            StoryTeller.Tell(1000); // TODO: Сделать чтение таймаута из файла
         }
-
 
         static void UpdateExchangeRate(ExchangeRate actualRate, double[] priceChanges)
         {
