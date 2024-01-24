@@ -37,11 +37,17 @@ namespace ML_START_1
             return "Место для хранения валют";
         }
 
+        public void FillWithCurrencies(CurrencyType[] currenciesToFill)
+        {
+            foreach(CurrencyType currency in currenciesToFill)
+                _storageArea[currency] = _storageCapacity;
+        }
+
         public int GetCurrencyCount(CurrencyType currencyType) => _storageArea[currencyType];
 
         public bool ContainsCurrency(params CurrencyType[] currencyTypes)
         {
-            return Array.TrueForAll(currencyTypes, currType => _storageArea[currType] != 0);
+            return Array.TrueForAll(currencyTypes, currType => _storageArea[currType] >= 0);
         }
 
         public void ReceiveFrom(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
@@ -51,7 +57,9 @@ namespace ML_START_1
             if (_storageArea[currencyType] + currencyCount <= _storageCapacity)
                 _storageArea[currencyType] += currencyCount;
             else
-                Console.WriteLine("Недостаточно места в " + ToString());
+            {
+                StoryTeller.AddSentence($"В {this} недостаточно места");
+            }
         }
 
         public void RemoveTo(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)

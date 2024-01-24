@@ -109,7 +109,10 @@ namespace ML_START_1
                     [CurrencyType.Stocks] = 4.0,
                 });
             
-            var bank = new Bank(exchangeRate, 2, new int[] { 1000000, 1000000 }); // TODO: Реализовать повествование 
+            var currenciesToFill = new CurrencyType[] { CurrencyType.Stocks };
+            var bankChestsCapacities = new int[] { 1000000, 1000000 };
+
+            var bank = new Bank(exchangeRate, 2, bankChestsCapacities, currenciesToFill); // TODO: Реализовать повествование 
 
             MainCharacter character1 = new("Коротышка", 1000);
             MainCharacter character2 = new("Незнайка", 1000);
@@ -118,11 +121,14 @@ namespace ML_START_1
             House ch3House = new(character3);
             Wardrobe ch3Wardrobe = new(10000, false);
 
-            int actionDelay = 1000;
+            int actionDelay = 0;
             try
             {
                 foreach (var line in configLines)
+                {
+                    if (line.Contains("Action delay = "))
                     actionDelay = int.Parse(line.Replace("Action delay = ", "").Trim());
+                }
             }
             catch 
             {
@@ -144,48 +150,50 @@ namespace ML_START_1
             character3.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
             character3.GoTo(ch3House);
             character3.ComeIn(ch3House);
-            character3.PutCurrency(ch3Wardrobe, CurrencyType.Fertings, 0);
+            character3.PutCurrency(ch3Wardrobe, CurrencyType.Fertings, 100);
 
             StoryTeller.AddSentence("Наступил вечер...");
             bank.ToggleBankStatus();
-            StoryTeller.Tell(1000);
+            StoryTeller.Tell(actionDelay);
 
-            Thread.Sleep(3000);
+            Thread.Sleep(actionDelay);
+            StoryTeller.Clear();
             StoryTeller.AddSentence("Утро следующего дня...");
 
-            while (bank.HasCurrency())
+            while (bank.HasCurrency(CurrencyType.Stocks))
             {
-                StoryTeller.Clear();
                 Console.Clear();
                 var crowd = new Queue<Extra>();
 
                 if (crowd.Count == 0)
                 {
                     for (int i = 0; i < 5; i++)
-                        crowd.Enqueue(new Extra(1000));
+                        crowd.Enqueue(new Extra(100000));
                 }
 
                 var currentCustomer = crowd.Dequeue();
                 currentCustomer.ComeIn(bank);
 
-                if (bank.IsOpen) 
+                if (bank.IsOpen)
+                {
                     currentCustomer.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 100000);
+                }
                 else
                 {
                     StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
-                    bank.ToggleBankStatus(); Console.WriteLine(bank.IsOpen);
+                    bank.ToggleBankStatus(); 
                 }    
 
-                StoryTeller.Tell(1000);
-                Thread.Sleep(1000);
+                StoryTeller.Tell(actionDelay);
+                Thread.Sleep(actionDelay);
+                UpdateExchangeRate(exchangeRate, actionDelay, x);
             }
-            StoryTeller.Clear();
             Console.Clear();
             StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
-            StoryTeller.Tell(1000); // TODO: Сделать чтение таймаута из файла
+            StoryTeller.Tell(actionDelay);
         }
 
-        static void UpdateExchangeRate(ExchangeRate actualRate, double[] priceChanges)
+        static void UpdateExchangeRate(ExchangeRate actualRate, int delayInMilliseconds, double[] priceChanges)
         {
             var random = new Random();
             var newCurrencyPrices = new Dictionary<CurrencyType, double>(actualRate.ExchangeRates);
@@ -199,7 +207,7 @@ namespace ML_START_1
                 newCurrencyPrices[currencyType] = actualRate.ExchangeRates[currencyType] += priceChange;
             }
             var updatedRate = actualRate with { ExchangeRates = newCurrencyPrices };
-            Thread.Sleep(1000);
+            Thread.Sleep(delayInMilliseconds);
         }
     }
 }

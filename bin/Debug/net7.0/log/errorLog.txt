@@ -1,0 +1,100 @@
+2024-01-22 17:04:08.621 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:09:32.191 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:10:06.003 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:11:52.764 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:14:50.155 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:15:57.761 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:19:42.802 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:30:10.886 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:30:19.140 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-01-22 17:33:57.532 +03:00 [ERR] 
+Примечание: Изменения в файле "config.txt привели к моим ошибкам"
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
