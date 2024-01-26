@@ -37,7 +37,7 @@ namespace ML_START_1
                 for (int i = 0;i < chestsCount; i++)
                 {
                     var newChest = new BankChest(chestsCapacties[i], false);
-                    newChest.FillWithCurrencies(currenciesToFill);
+                    newChest.FillWith(currenciesToFill);
                     _chests.Add(newChest);
                 }
             }
@@ -61,11 +61,18 @@ namespace ML_START_1
             return "Банк";
         }
 
+        public bool IsFull() => _chests.TrueForAll(chest => chest.IsFull());
+
+        public bool IsFull(CurrencyType currencyType) => _chests.TrueForAll(chest => chest.IsFull(currencyType));
+
         public bool HasCurrency(params CurrencyType[] currencyTypes) => _chests.TrueForAll(chest => chest.ContainsCurrency(currencyTypes));
 
         public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
         {
-            var currentChest = _chests.Find(chest => chest.ContainsCurrency(inputCurrency, returnCurrency)); // Сундуки, содержащие валюту
+            var currentChest = _chests
+                .Find(chest => 
+                chest.ContainsCurrency(inputCurrency, returnCurrency) && !chest.IsFull(inputCurrency)
+            ); // Сундук с запрашиваемой валютой и не переполненный валютой для обмена
 
             if (currentChest == null)
             {
@@ -73,14 +80,14 @@ namespace ML_START_1
             }
             else
             {
-                double inputCurrencyPrice = _exchangeRate.ExchangeRates[inputCurrency];
-                double returnCurrencyPrice = _exchangeRate.ExchangeRates[returnCurrency];
-                int currencyToSpend = (int)Math.Round(currencyCount / inputCurrencyPrice);
+                double inputCurrencyPrice = _exchangeRate.Rates[inputCurrency];
+                double returnCurrencyPrice = _exchangeRate.Rates[returnCurrency];
+                int currencyToSpend = (int)Math.Round((returnCurrencyPrice * currencyCount) / inputCurrencyPrice);
 
                 StoryTeller.AddSentence($"{customer} обменял валюту");
 
                 customer.PutCurrency(currentChest, inputCurrency, currencyToSpend);
-                customer.TakeCurrency(currentChest, inputCurrency, currencyCount);
+                customer.TakeCurrency(currentChest, returnCurrency, currencyCount);
             }
         }
 

@@ -106,7 +106,7 @@ namespace ML_START_1
                 new Dictionary<CurrencyType, double> 
                 {
                     [CurrencyType.Fertings] = 1.0,
-                    [CurrencyType.Stocks] = 4.0,
+                    [CurrencyType.Stocks] = 1.1,
                 });
             
             var currenciesToFill = new CurrencyType[] { CurrencyType.Stocks };
@@ -114,7 +114,7 @@ namespace ML_START_1
 
             var bank = new Bank(exchangeRate, 2, bankChestsCapacities, currenciesToFill); // TODO: Реализовать повествование 
 
-            MainCharacter character1 = new("Коротышка", 1000);
+            MainCharacter character1 = new("Коротышка", 1000000);
             MainCharacter character2 = new("Незнайка", 1000);
 
             MainCharacter character3 = new("Мига", 1000, true);
@@ -153,14 +153,14 @@ namespace ML_START_1
             character3.PutCurrency(ch3Wardrobe, CurrencyType.Fertings, 100);
 
             StoryTeller.AddSentence("Наступил вечер...");
-            bank.ToggleBankStatus();
             StoryTeller.Tell(actionDelay);
 
             Thread.Sleep(actionDelay);
             StoryTeller.Clear();
             StoryTeller.AddSentence("Утро следующего дня...");
 
-            while (bank.HasCurrency(CurrencyType.Stocks))
+            bank.ToggleBankStatus();
+            while (!bank.IsFull(CurrencyType.Fertings))
             {
                 Console.Clear();
                 var crowd = new Queue<Extra>();
@@ -168,23 +168,24 @@ namespace ML_START_1
                 if (crowd.Count == 0)
                 {
                     for (int i = 0; i < 5; i++)
-                        crowd.Enqueue(new Extra(100000));
+                        crowd.Enqueue(new Extra(10000000));
                 }
 
-                var currentCustomer = crowd.Dequeue();
-                currentCustomer.ComeIn(bank);
-
-                if (bank.IsOpen)
+                for (int i = 0; i < crowd.Count; i++)
                 {
+                    var currentCustomer = crowd.Dequeue();
+                    currentCustomer.ComeIn(bank);
                     currentCustomer.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 100000);
                 }
-                else
+
+                if (!bank.IsOpen)
                 {
                     StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
-                    bank.ToggleBankStatus(); 
+                    bank.ToggleBankStatus();
                 }    
 
                 StoryTeller.Tell(actionDelay);
+                StoryTeller.Clear();
                 Thread.Sleep(actionDelay);
                 UpdateExchangeRate(exchangeRate, actionDelay, x);
             }
@@ -196,7 +197,7 @@ namespace ML_START_1
         static void UpdateExchangeRate(ExchangeRate actualRate, int delayInMilliseconds, double[] priceChanges)
         {
             var random = new Random();
-            var newCurrencyPrices = new Dictionary<CurrencyType, double>(actualRate.ExchangeRates);
+            var newCurrencyPrices = new Dictionary<CurrencyType, double>(actualRate.Rates);
 
             priceChanges = priceChanges.Where(n => n >= 0 && !double.IsNaN(n)).ToArray();
 
@@ -204,9 +205,9 @@ namespace ML_START_1
             {
                 double priceChange = priceChanges[random.Next(priceChanges.Length)];
 
-                newCurrencyPrices[currencyType] = actualRate.ExchangeRates[currencyType] += priceChange;
+                newCurrencyPrices[currencyType] = actualRate.Rates[currencyType] += priceChange;
             }
-            var updatedRate = actualRate with { ExchangeRates = newCurrencyPrices };
+            var updatedRate = actualRate with { Rates = newCurrencyPrices };
             Thread.Sleep(delayInMilliseconds);
         }
     }

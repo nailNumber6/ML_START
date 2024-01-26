@@ -26,7 +26,13 @@ namespace ML_START_1
 
         public override string ToString() => "Человек";
 
-        public void ComeIn(IPlacement destination) => _location = destination.CanAccomodate(this) ? destination : null;
+        public void ComeIn(IPlacement destination)
+        {
+            if (destination.CanAccomodate(this))
+                _location = destination;
+            else
+                StoryTeller.AddSentence($"{destination} закрыт");
+        }
 
         public void ComeOut() => _location = null;
 
@@ -41,7 +47,7 @@ namespace ML_START_1
                     bank.Exchange(this, inputCurrency, returnCurrency, currencyCount);
                 }
             }
-            else StoryTeller.AddSentence($"{ToString()} не находится в помещении {bank.ToString}");
+            else StoryTeller.AddSentence($"{this} не находится в помещении {bank}");
         }
 
         public int GetCurrencyCount(CurrencyType currencyType) => _pocket.GetCurrencyCount(currencyType);

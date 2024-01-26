@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace ML_START_1
 {
     internal abstract class CurrencyReceiver
@@ -37,11 +39,15 @@ namespace ML_START_1
             return "Место для хранения валют";
         }
 
-        public void FillWithCurrencies(CurrencyType[] currenciesToFill)
+        public void FillWith(CurrencyType[] currenciesToFill)
         {
             foreach(CurrencyType currency in currenciesToFill)
                 _storageArea[currency] = _storageCapacity;
         }
+
+        public bool IsFull() => !_storageArea.Any(kvp => kvp.Value == _storageCapacity);
+
+        public bool IsFull(CurrencyType currencyType) => _storageArea[currencyType] == _storageCapacity;
 
         public int GetCurrencyCount(CurrencyType currencyType) => _storageArea[currencyType];
 
@@ -59,6 +65,7 @@ namespace ML_START_1
             else
             {
                 StoryTeller.AddSentence($"В {this} недостаточно места");
+                _storageArea[currencyType] = _storageCapacity;
             }
         }
 
@@ -68,7 +75,10 @@ namespace ML_START_1
 
             if (_storageArea[currencyType] - currencyCount >= 0)
                 _storageArea[currencyType] -= currencyCount;
-            else Console.WriteLine(ToString() + " не насчитывает столько предметов");
+            else
+            {
+                StoryTeller.AddSentence(ToString() + " не насчитывает столько предметов");
+            }
         }
     }
 }
