@@ -1,20 +1,31 @@
-﻿using static Serilog.Events.LogEventLevel;
+﻿using System.Text.Json;
+using static Serilog.Events.LogEventLevel;
 
 
 namespace ML_START_1
 {
     internal class Program
     {
+        public record Configuration(int NameLength, int LastNameLength, int ActionDelay); // TODO: Реализовать логирование возможных ошибок
         static void Main(string[] args)
         {
-            if (!File.Exists("config.txt")) 
+            string configFile = "config.json";
+            if (!File.Exists(configFile))
             {
-                File.WriteAllText(
-                    "config.txt", 
-                    "N = 6\n" + "L = 6\n" + "Action delay = 1000"
-                    );
+                var config = new Dictionary<string, object>()
+                {
+                    ["NameLength"] = 6,
+                    ["LastNameLength"] = 6,
+                    ["ActionDelay"] = 500
+                };
+                string configText = JsonSerializer.Serialize(config);
+
+                File.WriteAllText(configFile, configText);
             }
-            var configLines = File.ReadLines("config.txt");
+
+            string configFileContent = File.ReadAllText(configFile);
+            var configuration = JsonSerializer
+                .Deserialize<Configuration>(configFileContent);
 
             LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
 
@@ -69,16 +80,9 @@ namespace ML_START_1
             minElement = 0; averageValue = 0;
 
             try
-            { 
-                int N = 0, L = 0;
-
-                foreach (string line in configLines) // 4
-                {
-                    if (line.Contains("N"))
-                        N = int.Parse(line.Replace("N = ", "").Trim());
-                    else if (line.Contains("L"))
-                        L = int.Parse(line.Replace("L = ", "").Trim()); 
-                }
+            {
+                int N = Convert.ToInt32(configuration.NameLength); 
+                int L = Convert.ToInt32(configuration.LastNameLength); 
 
                 double[] subArray1 = Enumerable.Range(0, k2.GetLength(1))
                                 .Select(col => k2[N % 8, col])
@@ -95,7 +99,7 @@ namespace ML_START_1
             }
             catch (FormatException ex)
             {
-                LogHelper.LogByTemplate(Error, ex, "Преобразование данных из файла \"config.txt\" вызвало ошибку");
+                LogHelper.LogByTemplate(Error, ex, $"Преобразование данных из файла {configFile} вызвало ошибку");
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -124,15 +128,11 @@ namespace ML_START_1
             int actionDelay = 0;
             try
             {
-                foreach (var line in configLines)
-                {
-                    if (line.Contains("Action delay = "))
-                    actionDelay = int.Parse(line.Replace("Action delay = ", "").Trim());
-                }
+                actionDelay = configuration.ActionDelay;
             }
             catch 
             {
-                LogHelper.LogByTemplate(Error, note:"Изменения в файле \"config.txt привели к моим ошибкам\"");
+                LogHelper.LogByTemplate(Error, note:$"Изменения в файле {configFile} привели к моим ошибкам");
             }
 
             StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {minElement + averageValue}°C");

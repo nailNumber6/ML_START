@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "4b//iJVMu3zQwVfAjDbDCs1bizaskyJOZ6EAp+EHtGSoJPw2tCUMltAbRae15jvT7DFQ/dNh+H5DYAxuzY5hVw==",
+  "dgSpecHash": "dCOB/yOU9nQiYG5C5ATYO/GXssKosnkMDsqUhRcn6SPCABeqm+I7uqCIszS9DVGlUFxo22FXEpyc6Zj3Ofdy0Q==",
   "success": true,
   "projectFilePath": "C:\\VS Projects\\ML_START_1\\ML_START_1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\andre\\.nuget\\packages\\serilog\\3.1.1\\serilog.3.1.1.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512"
+    "C:\\Users\\andre\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\system.text.json\\8.0.1\\system.text.json.8.0.1.nupkg.sha512"
   ],
   "logs": []
 }
