@@ -1,27 +1,26 @@
 ﻿
 
-namespace ML_START_1
+namespace ML_START_1;
+
+internal static class StoryTeller
 {
-    internal static class StoryTeller
+    private static List<string> _story = new List<string>();
+
+    public static void AddSentence(string sentence) => _story.Add(sentence);
+
+    public static void RemoveSentence(string sentence) => _story.Remove(sentence);
+
+    public static void Clear()
+    { 
+        _story.Clear(); 
+    }
+
+    public static void Tell(int delayInMilliseconds)
     {
-        private static List<string> _story = new List<string>();
-
-        public static void AddSentence(string sentence) => _story.Add(sentence);
-
-        public static void RemoveSentence(string sentence) => _story.Remove(sentence);
-
-        public static void Clear()
-        { 
-            _story.Clear(); 
-        }
-
-        public static void Tell(int delayInMilliseconds)
+        foreach (string sentence in _story)
         {
-            foreach (string sentence in _story)
-            {
-                Console.WriteLine(sentence);
-                Thread.Sleep(delayInMilliseconds);
-            }
+            Console.WriteLine(sentence);
+            Thread.Sleep(delayInMilliseconds);
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿
 
-namespace ML_START_1
+namespace ML_START_1;
+
+internal static class RandomClassExtentions
 {
-    internal static class RandomClassExtentions
+    public static double NextDouble(this Random random, int minValue, int maxValue)
     {
-        public static double NextDouble(this Random random, int minValue, int maxValue)
-        {
-            return random.Next(minValue, maxValue) + random.NextDouble(); 
-        }
+        return random.Next(minValue, maxValue) + random.NextDouble(); 
     }
 }
