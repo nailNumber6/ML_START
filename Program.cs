@@ -9,6 +9,7 @@ internal class Program
     public record Configuration(int NameLength, int LastNameLength, int ActionDelay); // TODO: Реализовать логирование возможных ошибок
     static void Main(string[] args)
     {
+        #region creating config file
         string configFile = "config.json";
         if (!File.Exists(configFile))
         {
@@ -35,6 +36,7 @@ internal class Program
         {
             LogHelper.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
         }
+        #endregion
 
         LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
 
@@ -189,14 +191,14 @@ internal class Program
             StoryTeller.Tell(actionDelay);
             StoryTeller.Clear();
             Thread.Sleep(actionDelay);
-            UpdateExchangeRate(exchangeRate, actionDelay, x);
+            UpdateExchangeRate(exchangeRate, x);
         }
         Console.Clear();
         StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
         StoryTeller.Tell(actionDelay);
     }
 
-    static void UpdateExchangeRate(ExchangeRate actualRate, int delayInMilliseconds, double[] priceChanges)
+    static void UpdateExchangeRate(ExchangeRate actualRate, double[] priceChanges)
     {
         var random = new Random();
         var newCurrencyPrices = new Dictionary<CurrencyType, double>(actualRate.Rates);
@@ -210,6 +212,6 @@ internal class Program
             newCurrencyPrices[currencyType] = actualRate.Rates[currencyType] += priceChange;
         }
         var updatedRate = actualRate with { Rates = newCurrencyPrices };
-        Thread.Sleep(delayInMilliseconds);
+        StoryTeller.AddSentence(updatedRate.ToString());
     }
 }
