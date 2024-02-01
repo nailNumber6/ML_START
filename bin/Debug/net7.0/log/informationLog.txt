@@ -14818,3 +14818,263 @@
 
 Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
 
+2024-02-01 17:32:34.405 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[0]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[1]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[2]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[3]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[4]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[5]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[6]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[7]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[8]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[9]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.422 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[10]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.423 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[11]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:34.423 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[12]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.634 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[0]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.653 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[1]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[2]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[3]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[4]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[5]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[6]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[7]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[8]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[9]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[10]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[11]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-01 17:32:41.654 +03:00 [INF] 
+Примечание: Используется неявное приведение типа int в double, и значение записывается в элемент x[12]
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
