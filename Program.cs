@@ -6,9 +6,11 @@ using static Serilog.Events.LogEventLevel;
 namespace ML_START_1;
 internal class Program
 {
-    public record Configuration(int NameLength, int LastNameLength, int ActionDelay); // TODO: Реализовать логирование возможных ошибок
+    public record Configuration(int NameLength, int LastNameLength, int ActionDelay); 
     static void Main(string[] args)
     {
+        LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
+
         #region creating config file
         string configFile = "config.json";
         if (!File.Exists(configFile))
@@ -38,10 +40,13 @@ internal class Program
         }
         #endregion
 
-        LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
+        // TODO: Реализовать обновление модели данных
+
+        MLSTART_GUI.Program.Main(args);
 
         Random random = new();
 
+        #region k and x filling
         int[] k = Enumerable.Range(5, 15).Where(x => x % 2 != 0).ToArray(); // 1 Задание 
 
         double[] x = new double[13]; // 2 Задание
@@ -51,7 +56,9 @@ internal class Program
             LogHelper.LogByTemplate(Information,
                         note: $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]");
         }
+        #endregion
 
+        #region k2 array filling
         double[,] k2 = new double[8, 13]; // 3 Задание
         int[] range = { 5, 7, 11, 15 };
 
@@ -86,9 +93,9 @@ internal class Program
                 }
             }
         }
+        #endregion
 
-        double minElement, averageValue;
-        minElement = 0; averageValue = 0;
+        double minElement = 0.0, averageValue = 0.0;
 
         int actionDelay = 0;
 
