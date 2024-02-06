@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
-using ML_START_1.person;
 using static Serilog.Events.LogEventLevel;
+using static ML_START_1.CurrencyType;
 
 
 namespace ML_START_1;
@@ -27,14 +27,18 @@ internal class Program
         }
         string configFileContent = File.ReadAllText(configFile);
 
-        Configuration? configuration = null;
+        Configuration configuration = null!;
 
         try
         {
             configuration = JsonSerializer
-                .Deserialize<Configuration>(configFileContent);
+                .Deserialize<Configuration>(configFileContent)!;
         }
         catch (JsonException ex)
+        {
+            LogHelper.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
+        }
+        catch (NullReferenceException ex)
         {
             LogHelper.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
         }
@@ -95,8 +99,8 @@ internal class Program
         }
         #endregion
 
+        #region values from config.json, minValue, maxValue
         double minElement = 0.0, averageValue = 0.0;
-
         int actionDelay = 0;
 
         try
@@ -126,15 +130,17 @@ internal class Program
             {
                 LogHelper.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
             }
+        #endregion
 
+        #region story about Neznayka
         var exchangeRate = new ExchangeRate(
             new Dictionary<CurrencyType, double> 
             {
-                [CurrencyType.Fertings] = 1.0,
-                [CurrencyType.Stocks] = 1.1,
+                [Fertings] = 1.0,
+                [Stocks] = 1.1,
             });
         
-        var currenciesToFill = new CurrencyType[] { CurrencyType.Stocks };
+        var currenciesToFill = new CurrencyType[] { Stocks };
         var bankChestsCapacities = new int[] { 1000000, 1000000 };
 
         var bank = new Bank(exchangeRate, 2, bankChestsCapacities, currenciesToFill); 
@@ -149,19 +155,19 @@ internal class Program
         StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {minElement + averageValue}°C");
 
         character1.ComeIn(bank);
-        character1.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
+        character1.RequestToExchange(bank, Fertings, Stocks, 1000);
 
         StoryTeller.AddSentence("Наступило утро...");
         character2.GoTo(bank);
         character3.GoTo(bank);
         character3.ComeIn(bank);
         character2.ComeIn(bank);
-        character2.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
+        character2.RequestToExchange(bank, Fertings, Stocks, 1000);
 
-        character3.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 1000);
+        character3.RequestToExchange(bank, Fertings, Stocks, 1000);
         character3.GoTo(ch3House);
         character3.ComeIn(ch3House);
-        character3.PutCurrency(ch3Wardrobe, CurrencyType.Fertings, 100);
+        character3.PutCurrency(ch3Wardrobe, Fertings, 100);
 
         StoryTeller.AddSentence("Наступил вечер...");
         StoryTeller.Tell(actionDelay);
@@ -171,7 +177,7 @@ internal class Program
         StoryTeller.AddSentence("Утро следующего дня...");
 
         bank.ToggleBankStatus();
-        while (!bank.IsFull(CurrencyType.Fertings))
+        while (!bank.IsFull(Fertings))
         {
             Console.Clear();
             var crowd = new Queue<Extra>();
@@ -186,7 +192,7 @@ internal class Program
             {
                 var currentCustomer = crowd.Dequeue();
                 currentCustomer.ComeIn(bank);
-                currentCustomer.RequestToExchange(bank, CurrencyType.Fertings, CurrencyType.Stocks, 100000);
+                currentCustomer.RequestToExchange(bank, Fertings, Stocks, 100000);
             }
 
             if (!bank.IsOpen)
@@ -203,6 +209,7 @@ internal class Program
         Console.Clear();
         StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
         StoryTeller.Tell(actionDelay);
+        #endregion
     }
 
     static void UpdateExchangeRate(ExchangeRate actualRate, double[] priceChanges)

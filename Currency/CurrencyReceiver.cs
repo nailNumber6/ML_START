@@ -1,7 +1,4 @@
-﻿
-using System.Linq;
-
-namespace ML_START_1;
+﻿namespace ML_START_1;
 
 internal abstract class CurrencyReceiver
 {

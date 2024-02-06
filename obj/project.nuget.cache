@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3m/JqM9BdOZeEoGB61aktMr0aVf02Tq8veng0LkUKlmkiruNvqGf1Mzr3cT95uUzzBhJ/bCsNjDBa+Ij4bbQtQ==",
+  "dgSpecHash": "EQW0AdhO+6n87QG+5+I9Ix0oqcXn//LpQKUqz+zWgVh3VmIKxJW8QdYZp5Qcz2UAIwdKWOTTTl2Km+4IXwhFTg==",
   "success": true,
   "projectFilePath": "C:\\VS Projects\\ML_START_1\\ML_START_1.csproj",
   "expectedPackageFiles": [
@@ -23,6 +23,7 @@
     "C:\\Users\\andre\\.nuget\\packages\\avalonia.x11\\11.0.2\\avalonia.x11.11.0.2.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\custommessagebox.avalonia\\11.0.0.2\\custommessagebox.avalonia.11.0.0.2.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\dynamicdata\\7.9.5\\dynamicdata.7.9.5.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\harfbuzzsharp\\2.8.2.3\\harfbuzzsharp.2.8.2.3.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\harfbuzzsharp.nativeassets.linux\\2.8.2.3\\harfbuzzsharp.nativeassets.linux.2.8.2.3.nupkg.sha512",

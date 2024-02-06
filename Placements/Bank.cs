@@ -1,7 +1,5 @@
 ﻿
 
-using ML_START_1.person;
-
 namespace ML_START_1;
 
 internal class Bank : IPlacement
@@ -10,7 +8,7 @@ internal class Bank : IPlacement
     private ExchangeRate _exchangeRate;
     private List<BankChest> _chests;
 
-    public Bank(ExchangeRate exchangeRate, int chestsCount, int[] chestsCapacties) 
+    public Bank(ExchangeRate exchangeRate, int chestsCount, int[] chestsCapacties)
     {
         // Инициализация банка с пустыми сундуками
         _exchangeRate = exchangeRate;
@@ -23,7 +21,7 @@ internal class Bank : IPlacement
             _chests.Add(new BankChest(chestsCapacties[i], false));
     }
 
-    public Bank(ExchangeRate exchangeRate, int chestsCount, int[] chestsCapacties, CurrencyType[]? currenciesToFill) 
+    public Bank(ExchangeRate exchangeRate, int chestsCount, int[] chestsCapacties, CurrencyType[]? currenciesToFill)
     {
         // Инициализация банка с заполненными или частично заполненными сундуками
         _exchangeRate = exchangeRate;
@@ -32,11 +30,11 @@ internal class Bank : IPlacement
         _chests = new List<BankChest>();
 
         if (currenciesToFill == null)
-            for (int i = 0; i < chestsCount; i++) 
+            for (int i = 0; i < chestsCount; i++)
                 _chests.Add(new BankChest(chestsCapacties[i]));
         else
         {
-            for (int i = 0;i < chestsCount; i++)
+            for (int i = 0; i < chestsCount; i++)
             {
                 var newChest = new BankChest(chestsCapacties[i], false);
                 newChest.FillWith(currenciesToFill);
@@ -72,7 +70,7 @@ internal class Bank : IPlacement
     public void Exchange(Person customer, CurrencyType inputCurrency, CurrencyType returnCurrency, int currencyCount)
     {
         var currentChest = _chests
-            .Find(chest => 
+            .Find(chest =>
             chest.ContainsCurrency(inputCurrency, returnCurrency) && !chest.IsFull(inputCurrency)
         ); // Сундук с запрашиваемой валютой и не переполненный валютой для обмена
 
@@ -84,7 +82,7 @@ internal class Bank : IPlacement
         {
             double inputCurrencyPrice = _exchangeRate.Rates[inputCurrency];
             double returnCurrencyPrice = _exchangeRate.Rates[returnCurrency];
-            int currencyToSpend = (int)Math.Round((returnCurrencyPrice * currencyCount) / inputCurrencyPrice);
+            int currencyToSpend = (int)Math.Round(returnCurrencyPrice * currencyCount / inputCurrencyPrice);
 
             StoryTeller.AddSentence($"{customer} обменял валюту");
 

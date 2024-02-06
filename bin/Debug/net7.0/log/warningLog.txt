@@ -1728,3 +1728,283 @@
 
 Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
 
+2024-02-06 16:07:56.648 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 0] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.648 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 1] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 4] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 7] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 8] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 11] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[0, 12] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 0] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 1] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 4] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 7] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 8] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 11] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[1, 12] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 0] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 1] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 4] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 7] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 8] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 11] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[3, 12] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 0] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 1] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 4] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.649 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 7] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.650 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 8] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.650 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 11] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+
+2024-02-06 16:07:56.650 +03:00 [WRN] 
+Примечание: В результате вычислений элементу k2[5, 12] было присвоено NaN
+Файл: C:\VS Projects\ML_START_1\LogHelper.cs
+
+Строка: 30
+
+Столбец: 13
+
+Метод: Void LogByTemplate(Serilog.Events.LogEventLevel, System.Exception, System.String)
+

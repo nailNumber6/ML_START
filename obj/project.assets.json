@@ -398,6 +398,22 @@
           }
         }
       },
+      "CustomMessageBox.Avalonia/11.0.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.0.0"
+        },
+        "compile": {
+          "lib/netcoreapp3.0/CustomMessageBox.Avalonia.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/CustomMessageBox.Avalonia.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "DynamicData/7.9.5": {
         "type": "package",
         "dependencies": {
@@ -2018,6 +2034,7 @@
           "Avalonia.Fonts.Inter": "11.0.2",
           "Avalonia.ReactiveUI": "11.0.2",
           "Avalonia.Themes.Fluent": "11.0.2",
+          "CustomMessageBox.Avalonia": "11.0.0.2",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.15",
           "System.Text.Json": "8.0.1"
         },
@@ -2518,6 +2535,22 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "CustomMessageBox.Avalonia/11.0.0.2": {
+      "sha512": "yXgJs09YkjxGZKqPq6r0TmEJJXfinFQbtHVJGG9vExI9VDJkYfy9m+1auOpCkx1Ci7bz7ZUzJlyaydu23d6Mhw==",
+      "type": "package",
+      "path": "custommessagebox.avalonia/11.0.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "custommessagebox.avalonia.11.0.0.2.nupkg.sha512",
+        "custommessagebox.avalonia.nuspec",
+        "lib/netcoreapp3.0/CustomMessageBox.Avalonia.dll",
+        "lib/netcoreapp3.0/CustomMessageBox.Avalonia.xml",
+        "lib/netstandard2.0/CustomMessageBox.Avalonia.dll",
+        "lib/netstandard2.0/CustomMessageBox.Avalonia.xml"
       ]
     },
     "DynamicData/7.9.5": {

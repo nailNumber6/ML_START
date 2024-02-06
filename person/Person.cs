@@ -1,4 +1,4 @@
-﻿namespace ML_START_1.person;
+﻿namespace ML_START_1;
 
 internal abstract class Person : IMovable
 {

@@ -1,6 +1,4 @@
-﻿
-
-namespace ML_START_1;
+﻿namespace ML_START_1;
 
 internal static class RandomClassExtentions
 {
