@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ML_START_1
 {
-    internal static class LogHelper
+    public static class LoggingTool
     {
         public static void CreateLogDirectory(params LogEventLevel[] logEventLevels) // TODO: Сделать возможность записывать в консоль
         {

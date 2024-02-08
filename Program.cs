@@ -9,7 +9,7 @@ internal class Program
     public record Configuration(int NameLength, int LastNameLength, int ActionDelay); 
     static void Main(string[] args)
     {
-        LogHelper.CreateLogDirectory(Debug, Information, Warning, Error);
+        LoggingTool.CreateLogDirectory(Debug, Information, Warning, Error);
 
         #region creating config file
         string configFile = "config.json";
@@ -36,17 +36,15 @@ internal class Program
         }
         catch (JsonException ex)
         {
-            LogHelper.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
+            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
         }
         catch (NullReferenceException ex)
         {
-            LogHelper.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
+            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
         }
         #endregion
 
         // TODO: Реализовать обновление модели данных
-
-        MLSTART_GUI.Program.Main(args);
 
         Random random = new();
 
@@ -57,7 +55,7 @@ internal class Program
         for (int i = 0; i < x.Length; i++)
         {
             x[i] = random.NextDouble(-12, 16);
-            LogHelper.LogByTemplate(Information,
+            LoggingTool.LogByTemplate(Information,
                         note: $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]");
         }
         #endregion
@@ -75,7 +73,7 @@ internal class Program
                     double expression = 0.5 / (Math.Tan(2 * x[j]) + (2.0 / 3.0));
                     k2[i, j] = Math.Pow(expression, Math.Pow(Math.Pow(x[j], 1.0 / 3.0), 1.0 / 3.0));
                     if (double.IsNaN(k2[i, j]))
-                        LogHelper.LogByTemplate(Warning, note:$"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                        LoggingTool.LogByTemplate(Warning, note:$"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
                 };
             }
             else if (k[i] == 9)
@@ -84,7 +82,7 @@ internal class Program
                 {
                     k2[i, j] = Math.Sin(Math.Sin(Math.Pow(x[j] / (x[j] + 0.5), x[j])));
                     if (double.IsNaN(k2[i, j]))
-                        LogHelper.LogByTemplate(Warning, note:$"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                        LoggingTool.LogByTemplate(Warning, note:$"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
                 }
             }
             else
@@ -93,13 +91,13 @@ internal class Program
                 {
                     k2[i, j] = Math.Tan(Math.Pow(((Math.Pow(Math.E, 1 - x[j] / Math.PI) / 3.0) / 4.0), 3.0));
                     if (double.IsNaN(k2[i, j]))
-                        LogHelper.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                        LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
                 }
             }
         }
         #endregion
 
-        #region values from config.json, minValue, maxValue
+        #region values from config.json, getting minElement and averageValue
         double minElement = 0.0, averageValue = 0.0;
         int actionDelay = 0;
 
@@ -124,11 +122,11 @@ internal class Program
         }
             catch (FormatException ex)
             {
-                LogHelper.LogByTemplate(Error, ex, $"Преобразование данных из файла {configFile} вызвало ошибку");
+                LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {configFile} вызвало ошибку");
             }
             catch (IndexOutOfRangeException ex)
             {
-                LogHelper.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
+                LoggingTool.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
             }
         #endregion
 
