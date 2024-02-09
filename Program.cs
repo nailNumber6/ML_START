@@ -1,4 +1,7 @@
 ﻿using System.Text.Json;
+
+using LoggingLibrary;
+
 using static Serilog.Events.LogEventLevel;
 using static ML_START_1.CurrencyType;
 
@@ -11,7 +14,7 @@ internal class Program
     {
         LoggingTool.CreateLogDirectory(Debug, Information, Warning, Error);
 
-        #region creating config file
+        #region creating or reading config file
         string configFile = "config.json";
         if (!File.Exists(configFile))
         {
