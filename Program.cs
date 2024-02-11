@@ -12,7 +12,7 @@ internal class Program
     public record Configuration(int NameLength, int LastNameLength, int ActionDelay); 
     static void Main(string[] args)
     {
-        LoggingTool.CreateLogDirectory(Debug, Information, Warning, Error);
+        LoggingTool.WriteToFile(Debug, Information, Warning, Error);
 
         #region creating or reading config file
         string configFile = "config.json";
