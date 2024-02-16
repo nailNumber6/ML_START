@@ -69,28 +69,22 @@ internal class Program
 
         for (int i = 0; i < k.Length; i++)
         {
-            if (range.Contains(k[i]))
+            for (int j = 0; j < k2.GetLength(1); j++)
             {
-                for (int j = 0; j < k2.GetLength(1); j++)
+                if (range.Contains(k[i]))
                 {
                     double expression = 0.5 / (Math.Tan(2 * x[j]) + (2.0 / 3.0));
                     k2[i, j] = Math.Pow(expression, Math.Pow(Math.Pow(x[j], 1.0 / 3.0), 1.0 / 3.0));
                     if (double.IsNaN(k2[i, j]))
-                        LoggingTool.LogByTemplate(Warning, note:$"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
-                };
-            }
-            else if (k[i] == 9)
-            {
-                for (int j = 0; j < k2.GetLength(1); j++)
+                        LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                }
+                else if (k[i] == 9)
                 {
                     k2[i, j] = Math.Sin(Math.Sin(Math.Pow(x[j] / (x[j] + 0.5), x[j])));
                     if (double.IsNaN(k2[i, j]))
-                        LoggingTool.LogByTemplate(Warning, note:$"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                        LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
                 }
-            }
-            else
-            {
-                for (int j = 0; j < k2.GetLength(1); j++)
+                else
                 {
                     k2[i, j] = Math.Tan(Math.Pow(((Math.Pow(Math.E, 1 - x[j] / Math.PI) / 3.0) / 4.0), 3.0));
                     if (double.IsNaN(k2[i, j]))
@@ -102,6 +96,7 @@ internal class Program
 
         #region values from config.json, getting minElement and averageValue
         double minElement = 0.0, averageValue = 0.0;
+        double totalSum = 0.0;
         int actionDelay = 0;
 
         try
@@ -120,17 +115,18 @@ internal class Program
                             .ToArray();
             averageValue = subArray2.Average();
 
-            Console.WriteLine($"Минимальный элемент - {minElement:F4}"); // 6 Задание
-            Console.WriteLine($"Среднее число - {averageValue:F4}");
+            totalSum = minElement + averageValue;
+
+            Console.WriteLine($"Сумма элементов - {totalSum:F4}"); // 6 Задание
         }
-            catch (FormatException ex)
-            {
-                LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {configFile} вызвало ошибку");
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                LoggingTool.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
-            }
+        catch (FormatException ex)
+        {
+            LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {configFile} вызвало ошибку");
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            LoggingTool.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
+        }
         #endregion
 
         #region story about Neznayka
@@ -153,7 +149,7 @@ internal class Program
         House ch3House = new(character3);
         Wardrobe ch3Wardrobe = new(10000, false);
 
-        StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {minElement + averageValue}°C");
+        StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {totalSum}°C");
 
         character1.ComeIn(bank);
         character1.RequestToExchange(bank, Fertings, Stocks, 1000);
