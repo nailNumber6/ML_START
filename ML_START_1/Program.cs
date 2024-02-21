@@ -149,12 +149,12 @@ internal class Program
         House ch3House = new(character3);
         Wardrobe ch3Wardrobe = new(10000, false);
 
-        StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {totalSum}°C");
+        StoryBuilder.AddSentence($"На улице стояла прекрасная погода, градусник показывал {totalSum}°C");
 
         character1.ComeIn(bank);
         character1.RequestToExchange(bank, Fertings, Stocks, 1000);
 
-        StoryTeller.AddSentence("Наступило утро...");
+        StoryBuilder.AddSentence("Наступило утро...");
         character2.GoTo(bank);
         character3.GoTo(bank);
         character3.ComeIn(bank);
@@ -166,12 +166,12 @@ internal class Program
         character3.ComeIn(ch3House);
         character3.PutCurrency(ch3Wardrobe, Fertings, 100);
 
-        StoryTeller.AddSentence("Наступил вечер...");
-        StoryTeller.Tell(actionDelay);
+        StoryBuilder.AddSentence("Наступил вечер...");
+        StoryBuilder.WriteToConsole(actionDelay);
 
         Thread.Sleep(actionDelay);
-        StoryTeller.Clear();
-        StoryTeller.AddSentence("Утро следующего дня...");
+        StoryBuilder.Clear();
+        StoryBuilder.AddSentence("Утро следующего дня...");
 
         bank.ToggleBankStatus();
         while (!bank.IsFull(Fertings))
@@ -194,18 +194,18 @@ internal class Program
 
             if (!bank.IsOpen)
             {
-                StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
+                StoryBuilder.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
                 bank.ToggleBankStatus();
             }    
 
-            StoryTeller.Tell(actionDelay);
-            StoryTeller.Clear();
+            StoryBuilder.WriteToConsole(actionDelay);
+            StoryBuilder.Clear();
             Thread.Sleep(actionDelay);
             UpdateExchangeRate(exchangeRate, x);
         }
         Console.Clear();
-        StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
-        StoryTeller.Tell(actionDelay);
+        StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
+        StoryBuilder.WriteToConsole(actionDelay);
         #endregion
     }
 
@@ -223,6 +223,6 @@ internal class Program
             newCurrencyPrices[currencyType] = actualRate.Rates[currencyType] += priceChange;
         }
         var updatedRate = actualRate with { Rates = newCurrencyPrices };
-        StoryTeller.AddSentence(updatedRate.ToString());
+        StoryBuilder.AddSentence(updatedRate.ToString());
     }
 }

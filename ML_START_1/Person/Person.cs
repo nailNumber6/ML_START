@@ -17,9 +17,9 @@ internal abstract class Person : IMovable
     public void GoTo(IPlacement placement)
     {
         if (HasVehicle)
-            StoryTeller.AddSentence($"{ToString()} доезжает до {placement}");
+            StoryBuilder.AddSentence($"{ToString()} доезжает до {placement}");
         else
-            StoryTeller.AddSentence($"{ToString()} доходит до {placement}");
+            StoryBuilder.AddSentence($"{ToString()} доходит до {placement}");
     }
 
     public override string ToString() => "Человек";
@@ -29,7 +29,7 @@ internal abstract class Person : IMovable
         if (destination.CanAccomodate(this))
             _location = destination;
         else
-            StoryTeller.AddSentence($"{destination} закрыт");
+            StoryBuilder.AddSentence($"{destination} закрыт");
     }
 
     public void ComeOut() => _location = null;
@@ -45,7 +45,7 @@ internal abstract class Person : IMovable
                 bank.Exchange(this, inputCurrency, returnCurrency, currencyCount);
             }
         }
-        else StoryTeller.AddSentence($"{this} не находится в помещении {bank}");
+        else StoryBuilder.AddSentence($"{this} не находится в помещении {bank}");
     }
 
     public int GetCurrencyCount(CurrencyType currencyType) => _pocket.GetCurrencyCount(currencyType);
@@ -53,13 +53,13 @@ internal abstract class Person : IMovable
     public void PutCurrency(CurrencyReceiver destinationStorage, CurrencyType currencyType, int currencyCount)
     {
         destinationStorage.ReceiveFrom(_pocket, currencyType, currencyCount);
-        StoryTeller.AddSentence($"{ToString()} положил валюту в {destinationStorage}");
+        StoryBuilder.AddSentence($"{ToString()} положил валюту в {destinationStorage}");
     }
 
     public void TakeCurrency(CurrencyReceiver sourceStorage, CurrencyType currencyType, int currencyCount)
     {
         sourceStorage.RemoveTo(_pocket, currencyType, currencyCount);
-        StoryTeller.AddSentence($"{ToString()} положил валюту в {_pocket}");
+        StoryBuilder.AddSentence($"{ToString()} положил валюту в {_pocket}");
     }
 
     private class Pocket : CurrencyReceiver

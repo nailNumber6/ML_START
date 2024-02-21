@@ -61,7 +61,7 @@ internal abstract class CurrencyReceiver
             _storageArea[currencyType] += currencyCount;
         else
         {
-            StoryTeller.AddSentence($"В {this} недостаточно места");
+            StoryBuilder.AddSentence($"В {this} недостаточно места");
             _storageArea[currencyType] = _storageCapacity;
         }
     }
@@ -74,7 +74,7 @@ internal abstract class CurrencyReceiver
             _storageArea[currencyType] -= currencyCount;
         else
         {
-            StoryTeller.AddSentence(ToString() + " не насчитывает столько предметов");
+            StoryBuilder.AddSentence(ToString() + " не насчитывает столько предметов");
         }
     }
 }

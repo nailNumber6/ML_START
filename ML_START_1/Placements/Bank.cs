@@ -76,7 +76,7 @@ internal class Bank : IPlacement
 
         if (currentChest == null)
         {
-            StoryTeller.AddSentence($"В {ToString()} закончилась запрашиваемая валюта");
+            StoryBuilder.AddSentence($"В {ToString()} закончилась запрашиваемая валюта");
         }
         else
         {
@@ -84,7 +84,7 @@ internal class Bank : IPlacement
             double returnCurrencyPrice = _exchangeRate.Rates[returnCurrency];
             int currencyToSpend = (int)Math.Round(returnCurrencyPrice * currencyCount / inputCurrencyPrice);
 
-            StoryTeller.AddSentence($"{customer} обменял валюту");
+            StoryBuilder.AddSentence($"{customer} обменял валюту");
 
             customer.PutCurrency(currentChest, inputCurrency, currencyToSpend);
             customer.TakeCurrency(currentChest, returnCurrency, currencyCount);

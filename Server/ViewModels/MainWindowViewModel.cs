@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+
+using Avalonia.Controls;
+
 using ML_START_1;
 using static ML_START_1.CurrencyType;
-using Avalonia.Controls;
-using System.Threading.Tasks;
 
 
 namespace Server.ViewModels;
@@ -13,6 +18,37 @@ public class MainWindowViewModel : ViewModelBase
 {
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;
+
+    // TODO: Перенести необходимое в Model
+
+    public async Task StartServer()
+    {
+        var tcpListener = new TcpListener(IPAddress.Parse(IpAddress), Port);
+
+        try
+        {
+            tcpListener.Start();
+            Console.WriteLine("Сервер запущен. Ожидание подключений... ");
+
+            while (true)
+            {
+                var tcpClient = await tcpListener.AcceptTcpClientAsync();
+
+                Task.Run(async () => await ProcessClientAsync(tcpClient));
+            }
+        }
+        finally
+        {
+            tcpListener.Stop();
+        }
+
+        static async Task ProcessClientAsync(TcpClient tcpClient)
+        {
+            Debug.Write(tcpClient.Client.RemoteEndPoint);
+            await Task.Delay(2000);
+            tcpClient.Close();
+        }
+    }
 
     public static async Task StartAndShowStory(ListBox listBox)
     {
@@ -38,12 +74,12 @@ public class MainWindowViewModel : ViewModelBase
             Wardrobe ch3Wardrobe = new(10000, false);
 
             //TODO: значения из конфиг файла
-            StoryTeller.AddSentence($"На улице стояла прекрасная погода, градусник показывал {10}°C");
+            StoryBuilder.AddSentence($"На улице стояла прекрасная погода, градусник показывал {10}°C");
 
             character1.ComeIn(bank);
             character1.RequestToExchange(bank, Fertings, Stocks, 1000);
 
-            StoryTeller.AddSentence("Наступило утро...");
+            StoryBuilder.AddSentence("Наступило утро...");
             character2.GoTo(bank);
             character3.GoTo(bank);
             character3.ComeIn(bank);
@@ -55,12 +91,12 @@ public class MainWindowViewModel : ViewModelBase
             character3.ComeIn(ch3House);
             character3.PutCurrency(ch3Wardrobe, Fertings, 100);
 
-            StoryTeller.AddSentence("Наступил вечер...");
-            await DisplayStory(StoryTeller.Story, listBox, 500);
+            StoryBuilder.AddSentence("Наступил вечер...");
+            await DisplayStory(StoryBuilder.Story, listBox, 500);
 
             await Task.Delay(500);
-            StoryTeller.Clear();
-            StoryTeller.AddSentence("Утро следующего дня...");
+            StoryBuilder.Clear();
+            StoryBuilder.AddSentence("Утро следующего дня...");
 
             bank.ToggleBankStatus();
             while (!bank.IsFull(Fertings))
@@ -83,17 +119,17 @@ public class MainWindowViewModel : ViewModelBase
 
                 if (!bank.IsOpen)
                 {
-                    StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
+                    StoryBuilder.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
                     bank.ToggleBankStatus();
                 }
-                await DisplayStory(StoryTeller.Story, listBox, 500);
-                StoryTeller.Clear();
+                await DisplayStory(StoryBuilder.Story, listBox, 500);
+                StoryBuilder.Clear();
                 await Task.Delay(500);
             }
             //Console.Clear();
-            StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
+            StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
             //StoryTeller.Tell(500);
-            await DisplayStory(StoryTeller.Story, listBox, 500);
+            await DisplayStory(StoryBuilder.Story, listBox, 500);
         }
     }
 

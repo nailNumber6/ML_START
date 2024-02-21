@@ -3,7 +3,7 @@
         xmlns:vm="using:Server.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" Width="500" Height="200"
+        mc:Ignorable="d" Width="500" Height="400"
         x:Class="Server.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -24,7 +24,7 @@
 					   HorizontalAlignment="Center" 
 					   VerticalAlignment="Top"/>
 
-			<ListBox Name="list">
+			<ListBox Name="list" MaxHeight="200">
 				<ItemsControl Name="items">
 				</ItemsControl>
 			</ListBox>

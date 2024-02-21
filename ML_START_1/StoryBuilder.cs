@@ -1,8 +1,6 @@
-﻿
+﻿namespace ML_START_1;
 
-namespace ML_START_1;
-
-internal static class StoryTeller
+internal static class StoryBuilder
 {
     private static List<string> _story = new List<string>();
 
@@ -17,7 +15,7 @@ internal static class StoryTeller
         _story.Clear(); 
     }
 
-    public static void Tell(int delayInMilliseconds)
+    public static void WriteToConsole(int delayInMilliseconds)
     {
         foreach (string sentence in _story)
         {
