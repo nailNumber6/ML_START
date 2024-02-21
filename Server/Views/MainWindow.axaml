@@ -3,7 +3,7 @@
         xmlns:vm="using:Server.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" Width="500" Height="200"
         x:Class="Server.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -16,18 +16,32 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-	<StackPanel>
+	<Panel>
 
-        <TextBlock Text="{Binding Greeting}" 
-				   HorizontalAlignment="Center" 
-				   VerticalAlignment="Top"/>
+		<StackPanel Spacing="10">
 
-		<ListBox Name="list">
-			<ItemsControl Name="items">
-				<TextBlock>AAAA</TextBlock>
-			</ItemsControl>
-		</ListBox>
+			<TextBlock Text="Сервер" 
+					   HorizontalAlignment="Center" 
+					   VerticalAlignment="Top"/>
+
+			<ListBox Name="list">
+				<ItemsControl Name="items">
+				</ItemsControl>
+			</ListBox>
 		
-	</StackPanel>
+		</StackPanel>
+
+		<RelativePanel VerticalAlignment="Bottom">
+
+			<Label Content="ip-адрес:" x:Name="IpLabel"/>
+			<Label Content="{Binding IpAddress}" RelativePanel.RightOf="IpLabel" x:Name="IpText"/>
+			
+			<Label Content="порт:" RelativePanel.RightOf="IpText" x:Name="PortLabel"
+				   Margin="10,0,0,0"/>
+			<Label Content="{Binding Port}" RelativePanel.RightOf="PortLabel"/>
+			
+		</RelativePanel>
+		
+	</Panel>
 
 </Window>

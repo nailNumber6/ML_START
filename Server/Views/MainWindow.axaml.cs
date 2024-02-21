@@ -1,5 +1,7 @@
 using Avalonia.Controls;
 
+using Server.ViewModels;
+
 namespace Server.Views
 {
     public partial class MainWindow : Window
@@ -7,15 +9,24 @@ namespace Server.Views
         public MainWindow()
         {
             InitializeComponent();
+            serverWindow.Activated += ServerWindow_Activated;
             serverWindow.KeyDown += ServerWindow_KeyDown;
+        }
+
+        private void ServerWindow_Activated(object? sender, System.EventArgs e)
+        {
+            MainWindowViewModel.StartStory();
         }
 
         private void ServerWindow_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
         {
             if (e.Key == Avalonia.Input.Key.Enter)
             {
-                var tb = new TextBlock();
-                tb.Text = "I'm rookie";
+                var tb = new TextBlock
+                {
+                    Text = "I'm rookie"
+                };
+
                 list.Items.Add(tb);
             }
         }

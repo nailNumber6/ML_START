@@ -22,6 +22,10 @@
     <PackageReference Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Server" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\LoggingLibrary\LoggingLibrary.csproj" />
   </ItemGroup>
