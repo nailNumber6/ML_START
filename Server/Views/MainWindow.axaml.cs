@@ -15,7 +15,7 @@ namespace Server.Views
 
         private void ServerWindow_Activated(object? sender, System.EventArgs e)
         {
-            MainWindowViewModel.StartStory();
+            MainWindowViewModel.StartAndShowStory(list);
         }
 
         private void ServerWindow_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)

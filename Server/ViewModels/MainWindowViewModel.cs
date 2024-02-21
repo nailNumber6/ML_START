@@ -3,6 +3,8 @@ using System.Threading;
 using System;
 using ML_START_1;
 using static ML_START_1.CurrencyType;
+using Avalonia.Controls;
+using System.Threading.Tasks;
 
 
 namespace Server.ViewModels;
@@ -12,7 +14,7 @@ public class MainWindowViewModel : ViewModelBase
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;
 
-    public static void StartStory()
+    public static async Task StartAndShowStory(ListBox listBox)
     {
         while (true)
         {
@@ -54,9 +56,9 @@ public class MainWindowViewModel : ViewModelBase
             character3.PutCurrency(ch3Wardrobe, Fertings, 100);
 
             StoryTeller.AddSentence("Наступил вечер...");
-            //StoryTeller.Tell(500);
+            await DisplayStory(StoryTeller.Story, listBox, 500);
 
-            Thread.Sleep(500);
+            await Task.Delay(500);
             StoryTeller.Clear();
             StoryTeller.AddSentence("Утро следующего дня...");
 
@@ -84,14 +86,23 @@ public class MainWindowViewModel : ViewModelBase
                     StoryTeller.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
                     bank.ToggleBankStatus();
                 }
-
-                //StoryTeller.Tell(500);
+                await DisplayStory(StoryTeller.Story, listBox, 500);
                 StoryTeller.Clear();
-                Thread.Sleep(500);
+                await Task.Delay(500);
             }
             //Console.Clear();
             StoryTeller.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
             //StoryTeller.Tell(500);
+            await DisplayStory(StoryTeller.Story, listBox, 500);
+        }
+    }
+
+    private static async Task DisplayStory(List<string> story, ListBox listBox, int delayInMilliseconds)
+    {
+        foreach (var sentence in story)
+        {
+            listBox.Items.Add(sentence);
+            await Task.Delay(delayInMilliseconds);
         }
     }
 }
