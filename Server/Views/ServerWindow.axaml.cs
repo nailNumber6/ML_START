@@ -4,9 +4,9 @@ using Server.ViewModels;
 
 namespace Server.Views
 {
-    public partial class MainWindow : Window
+    public partial class ServerWindow : Window
     {
-        public MainWindow()
+        public ServerWindow()
         {
             InitializeComponent();
             serverWindow.Activated += ServerWindow_Activated;
