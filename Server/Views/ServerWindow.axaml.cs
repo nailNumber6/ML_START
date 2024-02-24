@@ -10,10 +10,10 @@ namespace Server.Views
         public ServerWindow()
         {
             InitializeComponent();
-            serverWindow.Activated += ServerWindow_Activated;
+            serverWindow.Loaded += ServerWindow_Loaded;
         }
 
-        private void ServerWindow_Activated(object? sender, System.EventArgs e)
+        private void ServerWindow_Loaded(object? sender, System.EventArgs e)
         {
             MainWindowViewModel vm = new();
 

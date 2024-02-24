@@ -9,14 +9,21 @@
 		Name="clientWindow"
         Title="Client"
 		Background="AliceBlue">
+
+	<Window.DataContext>
+		<vm:ClientWindowViewModel/>
+	</Window.DataContext>
 	
 	<StackPanel>
 		
 		<Label Name="username"/>
-		<Button Content="Подключиться" Name="connectButton"/>
+		<Button Content="Подключиться"
+				Command="{Binding ConnectServerCommand}"/>
+		<Button Content="Отключиться"
+				Command="{Binding CloseConnectionCommand}"/>
 		
-		<TextBlock Text="{Binding Ip}"/>
-		<TextBlock Text="{Binding Port}"/>
+		<Label Content="{Binding Ip}"/>
+		<Label Content="{Binding Port}"/>
 		
 	</StackPanel>
 	

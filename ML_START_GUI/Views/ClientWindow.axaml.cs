@@ -10,19 +10,11 @@ public partial class ClientWindow : Window
     {
         InitializeComponent();
         this.username.Content = username;
-
-        connectButton.Click += ConnectButton_Click;
         clientWindow.Closed += ClientWindow_Closed;
     }
 
     private void ClientWindow_Closed(object? sender, System.EventArgs e)
     {
         throw new System.NotImplementedException();
-    }
-
-    private void ConnectButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        var vm = new ClientWindowViewModel();
-        Task.Run(vm.ConnectServer);
     }
 }

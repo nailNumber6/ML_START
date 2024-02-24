@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -9,23 +11,45 @@ internal partial class ClientWindowViewModel : ObservableObject
 {
     // TODO: Окно клиента
     [ObservableProperty]
-    private string _ip = "127.0.0.1";
+    private string? _ip = "127.0.0.1";
 
     [ObservableProperty]
-    private int _port = 8070;
+    private string? _port = "8080";
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CloseConnectionCommand))]
+    private TcpClient? _client;
+
+
+    [RelayCommand]
     public async Task ConnectServer()
     {
-        IPEndPoint endPoint = new(IPAddress.Parse(Ip), Port);
-        using TcpClient tcpClient = new(endPoint);
+        if (Client != null && Client.Connected)
+        {
+            Debug.WriteLine("Клиент уже подключен к серверу");
+        }
+        else
+        {
+            Client ??= new();
 
-        await tcpClient.ConnectAsync("127.0.0.1", 8080);
-        var stream = tcpClient.GetStream();
+            await Client.ConnectAsync(IPAddress.Parse(Ip!), int.Parse(Port!));
+        }
     }
 
-    private void CloseConnection(TcpClient client)
+    [RelayCommand]
+    public void CloseConnection()
     {
-        client.Client.Shutdown(SocketShutdown.Both);
-        client.Close();
-    } 
+        if (Client != null && Client.Connected)
+        {
+            Client!.Client.Shutdown(SocketShutdown.Both);
+            Client!.Close();
+
+            Client.Dispose();
+            Client = null;
+        }
+        else
+        {
+            Debug.WriteLine("Клиент не подключен");
+        }
+    }
 }
