@@ -1,0 +1,121 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MLSTART_GUI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		WindowStartupLocation="CenterScreen"
+		CanResize="False"
+        mc:Ignorable="d" Width="600" Height="400"
+        x:Class="MLSTART_GUI.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Авторизация"
+		FontFamily="Calibri"
+		Foreground="White"
+		Name="authentificationWindow">
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Window.Styles>
+		<StyleInclude Source="\Resourses\Styles1.axaml"/>
+	</Window.Styles>
+	
+	<Panel>
+
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Yellow"
+					TintOpacity="1"
+					MaterialOpacity="0.75" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+
+		<TextBlock
+			Text="АВТОРИЗАЦИЯ" 
+			FontSize="30"
+			HorizontalAlignment="Center" 
+			Margin="15"/>
+		
+		<Grid RowDefinitions="0.9*,2.3*,1.9*" ShowGridLines="False">
+
+			<RelativePanel Grid.Row="1" HorizontalAlignment="Left">
+			
+				<Label x:Name="LoginLabel"
+					   Margin="23,22,10,20">
+					<TextBlock Classes="MenuTextBlock" Text="Логин"/>
+				</Label>
+
+				<TextBox
+					x:Name="LoginField"
+					
+					Text="{Binding LoginInput}"
+					Classes="MenuTextBox"
+					RelativePanel.RightOf="LoginLabel"
+					Margin="16,20,0,10"/>
+		
+				<Label x:Name="PasswordLabel" 
+					   RelativePanel.Below="LoginLabel"
+					   Margin="20,-5,10,20">
+					<TextBlock Classes="MenuTextBlock" Text="Пароль"/>
+				</Label>
+
+				<TextBox
+					x:Name="PasswordField"
+					
+					Text="{Binding PasswordInput}"
+					Classes="PswdBox MenuTextBox"
+					RelativePanel.RightOf="PasswordLabel" 
+					RelativePanel.Below="LoginField"
+					Watermark="Введите пароль"
+					Margin="10,0,0,0"/>
+
+				<Label x:Name="RepeatPasswordLabel" 
+					   RelativePanel.Below="PasswordLabel"
+					   Margin="20,-4,10,0">
+					<TextBlock Classes="MenuTextBlock" Text="Пароль"/>
+				</Label>
+
+				<TextBox
+					x:Name="RepeatPasswordField"
+					Text="{Binding RepeatPasswordInput}"
+					Classes="PswdBox MenuTextBox"
+					RelativePanel.RightOf="RepeatPasswordLabel"
+					RelativePanel.Below="PasswordField"
+					Margin="10,10,0,0"
+					Watermark="Введите пароль повторно"/>
+				
+			</RelativePanel>
+
+			<StackPanel Spacing="10" Grid.Row="2" >
+
+				<Button
+					x:Name="SignInButton"
+					Command="{Binding LogUserInCommand}"
+					Classes="MenuButton">
+					<TextBlock Text="Войти" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+				</Button>
+
+				<Button
+					x:Name="SignUpButton"
+					Command="{Binding RegisterUserCommand}"
+					Classes="MenuButton">
+					<TextBlock Text="Зарегистрироваться" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+				</Button>
+
+				<Button
+					x:Name="ResetButton"
+					Command="{Binding ResetInputFieldsCommand}"
+					Classes="MenuButton">
+					<TextBlock Text="Сбросить" HorizontalAlignment="Center" Margin="0,5,0,0"/>	
+				</Button>
+
+				</StackPanel>
+			
+		</Grid>
+		
+	</Panel>
+	
+</Window>
