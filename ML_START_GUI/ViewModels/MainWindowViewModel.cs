@@ -24,7 +24,7 @@ public partial class MainWindowViewModel : ObservableObject
     private string? _repeatPasswordInput;
 
 
-    [RelayCommand(CanExecute = nameof(CanVegister))]
+    [RelayCommand(CanExecute = nameof(CanValidate))]
     public async Task RegisterUser()
     {
         using var context = new TestContext();
@@ -55,7 +55,7 @@ public partial class MainWindowViewModel : ObservableObject
         new MessageBox(statusMessage, string.Empty, icon).Show();
     }
 
-    [RelayCommand(CanExecute = nameof(CanVegister))]
+    [RelayCommand(CanExecute = nameof(CanValidate))]
     public async Task LogUserIn()
     {
         using var context = new TestContext();
@@ -86,7 +86,7 @@ public partial class MainWindowViewModel : ObservableObject
         new MessageBox(statusMessage, string.Empty, icon).Show();
     }
 
-    public bool CanVegister() => 
+    public bool CanValidate() => 
         !string.IsNullOrEmpty(LoginInput) &&
         !string.IsNullOrEmpty(PasswordInput) &&
         !string.IsNullOrEmpty(RepeatPasswordInput);

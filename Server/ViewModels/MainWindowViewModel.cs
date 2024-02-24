@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -16,8 +17,7 @@ public partial class MainWindowViewModel : ObservableObject
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;
 
-    [ObservableProperty]
-    private int _clientsCount;
+    public int ClientsCount { get; private set; }
 
     // TODO: Перенести необходимое в Model
 
@@ -31,11 +31,10 @@ public partial class MainWindowViewModel : ObservableObject
 
 
             while (true)
-            {
-                
+            { 
                 var tcpClient = await tcpListener.AcceptTcpClientAsync();
 
-                await Task.Run(async () => await ProcessClientAsync(tcpClient));
+                Task.Run(async () => await ProcessClientAsync(tcpClient));
             }
         }
         finally
@@ -43,13 +42,12 @@ public partial class MainWindowViewModel : ObservableObject
             tcpListener.Stop();
         }
 
-        static async Task ProcessClientAsync(TcpClient tcpClient)
+        async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            while (true)
-            {
-                await Task.Delay(2000);
-                break;
-            }
+            ClientsCount++;
+            
+            Debug.WriteLine(tcpClient.Client.RemoteEndPoint);
+            await Task.CompletedTask;
         }
     }
 
