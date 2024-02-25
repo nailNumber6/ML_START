@@ -9,6 +9,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 using ML_START_1;
 using static ML_START_1.CurrencyType;
+using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
 
 
 namespace Server.ViewModels;
@@ -17,11 +19,12 @@ public partial class MainWindowViewModel : ObservableObject
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;
 
-    public int ClientsCount { get; private set; }
+    [ObservableProperty]
+    private int _clientsCount;
 
     // TODO: Перенести необходимое в Model
 
-    public async Task StartServer()
+    public async Task StartServer(ListBox listBox)
     {
         var tcpListener = new TcpListener(IPAddress.Parse(IpAddress), Port);
 
@@ -44,10 +47,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            ClientsCount++;
-            
+            await Dispatcher.UIThread
+                .InvokeAsync(() =>
+                listBox.Items.Add(tcpClient.Client.RemoteEndPoint!.ToString()));
+
             Debug.WriteLine(tcpClient.Client.RemoteEndPoint);
-            await Task.CompletedTask;
         }
     }
 
@@ -134,7 +138,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    private static async Task DisplayStory(List<string> story, ListBox listBox, int delayInMilliseconds)
+    private async Task DisplayStory(List<string> story, ListBox listBox, int delayInMilliseconds)
     {
         foreach (var sentence in story)
         {

@@ -1,9 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace MLSTART_GUI.ViewModels;
 
@@ -14,7 +15,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     private string? _ip = "127.0.0.1";
 
     [ObservableProperty]
-    private string? _port = "8080";
+    private int _port = 8080;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CloseConnectionCommand))]
@@ -32,7 +33,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         {
             Client ??= new();
 
-            await Client.ConnectAsync(IPAddress.Parse(Ip!), int.Parse(Port!));
+            await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
         }
     }
 

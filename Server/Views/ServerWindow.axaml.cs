@@ -11,6 +11,13 @@ namespace Server.Views
         {
             InitializeComponent();
             serverWindow.Loaded += ServerWindow_Loaded;
+            serverWindow.Closed += ServerWindow_Closed;
+        }
+
+        private void ServerWindow_Closed(object? sender, System.EventArgs e)
+        {
+            // TODO: Закрытие подключения сервера
+            throw new System.NotImplementedException();
         }
 
         private void ServerWindow_Loaded(object? sender, System.EventArgs e)
@@ -22,7 +29,7 @@ namespace Server.Views
                 await vm.StartAndShowStory(list);
             });
 
-            Task.Run(vm.StartServer);
+            Task.Run(async () => await vm.StartServer(clientList));
         }
     }
 }

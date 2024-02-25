@@ -17,10 +17,15 @@
     </Design.DataContext>
 
 	<Panel>
+		
+		<RelativePanel>
+			<Label Content="Подключенные клиенты" x:Name="Header"/>
+			<ListBox Name="clientList" RelativePanel.Below="Header"/>
+		</RelativePanel>
+		
+		<StackPanel Spacing="10" Margin="0,80,0,0">
 
-		<StackPanel Spacing="10">
-
-			<TextBlock Text="{Binding ClientsCount}" 
+			<TextBlock Text="Истрия про Незнайку" 
 					   HorizontalAlignment="Center" 
 					   VerticalAlignment="Top"/>
 
@@ -28,7 +33,7 @@
 				<ItemsControl Name="items">
 				</ItemsControl>
 			</ListBox>
-		
+			
 		</StackPanel>
 
 		<RelativePanel VerticalAlignment="Bottom">

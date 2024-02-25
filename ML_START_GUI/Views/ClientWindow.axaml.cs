@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using MLSTART_GUI.ViewModels;
-using System.Threading.Tasks;
 
 
 namespace MLSTART_GUI.Views;
@@ -15,6 +14,7 @@ public partial class ClientWindow : Window
 
     private void ClientWindow_Closed(object? sender, System.EventArgs e)
     {
-        throw new System.NotImplementedException();
+        var vm = new ClientWindowViewModel();
+        vm.CloseConnection();
     }
 }
