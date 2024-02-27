@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -19,11 +22,11 @@ internal partial class ClientWindowViewModel : ObservableObject
     private int _port = 8080;
 
     [ObservableProperty]
-    private string? _resultMessage;
-
-    [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CloseConnectionCommand))]
     private TcpClient? _client;
+
+    [ObservableProperty]
+    private string? _input;
 
 
     [RelayCommand]
@@ -44,17 +47,40 @@ internal partial class ClientWindowViewModel : ObservableObject
                     .ConnectAsync(IPAddress.Parse(Ip!), Port));
             }
             // TODO: Обработать исключение
-            catch
+            catch (SocketException)
             {
-                await SetResultMessage("Сервер отключен");
+
             }
         }
     }
 
     [RelayCommand]
-    public async Task SetResultMessage(string message)
+    public async Task Send()
     {
-        await Dispatcher.UIThread.InvokeAsync(() => ResultMessage = message);
+        if (Client != null && Client.Connected)
+        {
+            NetworkStream tcpStream = Client.GetStream();
+            byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
+
+            await tcpStream.WriteAsync(encodedMessage);
+
+            #region response from the server
+            byte[] buffer = new byte[256];
+            int readTotal;
+
+            while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+            {
+                string response = Encoding.UTF8.GetString(buffer, 0, readTotal);
+
+                Debug.WriteLine(response);
+            }
+            #endregion
+        }
+
+        else
+        {
+            Debug.WriteLine("Клиент не подключен");
+        }
     }
 
     [RelayCommand]

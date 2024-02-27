@@ -11,6 +11,7 @@ using ML_START_1;
 using static ML_START_1.CurrencyType;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
+using System.Text;
 
 
 namespace Server.ViewModels;
@@ -44,11 +45,28 @@ public partial class MainWindowViewModel : ObservableObject
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
+            #region connected client into ListBox
+            string? clientRow = tcpClient.Client.RemoteEndPoint?.ToString();
+
             await Dispatcher.UIThread
                 .InvokeAsync(() =>
-                listBox.Items.Add(tcpClient.Client.RemoteEndPoint!.ToString()));
+                listBox.Items.Add(clientRow ?? "ошибка добавления клиента"));
+            #endregion
 
-            Debug.WriteLine(tcpClient.Client.RemoteEndPoint);
+            var tcpStream = tcpClient.GetStream();
+
+            byte[] buffer = new byte[256];
+            int readTotal;
+
+            while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+            {
+                string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
+                Debug.WriteLine("Сервер получил от клиента: " + receivedMessage);
+
+                string response = "message's been reseived";
+
+                await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+            }
         }
     }
 

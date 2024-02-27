@@ -24,8 +24,9 @@
 		
 		<Label Content="{Binding Ip}"/>
 		<Label Content="{Binding Port}"/>
-		
-		<TextBlock Text="{Binding ResultMessage}" Foreground="Red"/>
+
+		<TextBox Text="{Binding Input}"/>
+		<Button Content="Отправить" Command="{Binding SendCommand}"/>
 		
 	</StackPanel>
 	
