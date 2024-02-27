@@ -1,8 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -16,6 +17,9 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _port = 8080;
+
+    [ObservableProperty]
+    private string? _resultMessage;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CloseConnectionCommand))]
@@ -33,8 +37,24 @@ internal partial class ClientWindowViewModel : ObservableObject
         {
             Client ??= new();
 
-            await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
+            try
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    Client
+                    .ConnectAsync(IPAddress.Parse(Ip!), Port));
+            }
+            // TODO: Обработать исключение
+            catch
+            {
+                await SetResultMessage("Сервер отключен");
+            }
         }
+    }
+
+    [RelayCommand]
+    public async Task SetResultMessage(string message)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => ResultMessage = message);
     }
 
     [RelayCommand]

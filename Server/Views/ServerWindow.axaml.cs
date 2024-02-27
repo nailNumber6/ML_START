@@ -3,6 +3,7 @@ using Avalonia.Controls;
 
 using Server.ViewModels;
 
+
 namespace Server.Views
 {
     public partial class ServerWindow : Window
@@ -17,17 +18,14 @@ namespace Server.Views
         private void ServerWindow_Closed(object? sender, System.EventArgs e)
         {
             // TODO: Закрытие подключения сервера
-            throw new System.NotImplementedException();
+            
         }
 
         private void ServerWindow_Loaded(object? sender, System.EventArgs e)
         {
             MainWindowViewModel vm = new();
 
-            Task.Run(async () => 
-            {
-                await vm.StartAndShowStory(list);
-            });
+            Task.Run(async () => await vm.StartAndShowStory(list));
 
             Task.Run(async () => await vm.StartServer(clientList));
         }

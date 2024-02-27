@@ -25,6 +25,8 @@
 		<Label Content="{Binding Ip}"/>
 		<Label Content="{Binding Port}"/>
 		
+		<TextBlock Text="{Binding ResultMessage}" Foreground="Red"/>
+		
 	</StackPanel>
 	
 </Window>

@@ -19,9 +19,6 @@ public partial class MainWindowViewModel : ObservableObject
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;
 
-    [ObservableProperty]
-    private int _clientsCount;
-
     // TODO: Перенести необходимое в Model
 
     public async Task StartServer(ListBox listBox)
@@ -131,9 +128,9 @@ public partial class MainWindowViewModel : ObservableObject
                 StoryBuilder.Clear();
                 await Task.Delay(500);
             }
-            //Console.Clear();
+
             StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
-            //StoryTeller.Tell(500);
+            
             await DisplayStory(StoryBuilder.Story, listBox, 500);
         }
     }
@@ -145,5 +142,6 @@ public partial class MainWindowViewModel : ObservableObject
             listBox.Items.Add(sentence);
             await Task.Delay(delayInMilliseconds);
         }
+        listBox.Items.Clear();
     }
 }
