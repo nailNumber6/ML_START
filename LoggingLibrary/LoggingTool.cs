@@ -24,35 +24,22 @@ public static class LoggingTool
             logName = logEventLevel.ToString().ToLower() + "Log";
             loggerConfig.WriteTo.Logger(lc => lc
             .Filter.ByIncludingOnly(evt => evt.Level == logEventLevel)
-            .WriteTo.File($@"log\{currentDate}\{logName}.txt"));
+            .WriteTo.File($@"log\{currentDate}\{logName}.txt",
+                outputTemplate: "{Message}{NewLine}"));
         };
-
+        
         Log.Logger = loggerConfig.CreateLogger(); 
     }
 
     public static void LogByTemplate(LogEventLevel logEventLevel, Exception? ex = null, string note = "")
     {
-        StackTrace stackTrace = new StackTrace(true);
-        StringBuilder info = new StringBuilder($"\nПримечание: {note}");
+        StringBuilder info = new(DateTime.Now.ToShortTimeString() + " - ");
+        info.Append(note);
 
         if (ex != null)
         {
-            info.AppendLine($"\n{ex.Message}\n");
-            stackTrace = new StackTrace(ex, true);
+            info.Append($"; {ex.Source}; {ex.GetType()}; {ex.Message}");
         }
-
-        StackFrame? frame = new StackFrame();
-        for (int i = 0; i < stackTrace.FrameCount; i++)
-            if (stackTrace.GetFrame(i)!.GetFileLineNumber() != 0) // Поиск нужного фрейма
-            {
-                frame = stackTrace.GetFrame(i);
-                break;
-            }
-
-        info.AppendLine($"\nФайл: {frame!.GetFileName()}\n");
-        info.AppendLine($"Строка: {frame.GetFileLineNumber()}\n");
-        info.AppendLine($"Столбец: {frame.GetFileColumnNumber()}\n");
-        info.AppendLine($"Метод: {frame.GetMethod()}");
 
         Log.Write(logEventLevel, info.ToString());
     }

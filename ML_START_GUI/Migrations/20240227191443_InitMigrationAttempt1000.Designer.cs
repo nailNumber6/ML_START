@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MLSTART_GUI.Migrations
 {
     [DbContext(typeof(TestContext))]
-    [Migration("20240208145736_ChangePswdLengthMigration")]
-    partial class ChangePswdLengthMigration
+    [Migration("20240227191443_InitMigrationAttempt1000")]
+    partial class InitMigrationAttempt1000
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,22 +27,14 @@ namespace MLSTART_GUI.Migrations
 
             modelBuilder.Entity("MLSTART_GUI.Models.TestDB.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Login")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
 
                     b.Property<DateTime>("AuthorizationDate")
                         .HasColumnType("datetime")
                         .HasColumnName("Authorization date");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -50,7 +42,7 @@ namespace MLSTART_GUI.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Login");
 
                     b.ToTable("Users");
                 });

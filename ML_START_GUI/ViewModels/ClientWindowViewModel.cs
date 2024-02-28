@@ -40,11 +40,22 @@ internal partial class ClientWindowViewModel : ObservableObject
         {
             Client ??= new();
 
+            int i = 0;
+            try
+            {
+                int a = 5 / i;
+            }
+            catch (Exception ex) 
+            {
+                LoggingLibrary.LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, ex, "something");
+            }
+
             try
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                     Client
                     .ConnectAsync(IPAddress.Parse(Ip!), Port));
+                LoggingLibrary.LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note:"Пользователь подключился");
             }
             // TODO: Обработать исключение
             catch (SocketException)
