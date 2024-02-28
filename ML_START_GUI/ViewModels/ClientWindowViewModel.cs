@@ -1,14 +1,14 @@
-﻿using System;
-using System.Diagnostics;
-using System.Drawing.Imaging;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using LoggingLibrary;
 
 namespace MLSTART_GUI.ViewModels;
 
@@ -40,22 +40,14 @@ internal partial class ClientWindowViewModel : ObservableObject
         {
             Client ??= new();
 
-            int i = 0;
-            try
-            {
-                int a = 5 / i;
-            }
-            catch (Exception ex) 
-            {
-                LoggingLibrary.LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, ex, "something");
-            }
-
             try
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                     Client
                     .ConnectAsync(IPAddress.Parse(Ip!), Port));
-                LoggingLibrary.LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note:"Пользователь подключился");
+
+                await LoggingTool.LogByTemplateAsync(
+                        Serilog.Events.LogEventLevel.Information, note:"Пользователь подключился");
             }
             // TODO: Обработать исключение
             catch (SocketException)

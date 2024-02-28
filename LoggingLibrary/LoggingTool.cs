@@ -43,5 +43,10 @@ public static class LoggingTool
 
         Log.Write(logEventLevel, info.ToString());
     }
+
+    public static async Task LogByTemplateAsync(LogEventLevel logEventLevel, Exception? ex = null, string note = "")
+    {
+        await Task.Run(() => LogByTemplate(logEventLevel, ex, note));
+    }
 }
 

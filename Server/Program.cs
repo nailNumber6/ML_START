@@ -1,6 +1,10 @@
-﻿using Avalonia;
+﻿using System;
+
+using Avalonia;
 using Avalonia.ReactiveUI;
-using System;
+
+using LoggingLibrary;
+using static Serilog.Events.LogEventLevel;
 
 namespace Server
 {
@@ -10,8 +14,12 @@ namespace Server
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
         [STAThread]
-        public static void Main(string[] args) => BuildAvaloniaApp()
+        public static void Main(string[] args)
+        {
+            LoggingTool.WriteToFile(Debug, Information, Warning, Error);
+            BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
+        }
 
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()

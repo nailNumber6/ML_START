@@ -2,16 +2,16 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Diagnostics;
+using System.Text;
 
+using Avalonia.Threading;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using ML_START_1;
+using LoggingLibrary;
 using static ML_START_1.CurrencyType;
-using CommunityToolkit.Mvvm.Input;
-using Avalonia.Threading;
-using System.Text;
+using static Serilog.Events.LogEventLevel;
 
 
 namespace Server.ViewModels;
@@ -53,6 +53,7 @@ public partial class MainWindowViewModel : ObservableObject
                 listBox.Items.Add(clientRow ?? "ошибка добавления клиента"));
             #endregion
 
+            await LoggingTool.LogByTemplateAsync(Information, note: $"Клиент с адресом {tcpClient.Client.RemoteEndPoint}");
             var tcpStream = tcpClient.GetStream();
 
             byte[] buffer = new byte[256];
@@ -61,7 +62,8 @@ public partial class MainWindowViewModel : ObservableObject
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                Debug.WriteLine("Сервер получил от клиента: " + receivedMessage);
+                System.Diagnostics
+                    .Debug.WriteLine("Сервер получил от клиента: " + receivedMessage);
 
                 string response = "message's been reseived";
 
