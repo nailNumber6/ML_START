@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Net;
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Text;
 
 using Avalonia.Threading;
 using Avalonia.Controls;
@@ -53,7 +55,9 @@ public partial class MainWindowViewModel : ObservableObject
                 listBox.Items.Add(clientRow ?? "ошибка добавления клиента"));
             #endregion
 
-            await LoggingTool.LogByTemplateAsync(Information, note: $"Клиент с адресом {tcpClient.Client.RemoteEndPoint}");
+            await LoggingTool.LogByTemplateAsync(Information, note: $"Подключился клиент с адресом {tcpClient.Client.RemoteEndPoint}");
+
+            #region reading and responding to the client's message
             var tcpStream = tcpClient.GetStream();
 
             byte[] buffer = new byte[256];
@@ -69,13 +73,93 @@ public partial class MainWindowViewModel : ObservableObject
 
                 await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
             }
+            #endregion
         }
     }
 
     public async Task StartAndShowStory(ListBox listBox)
     {
+        Random random = new();
+
         while (true)
         {
+            #region k and x filling
+            int[] k = Enumerable.Range(5, 15).Where(x => x % 2 != 0).ToArray(); // 1 Задание 
+
+            double[] x = new double[13]; // 2 Задание
+            for (int i = 0; i < x.Length; i++)
+            {
+                x[i] = random.NextDouble(-12, 16);
+                LoggingTool.LogByTemplate(Information,
+                            note: $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]");
+            }
+            #endregion
+
+            #region k2 array filling
+            double[,] k2 = new double[8, 13]; // 3 Задание
+            int[] range = { 5, 7, 11, 15 };
+
+            for (int i = 0; i < k.Length; i++)
+            {
+                for (int j = 0; j < k2.GetLength(1); j++)
+                {
+                    if (range.Contains(k[i]))
+                    {
+                        double expression = 0.5 / (Math.Tan(2 * x[j]) + (2.0 / 3.0));
+                        k2[i, j] = Math.Pow(expression, Math.Pow(Math.Pow(x[j], 1.0 / 3.0), 1.0 / 3.0));
+                        if (double.IsNaN(k2[i, j]))
+                            LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                    }
+                    else if (k[i] == 9)
+                    {
+                        k2[i, j] = Math.Sin(Math.Sin(Math.Pow(x[j] / (x[j] + 0.5), x[j])));
+                        if (double.IsNaN(k2[i, j]))
+                            LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                    }
+                    else
+                    {
+                        k2[i, j] = Math.Tan(Math.Pow(((Math.Pow(Math.E, 1 - x[j] / Math.PI) / 3.0) / 4.0), 3.0));
+                        if (double.IsNaN(k2[i, j]))
+                            LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                    }
+                }
+            }
+            #endregion
+
+            #region values from Program.Configuration, getting minElement and averageValue
+            double minElement = 0.0, averageValue = 0.0;
+            double totalSum = 0.0;
+            int actionDelay = 0;
+
+            try
+            {
+                int N = Convert.ToInt32(Program.Config.NameLength);
+                int L = Convert.ToInt32(Program.Config.LastNameLength);
+                actionDelay = Program.Config.ActionDelay;
+
+                double[] subArray1 = Enumerable.Range(0, k2.GetLength(1))
+                                .Select(col => k2[N % 8, col])
+                                .ToArray();
+                minElement = subArray1.Min(); // 5 Задание
+
+                double[] subArray2 = Enumerable.Range(0, k2.GetLength(1))
+                                .Select(col => k2[L % 13, col])
+                                .ToArray();
+                averageValue = subArray2.Average();
+
+                totalSum = minElement + averageValue; // 6 Задание
+            }
+            catch (FormatException ex)
+            {
+                LoggingTool.LogByTemplateAsync(Error, ex, $"Преобразование данных из файла {Program.CONFIG_FILE_NAME} вызвало ошибку");
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                LoggingTool.LogByTemplateAsync(Error, ex, "Индекс вышел за границы массива");
+            }
+            #endregion
+
+            #region story objects initializing
             var exchangeRate = new ExchangeRate(
             new Dictionary<CurrencyType, double>
             {
@@ -94,9 +178,10 @@ public partial class MainWindowViewModel : ObservableObject
             MainCharacter character3 = new("Мига", 1000, true);
             House ch3House = new(character3);
             Wardrobe ch3Wardrobe = new(10000, false);
+            #endregion
 
             //TODO: значения из конфиг файла
-            StoryBuilder.AddSentence($"На улице стояла прекрасная погода, градусник показывал {10}°C");
+            StoryBuilder.AddSentence($"На улице стояла прекрасная погода, градусник показывал {totalSum}°C");
 
             character1.ComeIn(bank);
             character1.RequestToExchange(bank, Fertings, Stocks, 1000);
@@ -116,7 +201,7 @@ public partial class MainWindowViewModel : ObservableObject
             StoryBuilder.AddSentence("Наступил вечер...");
             await DisplayStory(StoryBuilder.Story, listBox, 500);
 
-            await Task.Delay(500);
+            await Task.Delay(actionDelay);
             StoryBuilder.Clear();
             StoryBuilder.AddSentence("Утро следующего дня...");
 
@@ -144,9 +229,9 @@ public partial class MainWindowViewModel : ObservableObject
                     StoryBuilder.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
                     bank.ToggleBankStatus();
                 }
-                await DisplayStory(StoryBuilder.Story, listBox, 500);
+                await DisplayStory(StoryBuilder.Story, listBox, actionDelay);
                 StoryBuilder.Clear();
-                await Task.Delay(500);
+                await Task.Delay(actionDelay);
             }
 
             StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");

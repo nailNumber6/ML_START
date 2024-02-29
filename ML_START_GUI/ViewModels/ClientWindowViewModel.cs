@@ -76,6 +76,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 string response = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
                 Debug.WriteLine(response);
+                break;
             }
             #endregion
         }

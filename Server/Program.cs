@@ -14,6 +14,7 @@ namespace Server;
 internal record Configuration(int NameLength, int LastNameLength, int ActionDelay, string ConnectionString);
 internal class Program
 {
+    internal const string CONFIG_FILE_NAME = "config.json";
     internal static Configuration Config { get; private set; } = null!;
 
     [STAThread]
@@ -22,8 +23,7 @@ internal class Program
         LoggingTool.WriteToFile(Debug, Information, Warning, Error);
 
         #region creating or reading config file
-        string configFile = "config.json";
-        if (!File.Exists(configFile))
+        if (!File.Exists(CONFIG_FILE_NAME))
         {
             var config = new Dictionary<string, object>()
             {
@@ -34,9 +34,9 @@ internal class Program
             };
             string configText = JsonSerializer.Serialize(config);
 
-            File.WriteAllText(configFile, configText);
+            File.WriteAllText(CONFIG_FILE_NAME, configText);
         }
-        string configFileContent = File.ReadAllText(configFile);
+        string configFileContent = File.ReadAllText(CONFIG_FILE_NAME);
 
         try
         {
@@ -45,15 +45,15 @@ internal class Program
         }
         catch (JsonException ex)
         {
-            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
+            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {CONFIG_FILE_NAME} вызвало ошибку");
         }
         catch (NullReferenceException ex)
         {
-            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало ошибку");
+            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {CONFIG_FILE_NAME} вызвало ошибку");
         }
         catch (Exception ex)
         {
-            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {configFile} вызвало непредвиденную ошибку");
+            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {CONFIG_FILE_NAME} вызвало непредвиденную ошибку");
         }
         #endregion
 
