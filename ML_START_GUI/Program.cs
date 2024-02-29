@@ -6,7 +6,7 @@ using System.Text.Json;
 using Avalonia;
 using Avalonia.ReactiveUI;
 
-using LoggingLibrary;
+using ToolLibrary;
 
 using static Serilog.Events.LogEventLevel;
 

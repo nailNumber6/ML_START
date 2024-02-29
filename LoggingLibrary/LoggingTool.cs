@@ -3,8 +3,8 @@ using System.Text;
 using Serilog.Events;
 using Serilog;
 
-namespace LoggingLibrary;
 
+namespace ToolLibrary;
 public static class LoggingTool
 {
     public static void WriteToFile(params LogEventLevel[] logEventLevels) 

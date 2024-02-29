@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using MLSTART_GUI.Services;
+using ToolLibrary;
 
 namespace MLSTART_GUI.Models.TestDB;
 
@@ -11,7 +11,7 @@ public partial class User
         return new User
         {
             Login = login,
-            Password = Md5Hasher.GetHash(pswd),
+            Password = Md5HashingTool.GetHash(pswd),
             AuthorizationDate = DateTime.Now
         };
     }

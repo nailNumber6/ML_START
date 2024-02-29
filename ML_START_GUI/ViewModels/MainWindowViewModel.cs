@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
 
-using LoggingLibrary;
+using ToolLibrary;
 using MLSTART_GUI.Models.TestDB;
 using MLSTART_GUI.Views;
 

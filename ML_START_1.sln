@@ -5,11 +5,11 @@ VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLSTART_GUI", "ML_START_GUI\MLSTART_GUI.csproj", "{3164F5D4-D0FB-4A72-84CB-9BABDA6639EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggingLibrary", "LoggingLibrary\LoggingLibrary.csproj", "{9889ACAA-C38B-4C4A-B0CF-A1C398276906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolLibrary", "LoggingLibrary\ToolLibrary.csproj", "{9889ACAA-C38B-4C4A-B0CF-A1C398276906}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML_START_1", "ML_START_1\ML_START_1.csproj", "{E6462580-FACA-4EAD-A167-757C5B5D74B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{ECB8CFEC-4F1A-4343-9D77-59303B731B88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{ECB8CFEC-4F1A-4343-9D77-59303B731B88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

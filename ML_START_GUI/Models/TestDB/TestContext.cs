@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MLSTART_GUI.Services;
+using ToolLibrary;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -45,13 +45,13 @@ public partial class TestContext : DbContext
     {
         return Users.Any(user =>
         user.Login == login &&
-        user.Password == Md5Hasher.GetHash(password));
+        user.Password == Md5HashingTool.GetHash(password));
     }
 
     internal async Task<bool> UserExistsAsync(string login, string password)
     {
         return await Users.AnyAsync(user =>
         user.Login == login &&
-        user.Password == Md5Hasher.GetHash(password));
+        user.Password == Md5HashingTool.GetHash(password));
     }
 }

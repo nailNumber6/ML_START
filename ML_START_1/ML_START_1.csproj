@@ -27,7 +27,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LoggingLibrary\LoggingLibrary.csproj" />
+    <ProjectReference Include="..\LoggingLibrary\ToolLibrary.csproj" />
   </ItemGroup>
 
 </Project>

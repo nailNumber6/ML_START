@@ -1,12 +1,11 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
-using System;
-using LoggingLibrary;
+
 using static Serilog.Events.LogEventLevel;
 
-namespace MLSTART_GUI.Services;
 
-public static class Md5Hasher
+namespace ToolLibrary;
+public static class Md5HashingTool
 {
     public static string GetHash(string input)
     {

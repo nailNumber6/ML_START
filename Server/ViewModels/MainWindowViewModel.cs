@@ -9,7 +9,7 @@ using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using ML_START_1;
-using LoggingLibrary;
+using ToolLibrary;
 using static ML_START_1.CurrencyType;
 using static Serilog.Events.LogEventLevel;
 
