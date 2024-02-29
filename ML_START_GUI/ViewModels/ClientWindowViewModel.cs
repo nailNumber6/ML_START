@@ -15,8 +15,6 @@ using ToolLibrary;
 namespace MLSTART_GUI.ViewModels;
 internal partial class ClientWindowViewModel : ObservableObject
 {
-    public bool IsAuthorized { get; set; }
-
     [ObservableProperty]
     private string? _ip = "127.0.0.1";
 
@@ -29,6 +27,9 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private string? _input;
+
+    public string Username => "Гость";
+    public bool IsAuthorized { get; set; }
 
     public ClientWindowViewModel()
     {

@@ -5,10 +5,9 @@ using MLSTART_GUI.ViewModels;
 namespace MLSTART_GUI.Views;
 public partial class ClientWindow : Window
 { 
-    public ClientWindow(string? username)
+    public ClientWindow()
     {
         InitializeComponent();
-        this.username.Content = username;
         clientWindow.Closed += ClientWindow_Closed;
     }
 

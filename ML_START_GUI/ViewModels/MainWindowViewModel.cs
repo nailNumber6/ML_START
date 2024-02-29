@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading.Channels;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
@@ -62,8 +63,9 @@ public partial class MainWindowViewModel : ObservableObject
         var sourceWindow = new ClientWindow
         {
             DataContext = SourceWindowViewModel,
-            username = LoginInput
         };
+        sourceWindow.Show();
+
         await Task.CompletedTask;
         //using var context = new TestContext();
 

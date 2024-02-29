@@ -18,7 +18,7 @@
 		
 		<StackPanel>
 		
-			<Label Name="username"/>
+			<Label Content="{Binding Username}"/>
 			<Button Content="Подключиться"
 					Command="{Binding ConnectServerCommand}"/>
 			<Button Content="Отключиться"
