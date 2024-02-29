@@ -26,8 +26,8 @@
 		<InternalsVisibleTo Include="Server" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LoggingLibrary\ToolLibrary.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\ToolLibrary\ToolLibrary.csproj" />
+	</ItemGroup>
 
 </Project>

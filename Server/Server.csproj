@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ML_START_1\ML_START_1.csproj" />
+    <ProjectReference Include="..\ToolLibrary\ToolLibrary.csproj" />
   </ItemGroup>
 
 
