@@ -48,6 +48,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
+            if (tcpClient.Connected!)
+            {
+
+            }
+
             #region connected client into ListBox
             string? clientRow = tcpClient.Client.RemoteEndPoint?.ToString();
 
@@ -163,6 +168,7 @@ public partial class MainWindowViewModel : ObservableObject
             }
             #endregion
 
+            #region story about Neznayka
             #region story objects initializing
             var exchangeRate = new ExchangeRate(
             new Dictionary<CurrencyType, double>
@@ -240,6 +246,7 @@ public partial class MainWindowViewModel : ObservableObject
             StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
             
             await DisplayStory(StoryBuilder.Story, listBox, 500);
+            #endregion
         }
     }
 
