@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		WindowStartupLocation="CenterScreen"
 		CanResize="False"
+		xmlns:fluent="using:FluentTheme"
         mc:Ignorable="d" Width="600" Height="400"
         x:Class="MLSTART_GUI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"

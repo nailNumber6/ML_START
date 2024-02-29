@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CustomMessageBox.Avalonia;
 
 using ToolLibrary;
 
-namespace MLSTART_GUI.ViewModels;
 
+namespace MLSTART_GUI.ViewModels;
 internal partial class ClientWindowViewModel : ObservableObject
 {
     // TODO: Окно клиента
@@ -34,7 +35,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     {
         if (Client != null && Client.Connected)
         {
-            Debug.WriteLine("Клиент уже подключен к серверу");
+            new MessageBox("Клиент уже подключен к серверу", "Клиент").Show();
         }
         else
         {
@@ -75,7 +76,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             {
                 string response = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
-                Debug.WriteLine(response);
+                new MessageBox(response, "Сообщение от сервера", MessageBoxIcon.Information).Show();
                 break;
             }
             #endregion
@@ -83,7 +84,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
         else
         {
-            Debug.WriteLine("Клиент не подключен");
+            new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Information).Show();
         }
     }
 

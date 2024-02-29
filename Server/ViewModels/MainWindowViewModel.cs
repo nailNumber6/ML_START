@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CustomMessageBox.Avalonia;
 
 using ML_START_1;
 using ToolLibrary;
@@ -66,12 +67,15 @@ public partial class MainWindowViewModel : ObservableObject
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                System.Diagnostics
-                    .Debug.WriteLine("Сервер получил от клиента: " + receivedMessage);
 
-                string response = "message's been reseived";
+                string response = "сообщение получено";
 
                 await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    new MessageBox("Сервер получил от клиента: " + receivedMessage, "Сервер").Show();
+                });
             }
             #endregion
         }
@@ -180,7 +184,6 @@ public partial class MainWindowViewModel : ObservableObject
             Wardrobe ch3Wardrobe = new(10000, false);
             #endregion
 
-            //TODO: значения из конфиг файла
             StoryBuilder.AddSentence($"На улице стояла прекрасная погода, градусник показывал {totalSum}°C");
 
             character1.ComeIn(bank);
