@@ -13,20 +13,32 @@
 	<Window.DataContext>
 		<vm:ClientWindowViewModel/>
 	</Window.DataContext>
-	
+
 	<StackPanel>
 		
-		<Label Name="username"/>
-		<Button Content="Подключиться"
-				Command="{Binding ConnectServerCommand}"/>
-		<Button Content="Отключиться"
-				Command="{Binding CloseConnectionCommand}"/>
+		<StackPanel>
 		
-		<Label Content="{Binding Ip}"/>
-		<Label Content="{Binding Port}"/>
-
-		<TextBox Text="{Binding Input}"/>
-		<Button Content="Отправить" Command="{Binding SendCommand}"/>
+			<Label Name="username"/>
+			<Button Content="Подключиться"
+					Command="{Binding ConnectServerCommand}"/>
+			<Button Content="Отключиться"
+					Command="{Binding CloseConnectionCommand}"/>
+		
+		</StackPanel>
+	
+		<RelativePanel>
+			
+			<Label Content="IP Сервера: " x:Name="IpTitle"/>
+			<Label Content="{Binding Ip}" x:Name="IpValue"
+				   RelativePanel.RightOf="IpTitle"/>
+			
+			<Label Content="Порт сервера: " x:Name="PortTitle"
+				   RelativePanel.Below="IpTitle"/>
+			<Label Content="{Binding Port}"
+				   RelativePanel.RightOf="PortTitle"
+				   RelativePanel.Below="IpValue"/>
+			
+		</RelativePanel>
 		
 	</StackPanel>
 	

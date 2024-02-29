@@ -8,14 +8,15 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
-
+using MLSTART_GUI.Views;
 using ToolLibrary;
 
 
 namespace MLSTART_GUI.ViewModels;
 internal partial class ClientWindowViewModel : ObservableObject
 {
-    // TODO: Окно клиента
+    public bool IsAuthorized { get; set; }
+
     [ObservableProperty]
     private string? _ip = "127.0.0.1";
 
@@ -29,31 +30,51 @@ internal partial class ClientWindowViewModel : ObservableObject
     [ObservableProperty]
     private string? _input;
 
+    public ClientWindowViewModel()
+    {
+        IsAuthorized = false;
+    }
+
 
     [RelayCommand]
     public async Task ConnectServer()
     {
-        if (Client != null && Client.Connected)
+        if (IsAuthorized == false)
         {
-            new MessageBox("Клиент уже подключен к серверу", "Клиент").Show();
+            var authorizationWindow = new MainWindow
+            {
+                DataContext = new MainWindowViewModel
+                {
+                    SourceWindowViewModel = this
+                },
+            };
+            authorizationWindow.Show();
         }
+
         else
         {
-            Client ??= new();
-
-            try
+            if (Client != null && Client.Connected)
             {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                    Client
-                    .ConnectAsync(IPAddress.Parse(Ip!), Port));
-
-                await LoggingTool.LogByTemplateAsync(
-                        Serilog.Events.LogEventLevel.Information, note:"Пользователь подключился");
+                new MessageBox("Клиент уже подключен к серверу", "Клиент", MessageBoxIcon.Information).Show();
             }
-            // TODO: Обработать исключение
-            catch (SocketException)
+            else
             {
+                Client ??= new();
 
+                try
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        Client
+                        .ConnectAsync(IPAddress.Parse(Ip!), Port));
+
+                    await LoggingTool.LogByTemplateAsync(
+                            Serilog.Events.LogEventLevel.Information, note: "Пользователь подключился");
+                }
+                // TODO: Обработать исключение
+                catch (SocketException)
+                {
+
+                }
             }
         }
     }
@@ -84,7 +105,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
         else
         {
-            new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Information).Show();
+            new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Warning).Show();
         }
     }
 
@@ -101,7 +122,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         }
         else
         {
-            Debug.WriteLine("Клиент не подключен");
+            new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Warning).Show();
         }
     }
 }

@@ -17,7 +17,7 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+	
 	<Window.Styles>
 		<StyleInclude Source="\Resourses\Styles1.axaml"/>
 	</Window.Styles>

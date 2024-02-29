@@ -3,8 +3,8 @@ using ToolLibrary;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MLSTART_GUI.Models.TestDB;
 
+namespace Server.Models.TestDB;
 public partial class TestContext : DbContext
 {
     public TestContext()

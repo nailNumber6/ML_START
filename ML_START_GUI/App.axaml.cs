@@ -17,9 +17,9 @@ namespace MLSTART_GUI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
+                desktop.MainWindow = new ClientWindow("Гость")
                 {
-                    DataContext = new MainWindowViewModel(), 
+                    DataContext = new ClientWindowViewModel(), 
                 };
             }
 
