@@ -60,6 +60,9 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanValidate))]
     public async Task LogUserIn()
     {
+        SourceWindowViewModel!.IsAuthorized = true;
+        SourceWindowViewModel.Username = LoginInput;
+
         var sourceWindow = new ClientWindow
         {
             DataContext = SourceWindowViewModel,

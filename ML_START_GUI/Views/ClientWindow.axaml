@@ -2,44 +2,45 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:vm="using:MLSTART_GUI.ViewModels"
+		xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
         mc:Ignorable="d" Width="400" Height="400"
         x:Class="MLSTART_GUI.Views.ClientWindow"
 		x:DataType="vm:ClientWindowViewModel"
 		Name="clientWindow"
         Title="Client"
-		Background="White">
+		Background="White"
+		DataContext="vm:ClientWindowViewModel">
 
-	<Window.DataContext>
-		<vm:ClientWindowViewModel/>
-	</Window.DataContext>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
 	<StackPanel>
-		
+
 		<StackPanel>
-		
+
 			<Label Content="{Binding Username}"/>
 			<Button Content="Подключиться"
 					Command="{Binding ConnectServerCommand}"/>
-			<Button Content="Отключиться"
-					Command="{Binding CloseConnectionCommand}"/>
-		
+			<Button Name="button"
+					Content="Отключиться"/>
+
 		</StackPanel>
-	
+
 		<RelativePanel>
-			
+
 			<Label Content="IP Сервера: " x:Name="IpTitle"/>
 			<Label Content="{Binding Ip}" x:Name="IpValue"
 				   RelativePanel.RightOf="IpTitle"/>
-			
+
 			<Label Content="Порт сервера: " x:Name="PortTitle"
 				   RelativePanel.Below="IpTitle"/>
 			<Label Content="{Binding Port}"
 				   RelativePanel.RightOf="PortTitle"
 				   RelativePanel.Below="IpValue"/>
-			
+
 		</RelativePanel>
-		
+
 	</StackPanel>
-	
+
 </Window>

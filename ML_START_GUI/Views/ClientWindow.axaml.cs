@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 using MLSTART_GUI.ViewModels;
 
 
@@ -8,12 +9,12 @@ public partial class ClientWindow : Window
     public ClientWindow()
     {
         InitializeComponent();
-        clientWindow.Closed += ClientWindow_Closed;
+        clientWindow.Closing += ClientWindow_Closing;
     }
 
-    private void ClientWindow_Closed(object? sender, System.EventArgs e)
+    private void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
-        var vm = new ClientWindowViewModel();
-        vm.CloseConnection();
+        Dispatcher.UIThread.Invoke(() => new ClientWindowViewModel().Disconnect());
+        
     }
 }
