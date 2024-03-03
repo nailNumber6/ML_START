@@ -24,11 +24,16 @@
 			<Button Content="Подключиться"
 					Command="{Binding ConnectServerCommand}"/>
 			<Button Name="button"
-					Content="Отключиться"/>
+					Content="Отключиться"
+					Command="{Binding DisconnectOnButtonCommand}"/>
+			
+			<TextBox Text="{Binding Input}"/>
+			<Button Content="Отправить" 
+					Command="{Binding SendCommand}"/>
 
 		</StackPanel>
 
-		<RelativePanel>
+		<RelativePanel VerticalAlignment="Bottom">
 
 			<Label Content="IP Сервера: " x:Name="IpTitle"/>
 			<Label Content="{Binding Ip}" x:Name="IpValue"

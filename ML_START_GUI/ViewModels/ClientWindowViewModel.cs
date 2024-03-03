@@ -12,13 +12,14 @@ using MsBox.Avalonia.Enums;
 
 using MLSTART_GUI.Views;
 using ToolLibrary;
+using System;
 
 
 namespace MLSTART_GUI.ViewModels;
 internal partial class ClientWindowViewModel : ObservableObject
 {
     [ObservableProperty]
-    //[NotifyCanExecuteChangedFor(nameof(CloseConnectionCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DisconnectOnButtonCommand))]
     private TcpClient? _client;
 
     [ObservableProperty]
@@ -37,13 +38,15 @@ internal partial class ClientWindowViewModel : ObservableObject
         IsAuthorized = false;
     }
 
-    public bool ExistsAndConnected => Client != null && Client.Connected;
+    public bool ClientExistsAndConnected => Client != null && Client.Connected;
     public bool IsAuthorized { get; set; }
     public string Username 
     {
         get => _username;
         set => _username = value;
     }
+
+    public event Action AuthorizationStarted;
 
 
     [RelayCommand]
@@ -63,7 +66,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
         else
         {
-            if (ExistsAndConnected)
+            if (ClientExistsAndConnected)
             {
                 new MessageBox("Клиент уже подключен к серверу", "Клиент", MessageBoxIcon.Information).Show();
             }
@@ -73,11 +76,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
                 try
                 {
-                    Task t = Client.ConnectAsync(IPAddress.Parse(Ip!), Port).ContinueWith(t =>
-                    {
-                        if (t.IsFaulted) new MessageBox("a", "a").Show();
-                        else t.Start();
-                    });
+                    await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
 
 
                     await LoggingTool.LogByTemplateAsync(
@@ -93,9 +92,54 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task DisconnectOnButton()
+    {
+        if (ClientExistsAndConnected)
+        {
+            DisconnectClient();
+        }
+        else
+        {
+            await MessageBoxManager
+                .GetMessageBoxStandard("Клиент", 
+                "Клиент не подключен к серверу",
+                ButtonEnum.Ok, Icon.Info)
+                .ShowAsync();
+        }
+    }
+
+    public async Task<bool> HandleClientDisconnection()
+    {
+        if (ClientExistsAndConnected)
+        {
+            var dialogResult = await MessageBoxManager
+                .GetMessageBoxStandard("Клиент",
+                "В данный момент клиент подключен к серверу" +
+                "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
+                .ShowAsync();
+
+            if (dialogResult == ButtonResult.Ok)
+            {
+                DisconnectClient();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void DisconnectClient()
+    {
+        Client!.Client.Shutdown(SocketShutdown.Both);
+        Client!.Close();
+
+        Client.Dispose();
+        Client = null;
+    }
+
+    [RelayCommand]
     public async Task Send()
     {
-        if (ExistsAndConnected)
+        if (ClientExistsAndConnected)
         {
             NetworkStream tcpStream = Client.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
@@ -122,33 +166,4 @@ internal partial class ClientWindowViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    public void DisconnectOnButton()
-    {
-
-    }
-
-    public async Task<bool> IsConnectionClosed()
-    {
-        var dialogResult = await MessageBoxManager.
-                GetMessageBoxStandard("Клиент", "В данный момент клиент подключен к серверу" +
-                "\nЗакрыть подключение?", ButtonEnum.OkCancel)
-                .ShowAsync();
-
-        if (dialogResult == ButtonResult.Ok)
-        {
-            if (ExistsAndConnected)
-            {
-                Client!.Client.Shutdown(SocketShutdown.Both);
-                Client!.Close();
-
-                Client.Dispose();
-                Client = null;
-
-                return true;
-            }
-            else return true;
-        }
-        return false;
-    }
 }

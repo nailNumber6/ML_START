@@ -1,12 +1,15 @@
+using System;
+using System.Threading.Tasks;
+
 using Avalonia.Controls;
 using Avalonia.Threading;
+
 using MLSTART_GUI.ViewModels;
-using System.Threading.Tasks;
 
 
 namespace MLSTART_GUI.Views;
 public partial class ClientWindow : Window
-{ 
+{
     public ClientWindow()
     {
         InitializeComponent(); // Invalid Cast ex
@@ -18,7 +21,7 @@ public partial class ClientWindow : Window
         e.Cancel = true;
         var vm = new ClientWindowViewModel();
 
-       await Dispatcher.UIThread.InvokeAsync(vm.IsConnectionClosed)
+       await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection)
             .ContinueWith(t =>
             {
                 if (t.Result == true)
