@@ -4,10 +4,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 using MLSTART_GUI.Views;
 using ToolLibrary;
@@ -127,31 +128,27 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     }
 
-    public void Disconnect()
+    public async Task<bool> IsConnectionClosed()
     {
-        var mb = new MessageBox("Клиент подключен, закрыть подключение?", "Клиент", MessageBoxIcon.Warning);
-        var dialog = mb.Show(MessageBoxButtons.OKCancel);
-        Debug.WriteLine(dialog.IsFaulted);
+        var dialogResult = await MessageBoxManager.
+                GetMessageBoxStandard("Клиент", "В данный момент клиент подключен к серверу" +
+                "\nЗакрыть подключение?", ButtonEnum.OkCancel)
+                .ShowAsync();
 
-        if (dialog.Result == MessageBoxResult.Yes)
+        if (dialogResult == ButtonResult.Ok)
         {
             if (ExistsAndConnected)
             {
-                CloseConnection();
+                Client!.Client.Shutdown(SocketShutdown.Both);
+                Client!.Close();
+
+                Client.Dispose();
+                Client = null;
+
+                return true;
             }
+            else return true;
         }
-        else
-        {
-
-        }
-    }
-
-    private void CloseConnection()
-    {
-        Client!.Client.Shutdown(SocketShutdown.Both);
-        Client!.Close();
-
-        Client.Dispose();
-        Client = null;
+        return false;
     }
 }

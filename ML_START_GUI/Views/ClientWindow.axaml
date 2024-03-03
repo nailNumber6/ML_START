@@ -9,7 +9,8 @@
 		Name="clientWindow"
         Title="Client"
 		Background="White"
-		DataContext="vm:ClientWindowViewModel">
+		DataContext="vm:ClientWindowViewModel"
+		WindowStartupLocation="CenterScreen">
 
 	<Design.DataContext>
 		<vm:MainWindowViewModel/>
