@@ -38,7 +38,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         IsAuthorized = false;
     }
 
-    public bool ClientExistsAndConnected => Client != null && Client.Connected;
+    public bool ClientExistsAndConnected => Client != null && Client.Client.Connected;
     public bool IsAuthorized { get; set; }
     public string Username 
     {
@@ -117,13 +117,18 @@ internal partial class ClientWindowViewModel : ObservableObject
                 .GetMessageBoxStandard("Клиент",
                 "В данный момент клиент подключен к серверу" +
                 "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
-                .ShowAsync();
-
-            if (dialogResult == ButtonResult.Ok)
-            {
-                DisconnectClient();
-                return true;
-            }
+                .ShowAsync().ContinueWith(task =>
+                {
+                    if (task.Result == ButtonResult.Ok)
+                    {
+                        DisconnectClient();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                });
         }
         return false;
     }

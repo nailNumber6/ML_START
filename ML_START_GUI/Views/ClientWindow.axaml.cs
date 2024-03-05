@@ -19,13 +19,13 @@ public partial class ClientWindow : Window
     private async void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
         e.Cancel = true;
-        var vm = new ClientWindowViewModel();
+        ClientWindowViewModel vm = (ClientWindowViewModel)DataContext;
 
-       await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection)
+        await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection)
             .ContinueWith(t =>
             {
                 if (t.Result == true)
-                { 
+                {
                     e.Cancel = false;
                     clientWindow.Closing -= ClientWindow_Closing;
                     Dispatcher.UIThread.Invoke(Close);
@@ -33,6 +33,12 @@ public partial class ClientWindow : Window
                     LoggingTool
                     .LogByTemplate(Serilog.Events.LogEventLevel.Information,
                         note: "Клиент был отключен в результате закрытия окна");
+                }
+                else
+                {
+                    e.Cancel = false;
+                    clientWindow.Closing -= ClientWindow_Closing;
+                    Dispatcher.UIThread.Invoke(Close);
                 }
             });
 

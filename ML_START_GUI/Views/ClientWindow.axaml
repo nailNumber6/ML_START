@@ -20,6 +20,10 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
+	<Window.Styles>
+		<StyleInclude Source="\Resourses\Styles1.axaml"/>
+	</Window.Styles>
+
 	<Panel>
 		
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
@@ -38,14 +42,17 @@
 
 				<Label Content="{Binding Username}"/>
 				<Button Content="Подключиться"
-						Command="{Binding ConnectServerCommand}"/>
+						Command="{Binding ConnectServerCommand}"
+						Classes="MenuButton"/>
 				<Button Name="button"
 						Content="Отключиться"
-						Command="{Binding DisconnectOnButtonCommand}"/>
+						Command="{Binding DisconnectOnButtonCommand}"
+						Classes="MenuButton"/>
 			
 				<TextBox Text="{Binding Input}"/>
 				<Button Content="Отправить" 
-						Command="{Binding SendCommand}"/>
+						Command="{Binding SendCommand}"
+						Classes="MenuButton"/>
 
 			</StackPanel>
 
