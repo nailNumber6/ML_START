@@ -83,9 +83,10 @@ internal partial class ClientWindowViewModel : ObservableObject
                             Serilog.Events.LogEventLevel.Information, note: "Пользователь подключился");
                 }
                 // TODO: Обработать исключение
-                catch (SocketException)
+                catch (SocketException ex)
                 {
-
+                    LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, 
+                        ex, "Клиент принял попытку подключения к отключенному сереверу");
                 }
             }
         }
