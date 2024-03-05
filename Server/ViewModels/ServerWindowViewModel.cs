@@ -252,6 +252,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
     private async Task DisplayStory(List<string> story, ListBox listBox, int delayInMilliseconds)
     {
+        await Task.Delay(1000); // в это время завершается чтение конфига
         foreach (var sentence in story)
         {
             listBox.Items.Add(sentence);

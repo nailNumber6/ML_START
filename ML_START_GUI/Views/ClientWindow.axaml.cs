@@ -19,7 +19,7 @@ public partial class ClientWindow : Window
     private async void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
         e.Cancel = true;
-        ClientWindowViewModel vm = (ClientWindowViewModel)DataContext;
+        ClientWindowViewModel vm = (ClientWindowViewModel)DataContext!;
 
         await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection)
             .ContinueWith(t =>

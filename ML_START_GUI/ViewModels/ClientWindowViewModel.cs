@@ -13,14 +13,14 @@ using MsBox.Avalonia.Enums;
 using MLSTART_GUI.Views;
 using ToolLibrary;
 using System;
+using Avalonia.Threading;
 
 
 namespace MLSTART_GUI.ViewModels;
 internal partial class ClientWindowViewModel : ObservableObject
 {
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(DisconnectOnButtonCommand))]
-    private TcpClient? _client;
+    private string _connectionState = "не подключен";
 
     [ObservableProperty]
     private string? _ip = "127.0.0.1";
@@ -29,6 +29,11 @@ internal partial class ClientWindowViewModel : ObservableObject
     private int _port = 8080;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DisconnectOnButtonCommand))]
+    private TcpClient? _client;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SendCommand))]
     private string? _input;
 
     private string _username = "Гость";
@@ -38,7 +43,6 @@ internal partial class ClientWindowViewModel : ObservableObject
         IsAuthorized = false;
     }
 
-    public bool ClientExistsAndConnected => Client != null && Client.Client.Connected;
     public bool IsAuthorized { get; set; }
     public string Username 
     {
@@ -66,7 +70,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
         else
         {
-            if (ClientExistsAndConnected)
+            if (ConnectionState != "не подключен")
             {
                 new MessageBox("Клиент уже подключен к серверу", "Клиент", MessageBoxIcon.Information).Show();
             }
@@ -79,6 +83,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                     await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
 
 
+                    ConnectionState = "подключен";
                     await LoggingTool.LogByTemplateAsync(
                             Serilog.Events.LogEventLevel.Information, note: "Пользователь подключился");
                 }
@@ -95,7 +100,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     [RelayCommand]
     public async Task DisconnectOnButton()
     {
-        if (ClientExistsAndConnected)
+        if (ConnectionState != "не подключен")
         {
             DisconnectClient();
         }
@@ -111,7 +116,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     public async Task<bool> HandleClientDisconnection()
     {
-        if (ClientExistsAndConnected)
+        if (ConnectionState != "не подключен")
         {
             var dialogResult = await MessageBoxManager
                 .GetMessageBoxStandard("Клиент",
@@ -121,7 +126,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     if (task.Result == ButtonResult.Ok)
                     {
-                        DisconnectClient();
+                        Dispatcher.UIThread.InvokeAsync(DisconnectClient);
                         return true;
                     }
                     else
@@ -142,10 +147,13 @@ internal partial class ClientWindowViewModel : ObservableObject
         Client = null;
     }
 
-    [RelayCommand]
+    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) &&
+                                    ConnectionState != "не подключен";
+
+    [RelayCommand(CanExecute = nameof(InputNotEmpty))]
     public async Task Send()
     {
-        if (ClientExistsAndConnected)
+        if (ConnectionState != "не подключен")
         {
             NetworkStream tcpStream = Client!.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
@@ -171,5 +179,4 @@ internal partial class ClientWindowViewModel : ObservableObject
             new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Warning).Show();
         }
     }
-
 }
