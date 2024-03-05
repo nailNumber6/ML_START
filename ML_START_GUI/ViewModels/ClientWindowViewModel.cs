@@ -142,7 +142,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     {
         if (ClientExistsAndConnected)
         {
-            NetworkStream tcpStream = Client.GetStream();
+            NetworkStream tcpStream = Client!.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
 
             await tcpStream.WriteAsync(encodedMessage);

@@ -61,7 +61,7 @@ public partial class MainWindowViewModel : ObservableObject
     public async Task LogUserIn()
     {
         SourceWindowViewModel!.IsAuthorized = true;
-        SourceWindowViewModel.Username = LoginInput;
+        SourceWindowViewModel.Username = LoginInput!;
 
         var sourceWindow = new ClientWindow
         {

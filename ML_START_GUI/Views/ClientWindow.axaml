@@ -4,11 +4,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
         mc:Ignorable="d" Width="400" Height="400"
+		xmlns:fluent="using:FluentTheme"
         x:Class="MLSTART_GUI.Views.ClientWindow"
 		x:DataType="vm:ClientWindowViewModel"
+		CanResize="False"
 		Name="clientWindow"
         Title="Client"
-		Background="Red"
 		WindowStartupLocation="CenterScreen">
 
 	<Window.DataContext>
@@ -19,37 +20,50 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<StackPanel>
-
+	<Panel>
+		
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+				<ExperimentalAcrylicBorder.Material>
+					<ExperimentalAcrylicMaterial
+						BackgroundSource="Digger"
+						TintColor="Yellow"
+						TintOpacity="1"
+						MaterialOpacity="0.75" />
+				</ExperimentalAcrylicBorder.Material>
+			</ExperimentalAcrylicBorder>
+		
 		<StackPanel>
 
-			<Label Content="{Binding Username}"/>
-			<Button Content="Подключиться"
-					Command="{Binding ConnectServerCommand}"/>
-			<Button Name="button"
-					Content="Отключиться"
-					Command="{Binding DisconnectOnButtonCommand}"/>
+			<StackPanel>
+
+				<Label Content="{Binding Username}"/>
+				<Button Content="Подключиться"
+						Command="{Binding ConnectServerCommand}"/>
+				<Button Name="button"
+						Content="Отключиться"
+						Command="{Binding DisconnectOnButtonCommand}"/>
 			
-			<TextBox Text="{Binding Input}"/>
-			<Button Content="Отправить" 
-					Command="{Binding SendCommand}"/>
+				<TextBox Text="{Binding Input}"/>
+				<Button Content="Отправить" 
+						Command="{Binding SendCommand}"/>
+
+			</StackPanel>
+
+			<RelativePanel VerticalAlignment="Bottom">
+
+				<Label Content="IP Сервера: " x:Name="IpTitle"/>
+				<Label Content="{Binding Ip}" x:Name="IpValue"
+					   RelativePanel.RightOf="IpTitle"/>
+
+				<Label Content="Порт сервера: " x:Name="PortTitle"
+					   RelativePanel.Below="IpTitle"/>
+				<Label Content="{Binding Port}"
+					   RelativePanel.RightOf="PortTitle"
+					   RelativePanel.Below="IpValue"/>
+
+			</RelativePanel>
 
 		</StackPanel>
-
-		<RelativePanel VerticalAlignment="Bottom">
-
-			<Label Content="IP Сервера: " x:Name="IpTitle"/>
-			<Label Content="{Binding Ip}" x:Name="IpValue"
-				   RelativePanel.RightOf="IpTitle"/>
-
-			<Label Content="Порт сервера: " x:Name="PortTitle"
-				   RelativePanel.Below="IpTitle"/>
-			<Label Content="{Binding Port}"
-				   RelativePanel.RightOf="PortTitle"
-				   RelativePanel.Below="IpValue"/>
-
-		</RelativePanel>
-
-	</StackPanel>
+	</Panel>
 
 </Window>
