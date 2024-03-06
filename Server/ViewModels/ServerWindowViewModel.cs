@@ -50,20 +50,15 @@ public partial class ServerWindowViewModel : ObservableObject
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            if (tcpClient.Connected!)
-            {
-
-            }
-
             #region connected client into ListBox
             string? clientRow = tcpClient.Client.RemoteEndPoint?.ToString();
 
             await Dispatcher.UIThread
                 .InvokeAsync(() =>
-                listBox.Items.Add(clientRow ?? "ошибка добавления клиента"));
+                listBox.Items.Add(clientRow));
             #endregion
 
-            await LoggingTool.LogByTemplateAsync(Information, note: $"Подключился клиент с адресом {tcpClient.Client.RemoteEndPoint}");
+            LoggingTool.LogByTemplate(Information, note: $"Подключился клиент с адресом {tcpClient.Client.RemoteEndPoint}");
 
             #region reading and responding to the client's message
             var tcpStream = tcpClient.GetStream();

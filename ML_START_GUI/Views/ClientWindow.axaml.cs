@@ -21,7 +21,7 @@ public partial class ClientWindow : Window
         e.Cancel = true;
         ClientWindowViewModel vm = (ClientWindowViewModel)DataContext!;
 
-        await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection)
+        await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection, DispatcherPriority.MaxValue)
             .ContinueWith(t =>
             {
                 if (t.Result == true)
@@ -36,9 +36,7 @@ public partial class ClientWindow : Window
                 }
                 else
                 {
-                    e.Cancel = false;
-                    clientWindow.Closing -= ClientWindow_Closing;
-                    Dispatcher.UIThread.Invoke(Close);
+                    e.Cancel = true;
                 }
             });
 

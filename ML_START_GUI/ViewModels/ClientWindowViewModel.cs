@@ -44,6 +44,11 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
 
     public bool IsAuthorized { get; set; }
+    public bool ClientIsConnected { get
+        {
+            return ConnectionState == "подключен";
+        } 
+    }
     public string Username 
     {
         get => _username;
@@ -68,7 +73,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
         else
         {
-            if (ConnectionState != "не подключен")
+            if (ClientIsConnected)
             {
                 new MessageBox("Клиент уже подключен к серверу", "Клиент", MessageBoxIcon.Information).Show();
             }
@@ -97,7 +102,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     [RelayCommand]
     public async Task DisconnectOnButton()
     {
-        if (ConnectionState != "не подключен")
+        if (ClientIsConnected)
         {
             DisconnectClient();
         }
@@ -113,17 +118,17 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     public async Task<bool> HandleClientDisconnection()
     {
-        if (ConnectionState != "не подключен")
+        if (ClientIsConnected)
         {
             var dialogResult = await MessageBoxManager
                 .GetMessageBoxStandard("Клиент",
                 "В данный момент клиент подключен к серверу" +
                 "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
-                .ShowAsync().ContinueWith(task =>
+                .ShowAsync().ContinueWith(async task =>
                 {
                     if (task.Result == ButtonResult.Ok)
                     {
-                        Dispatcher.UIThread.InvokeAsync(DisconnectClient);
+                        Dispatcher.UIThread.Invoke(DisconnectClient);
                         return true;
                     }
                     else
@@ -131,17 +136,20 @@ internal partial class ClientWindowViewModel : ObservableObject
                         return false;
                     }
                 });
+
+            if (dialogResult.Result == false) return false;
+            else return true;
         }
-        return false;
+        return true;
     }
 
     private void DisconnectClient()
     {
         Client!.Client.Shutdown(SocketShutdown.Both);
         Client!.Close();
-
         Client.Dispose();
         Client = null;
+        ConnectionState = "не подключен";
     }
 
     private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState != "не подключен";
@@ -149,7 +157,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]
     public async Task Send()
     {
-        if (ConnectionState != "не подключен")
+        if (ClientIsConnected)
         {
             NetworkStream tcpStream = Client!.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
