@@ -142,9 +142,9 @@ public partial class ServerWindowViewModel : ObservableObject
 
             try
             {
-                int N = Convert.ToInt32(Program.Config.NameLength);
-                int L = Convert.ToInt32(Program.Config.LastNameLength);
-                actionDelay = Program.Config.ActionDelay;
+                int N = Convert.ToInt32(Program.ConfigSettings.NameLength);
+                int L = Convert.ToInt32(Program.ConfigSettings.LastNameLength);
+                actionDelay = Program.ConfigSettings.ActionDelay;
 
                 double[] subArray1 = Enumerable.Range(0, k2.GetLength(1))
                                 .Select(col => k2[N % 8, col])

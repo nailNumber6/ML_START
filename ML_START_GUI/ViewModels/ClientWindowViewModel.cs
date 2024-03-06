@@ -82,9 +82,8 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
 
-
                     ConnectionState = "подключен";
-                    await LoggingTool.LogByTemplateAsync(
+                    LoggingTool.LogByTemplate(
                             Serilog.Events.LogEventLevel.Information, note: "Пользователь подключился");
                 }
                 // TODO: Обработать исключение
@@ -147,8 +146,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         Client = null;
     }
 
-    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) &&
-                                    ConnectionState != "не подключен";
+    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState != "не подключен";
 
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]
     public async Task Send()

@@ -11,11 +11,13 @@ using static Serilog.Events.LogEventLevel;
 
 
 namespace Server;
-internal record Configuration(int NameLength, int LastNameLength, int ActionDelay, string ConnectionString);
+
+internal record class Config(int NameLength, int LastNameLength, int ActionDelay, Dictionary<string, string>? ConnectionStrings);
+
 internal class Program
 {
     internal const string CONFIG_FILE_NAME = "config.json";
-    internal static Configuration Config { get; private set; } = null!;
+    internal static Config ConfigSettings { get; private set; } = null!;
 
     [STAThread]
     public static void Main(string[] args)
@@ -25,14 +27,16 @@ internal class Program
         #region creating or reading config file
         if (!File.Exists(CONFIG_FILE_NAME))
         {
-            var config = new Dictionary<string, object>()
-            {
-                ["NameLength"] = 6,
-                ["LastNameLength"] = 6,
-                ["ActionDelay"] = 500,
-                ["ConnectionString"] = "Server=(localdb)\\MSSQLLocalDB;Database=Test;Trusted_Connection=True;TrustServerCertificate=True"
-            };
-            string configText = JsonSerializer.Serialize(config);
+            var cfg = new Config(6, 6, 500,
+                new Dictionary<string, string>
+                {
+                    ["MSSQL Server"] = "Server=(localdb)\\MSSQLLocalDB;Database=Test;Trusted_Connection=True;TrustServerCertificate=True"
+                });
+            #pragma warning disable CA1869
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            #pragma warning restore CA1869
+
+            string configText = JsonSerializer.Serialize(cfg, options);
 
             File.WriteAllText(CONFIG_FILE_NAME, configText);
         }
@@ -40,8 +44,8 @@ internal class Program
 
         try
         {
-            Config = JsonSerializer
-                .Deserialize<Configuration>(configFileContent)!;
+            ConfigSettings = JsonSerializer
+                .Deserialize<Config>(configFileContent)!;
         }
         catch (JsonException ex)
         {
