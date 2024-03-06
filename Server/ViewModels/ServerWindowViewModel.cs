@@ -38,7 +38,9 @@ public partial class ServerWindowViewModel : ObservableObject
             { 
                 var tcpClient = await tcpListener.AcceptTcpClientAsync();
 
+#pragma warning disable CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
                 Task.Run(async () => await ProcessClientAsync(tcpClient));
+#pragma warning restore CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
             }
         }
         finally
@@ -160,11 +162,11 @@ public partial class ServerWindowViewModel : ObservableObject
             }
             catch (FormatException ex)
             {
-                LoggingTool.LogByTemplateAsync(Error, ex, $"Преобразование данных из файла {Program.CONFIG_FILE_NAME} вызвало ошибку");
+                LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {Program.CONFIG_FILE_NAME} вызвало ошибку");
             }
             catch (IndexOutOfRangeException ex)
             {
-                LoggingTool.LogByTemplateAsync(Error, ex, "Индекс вышел за границы массива");
+                LoggingTool.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
             }
             #endregion
 

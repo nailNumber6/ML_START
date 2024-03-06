@@ -1,12 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ToolLibrary;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+
+using ToolLibrary;
 
 
 namespace Server.Models.TestDB;
 public partial class TestContext : DbContext
 {
+    private string? _connectionString = Program.ConfigSettings.ConnectionStrings?["MSSQL Server"];
     public TestContext()
     {
     }
@@ -19,7 +23,16 @@ public partial class TestContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Test;Trusted_Connection=True;TrustServerCertificate=True");
+    {
+        try
+        { 
+            optionsBuilder.UseSqlServer(_connectionString); 
+        }
+        catch (Exception ex) 
+        {
+            LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, ex);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

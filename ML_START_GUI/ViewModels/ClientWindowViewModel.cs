@@ -50,8 +50,6 @@ internal partial class ClientWindowViewModel : ObservableObject
         set => _username = value;
     }
 
-    public event Action AuthorizationStarted;
-
 
     [RelayCommand]
     public async Task ConnectServer()
