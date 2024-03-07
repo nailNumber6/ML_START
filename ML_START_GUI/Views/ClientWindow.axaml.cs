@@ -21,7 +21,7 @@ public partial class ClientWindow : Window
         e.Cancel = true;
         ClientWindowViewModel vm = (ClientWindowViewModel)DataContext!;
 
-        await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection, DispatcherPriority.MaxValue)
+        await Dispatcher.UIThread.InvokeAsync(vm.IsClientDisconnectionAccepted, DispatcherPriority.MaxValue)
             .ContinueWith(t =>
             {
                 if (t.Result == true)
@@ -32,7 +32,7 @@ public partial class ClientWindow : Window
 
                     LoggingTool
                     .LogByTemplate(Serilog.Events.LogEventLevel.Information,
-                        note: "Клиент был отключен в результате закрытия окна");
+                        note: "Клиент был отключен после закрытия окна");
                 }
                 else
                 {

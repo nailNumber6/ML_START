@@ -88,9 +88,8 @@ internal partial class ClientWindowViewModel : ObservableObject
                     ConnectionState = ConnectionStateEnum.Подключен;
 
                     LoggingTool.LogByTemplate(
-                            Serilog.Events.LogEventLevel.Information, note: "Пользователь подключился");
+                            Serilog.Events.LogEventLevel.Information, note: "Успешное подключение к серверу");
                 }
-                // TODO: Обработать исключение
                 catch (SocketException ex)
                 {
                     LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, 
@@ -117,7 +116,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         }
     }
 
-    public async Task<bool> HandleClientDisconnection()
+    public async Task<bool> IsClientDisconnectionAccepted()
     {
         if (ClientIsConnected)
         {

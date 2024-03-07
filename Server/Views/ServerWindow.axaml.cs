@@ -23,9 +23,9 @@ namespace Server.Views
 
         private void ServerWindow_Loaded(object? sender, System.EventArgs e)
         {
-            ServerWindowViewModel vm = new();
+            ServerWindowViewModel vm = (ServerWindowViewModel)DataContext!;
 
-            Task.Run(async () => await vm.StartAndShowStory(list));
+            Task.Run(vm.StartAndShowStory);
 
             Task.Run(async () => await vm.StartServer(clientList));
         }

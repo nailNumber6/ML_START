@@ -15,6 +15,7 @@ using ML_START_1;
 using ToolLibrary;
 using static ML_START_1.CurrencyType;
 using static Serilog.Events.LogEventLevel;
+using System.Collections.ObjectModel;
 
 
 namespace Server.ViewModels;
@@ -23,7 +24,18 @@ public partial class ServerWindowViewModel : ObservableObject
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;
 
-    // TODO: Перенести необходимое в Model
+    private ObservableCollection<string> _items;
+
+    public ObservableCollection<string> Items
+    {
+        get { return _items; }
+        set { SetProperty(ref _items, value); }
+    }
+
+    public ServerWindowViewModel()
+    {
+        _items = [];
+    }
 
     public async Task StartServer(ListBox listBox)
     {
@@ -83,8 +95,9 @@ public partial class ServerWindowViewModel : ObservableObject
         }
     }
 
-    public async Task StartAndShowStory(ListBox listBox)
+    public async Task StartAndShowStory()
     {
+        await Task.Delay(1000); // в это время завершается чтение конфига
         Random random = new();
 
         while (true)
@@ -205,7 +218,7 @@ public partial class ServerWindowViewModel : ObservableObject
             character3.PutCurrency(ch3Wardrobe, Fertings, 100);
 
             StoryBuilder.AddSentence("Наступил вечер...");
-            await DisplayStory(StoryBuilder.Story, listBox, 500);
+            await DisplayStory(StoryBuilder.Story, 500);
 
             await Task.Delay(actionDelay);
             StoryBuilder.Clear();
@@ -235,26 +248,25 @@ public partial class ServerWindowViewModel : ObservableObject
                     StoryBuilder.AddSentence("Многие покупатели являлись в контору слишком рано. От нечего делать они толклись на улице, дожидаясь открытия конторы.");
                     bank.ToggleBankStatus();
                 }
-                await DisplayStory(StoryBuilder.Story, listBox, actionDelay);
+                await DisplayStory(StoryBuilder.Story, actionDelay);
                 StoryBuilder.Clear();
                 await Task.Delay(actionDelay);
             }
 
             StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
             
-            await DisplayStory(StoryBuilder.Story, listBox, 500);
+            await DisplayStory(StoryBuilder.Story, 500);
             #endregion
         }
     }
 
-    private async Task DisplayStory(List<string> story, ListBox listBox, int delayInMilliseconds)
+    private async Task DisplayStory(List<string> story, int delayInMilliseconds)
     {
-        await Task.Delay(1000); // в это время завершается чтение конфига
         foreach (var sentence in story)
         {
-            listBox.Items.Add(sentence);
+            Items.Add(sentence);
             await Task.Delay(delayInMilliseconds);
         }
-        listBox.Items.Clear();
+        Items.Clear();
     }
 }

@@ -26,14 +26,11 @@
 		
 		<StackPanel Spacing="10" Margin="0,80,0,0">
 
-			<TextBlock Text="Истрия про Незнайку" 
+			<TextBlock Text="История про Незнайку" 
 					   HorizontalAlignment="Center" 
 					   VerticalAlignment="Top"/>
 
-			<ListBox Name="list" MaxHeight="550">
-				<ItemsControl Name="items">
-				</ItemsControl>
-			</ListBox>
+			<ListBox Name="list" MaxHeight="550" ItemsSource="{Binding Items}"/>
 			
 		</StackPanel>
 
