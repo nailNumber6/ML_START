@@ -27,7 +27,7 @@ namespace Server.Views
 
             Task.Run(vm.StartAndShowStory);
 
-            Task.Run(async () => await vm.StartServer(clientList));
+            Task.Run(vm.StartServer);
         }
     }
 }

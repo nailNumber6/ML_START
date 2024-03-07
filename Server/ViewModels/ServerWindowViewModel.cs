@@ -32,12 +32,21 @@ public partial class ServerWindowViewModel : ObservableObject
         set { SetProperty(ref _items, value); }
     }
 
+    private ObservableCollection<string> _networkMessages;
+
+    public ObservableCollection<string> NetworkMessages
+    {
+        get { return _networkMessages; }
+        set { SetProperty(ref _networkMessages, value); }
+    }
+
     public ServerWindowViewModel()
     {
         _items = [];
+        _networkMessages = [];
     }
 
-    public async Task StartServer(ListBox listBox)
+    public async Task StartServer()
     {
         var tcpListener = new TcpListener(IPAddress.Parse(IpAddress), Port);
 
@@ -63,11 +72,9 @@ public partial class ServerWindowViewModel : ObservableObject
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
             #region connected client into ListBox
-            string? clientRow = tcpClient.Client.RemoteEndPoint?.ToString();
+            string? clientRow = tcpClient.Client.RemoteEndPoint!.ToString();
 
-            await Dispatcher.UIThread
-                .InvokeAsync(() =>
-                listBox.Items.Add(clientRow));
+            NetworkMessages.Add($"Клиент {clientRow!} покдлючился!");
             #endregion
 
             LoggingTool.LogByTemplate(Information, note: $"Подключился клиент с адресом {tcpClient.Client.RemoteEndPoint}");
@@ -86,10 +93,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
                 await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
 
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    new MessageBox("Сервер получил от клиента: " + receivedMessage, "Сервер").Show();
-                });
+                NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
             }
             #endregion
         }
@@ -109,8 +113,6 @@ public partial class ServerWindowViewModel : ObservableObject
             for (int i = 0; i < x.Length; i++)
             {
                 x[i] = random.NextDouble(-12, 16);
-                LoggingTool.LogByTemplate(Information,
-                            note: $"Используется неявное приведение типа int в double, и значение записывается в элемент x[{i}]");
             }
             #endregion
 

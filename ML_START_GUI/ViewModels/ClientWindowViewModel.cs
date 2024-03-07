@@ -88,22 +88,24 @@ internal partial class ClientWindowViewModel : ObservableObject
             else
             {
                 Client ??= new();
-
-                try
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
+                    try
+                    {
+                        Client.Connect(IPAddress.Parse(Ip!), Port);
+                        ConnectionState = ConnectionStateEnum.Подключен;
 
-                    ConnectionState = ConnectionStateEnum.Подключен;
-                    NetworkMessages.Add("Покдлючен к серверу");
+                        NetworkMessages.Add("Покдлючен к серверу");
+                        LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note: "Успешное подключение к серверу");
+                    }
+                    catch (SocketException ex)
+                    {
+                        LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error,
+                            ex, "Клиент принял попытку подключения к отключенному сереверу");
 
-                    LoggingTool.LogByTemplate(
-                            Serilog.Events.LogEventLevel.Information, note: "Успешное подключение к серверу");
-                }
-                catch (SocketException ex)
-                {
-                    LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, 
-                        ex, "Клиент принял попытку подключения к отключенному сереверу");
-                }
+                        NetworkMessages.Add("Ошибка: Сервер не принимает подключения");
+                    }
+                });
             }
         }
     }

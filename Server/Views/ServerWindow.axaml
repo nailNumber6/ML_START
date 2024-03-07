@@ -3,7 +3,7 @@
         xmlns:vm="using:Server.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" Width="700" Height="700"
+        mc:Ignorable="d" Width="1200" Height="720"
 		CanResize="False"
         x:Class="Server.Views.ServerWindow"
         x:DataType="vm:ServerWindowViewModel"
@@ -19,26 +19,20 @@
 
 	<Panel>
 		
-		<RelativePanel>
-			<Label Content="Подключенные клиенты" x:Name="Header"/>
-			<ListBox Name="clientList" RelativePanel.Below="Header"/>
-		</RelativePanel>
+		<Panel HorizontalAlignment="Left" Width="650" Height="720">
 		
-		<StackPanel Spacing="10" Margin="0,80,0,0">
+		<StackPanel Margin="0,20,0,0">
 
 			<TextBlock Text="История про Незнайку" 
 					   HorizontalAlignment="Center" 
 					   VerticalAlignment="Top"/>
 
-			<ListBox Name="list" MaxHeight="550" ItemsSource="{Binding Items}"/>
+			<ListBox MaxHeight="620" ItemsSource="{Binding Items}"
+					 Margin="30,20,0,0"/>
 			
 		</StackPanel>
 
 		<RelativePanel VerticalAlignment="Bottom">
-
-			<ListBox>
-				
-			</ListBox>
 
 			<Label Content="ip-адрес:" x:Name="IpLabel"/>
 			<Label Content="{Binding IpAddress}" RelativePanel.RightOf="IpLabel" x:Name="IpText"/>
@@ -49,6 +43,19 @@
 			
 		</RelativePanel>
 		
+	</Panel>
+
+		<Panel HorizontalAlignment="Right" Width="500" Height="720">
+			
+			<TextBlock Text="Сообщения сети" HorizontalAlignment="Center"
+					   Margin="0,20,0,0"/>
+			
+			<ListBox ItemsSource="{Binding NetworkMessages}" Width="470" Height="620"
+					 HorizontalAlignment="Left"
+					 Margin="0,20,0,0"/>
+
+		</Panel>
+
 	</Panel>
 
 </Window>
