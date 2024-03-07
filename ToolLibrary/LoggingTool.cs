@@ -1,22 +1,44 @@
 ﻿using Serilog;
 using System.Text;
 using Serilog.Events;
+using Serilog.Configuration;
 
 
 namespace ToolLibrary;
 public static class LoggingTool
 {
-    public static void WriteToFile(params LogEventLevel[] logEventLevels) 
+    /// <summary>
+    /// Устанавливает конфигурацию по умолчанию для указанных уровней логирования, первый параметр - минимальный уровень логирования
+    /// </summary>
+    public static void ConfigureByDefault(LogEventLevel minimumLevel, params LogEventLevel[] logEventLevels) 
     {
-        // TODO: Сделать возможность записывать в консоль
+       var loggerConfig = new LoggerConfiguration()
+            .MinimumLevel.Is(minimumLevel);
+
+        SetLoggingPath(loggerConfig, logEventLevels);
+        
+        Log.Logger = loggerConfig.CreateLogger(); 
+    }
+
+    /// <summary>
+    /// Автоматически создает папку для логов по текущей дате
+    /// </summary>
+    public static void CreateLogDirectory()
+    {
         string currentDate = DateTime.Now.Date.ToShortDateString();
 
         if (!Directory.Exists("log") || !Directory.Exists(currentDate))
             Directory.CreateDirectory(@"log\" + currentDate);
+    }
 
-        var loggerConfig = new LoggerConfiguration();
-
+    /// <summary>
+    /// Устанавливает путь для записи указанных уровней логирования по текущей дате
+    /// </summary>
+    public static void SetLoggingPath(LoggerConfiguration loggerConfig, params LogEventLevel[] logEventLevels)
+    {
         string logName = string.Empty;
+
+        string currentDate = DateTime.Now.Date.ToShortDateString();
 
         foreach (var logEventLevel in logEventLevels)
         {
@@ -25,10 +47,11 @@ public static class LoggingTool
             .Filter.ByIncludingOnly(evt => evt.Level == logEventLevel)
             .WriteTo.File($@"log\{currentDate}\{logName}.txt"));
         };
-        
-        Log.Logger = loggerConfig.CreateLogger(); 
     }
 
+    /// <summary>
+    /// Логирует по шаблону
+    /// </summary>
     public static void LogByTemplate(LogEventLevel logEventLevel, Exception? ex = null, string note = "")
     {
         StringBuilder info = new();
@@ -39,12 +62,9 @@ public static class LoggingTool
             info.Append($"; {ex.Source}; {ex.GetType()}; Сообщение об ошибке: \"{ex.Message}\"");
         }
 
-        Log.Write(logEventLevel, info.ToString());
-    }
+        info.AppendLine();
 
-    public static async Task LogByTemplateAsync(LogEventLevel logEventLevel, Exception? ex = null, string note = "")
-    {
-        await Task.Run(() => LogByTemplate(logEventLevel, ex, note));
+        Log.Write(logEventLevel, info.ToString());
     }
 }
 

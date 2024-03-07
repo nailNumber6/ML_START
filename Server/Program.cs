@@ -22,7 +22,8 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        LoggingTool.WriteToFile(Debug, Information, Warning, Error);
+        LoggingTool.CreateLogDirectory();
+        LoggingTool.ConfigureByDefault(Debug, Debug, Information, Warning, Error);
 
         var os = Environment.OSVersion;
         LoggingTool.LogByTemplate(Debug, note: $"Проект запустился на платформе ОС: {os.Platform}, версии: {os.Version}");
