@@ -18,7 +18,7 @@ using static Serilog.Events.LogEventLevel;
 
 
 namespace Server.ViewModels;
-public partial class MainWindowViewModel : ObservableObject
+public partial class ServerWindowViewModel : ObservableObject
 {
     public string IpAddress => "127.0.0.1";
     public int Port { get; private set; } = 8080;

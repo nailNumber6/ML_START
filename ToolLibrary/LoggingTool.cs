@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using Serilog;
+using System.Text;
 using Serilog.Events;
-using Serilog;
 
 
 namespace ToolLibrary;
@@ -23,8 +23,7 @@ public static class LoggingTool
             logName = logEventLevel.ToString().ToLower() + "Log";
             loggerConfig.WriteTo.Logger(lc => lc
             .Filter.ByIncludingOnly(evt => evt.Level == logEventLevel)
-            .WriteTo.File($@"log\{currentDate}\{logName}.txt",
-                outputTemplate: "{Message}{NewLine}"));
+            .WriteTo.File($@"log\{currentDate}\{logName}.txt"));
         };
         
         Log.Logger = loggerConfig.CreateLogger(); 
@@ -32,12 +31,12 @@ public static class LoggingTool
 
     public static void LogByTemplate(LogEventLevel logEventLevel, Exception? ex = null, string note = "")
     {
-        StringBuilder info = new(DateTime.Now.ToShortTimeString() + " - ");
+        StringBuilder info = new();
         info.Append(note);
 
         if (ex != null)
         {
-            info.Append($"; {ex.Source}; {ex.GetType()}; {ex.Message}");
+            info.Append($"; {ex.Source}; {ex.GetType()}; Сообщение об ошибке: \"{ex.Message}\"");
         }
 
         Log.Write(logEventLevel, info.ToString());

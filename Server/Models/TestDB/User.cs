@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using ToolLibrary;
 
-namespace MLSTART_GUI.Models.TestDB;
 
+namespace Server.Models.TestDB;
 public partial class User
 {
     public static User Create(string login, string pswd)

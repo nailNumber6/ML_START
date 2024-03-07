@@ -1,20 +1,47 @@
+using System.Threading.Tasks;
+
 using Avalonia.Controls;
+using Avalonia.Threading;
+
 using MLSTART_GUI.ViewModels;
+using ToolLibrary;
 
 
 namespace MLSTART_GUI.Views;
 public partial class ClientWindow : Window
-{ 
-    public ClientWindow(string? username)
+{
+    public ClientWindow()
     {
-        InitializeComponent();
-        this.username.Content = username;
-        clientWindow.Closed += ClientWindow_Closed;
+        InitializeComponent(); // Invalid Cast ex
+        Closing += ClientWindow_Closing;
     }
 
-    private void ClientWindow_Closed(object? sender, System.EventArgs e)
+    private async void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
-        var vm = new ClientWindowViewModel();
-        vm.CloseConnection();
+        e.Cancel = true;
+        ClientWindowViewModel vm = (ClientWindowViewModel)DataContext;
+
+        await Dispatcher.UIThread.InvokeAsync(vm.HandleClientDisconnection)
+            .ContinueWith(t =>
+            {
+                if (t.Result == true)
+                {
+                    e.Cancel = false;
+                    clientWindow.Closing -= ClientWindow_Closing;
+                    Dispatcher.UIThread.Invoke(Close);
+
+                    LoggingTool
+                    .LogByTemplate(Serilog.Events.LogEventLevel.Information,
+                        note: "Клиент был отключен в результате закрытия окна");
+                }
+                else
+                {
+                    e.Cancel = false;
+                    clientWindow.Closing -= ClientWindow_Closing;
+                    Dispatcher.UIThread.Invoke(Close);
+                }
+            });
+
+        await Task.CompletedTask;
     }
 }

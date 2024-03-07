@@ -23,7 +23,7 @@ namespace Server.Views
 
         private void ServerWindow_Loaded(object? sender, System.EventArgs e)
         {
-            MainWindowViewModel vm = new();
+            ServerWindowViewModel vm = new();
 
             Task.Run(async () => await vm.StartAndShowStory(list));
 

@@ -19,7 +19,7 @@ namespace Server
             {
                 desktop.MainWindow = new ServerWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new ServerWindowViewModel(),
                 };
             }
 

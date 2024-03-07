@@ -2,32 +2,75 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:vm="using:MLSTART_GUI.ViewModels"
+		xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
         mc:Ignorable="d" Width="400" Height="400"
+		xmlns:fluent="using:FluentTheme"
         x:Class="MLSTART_GUI.Views.ClientWindow"
 		x:DataType="vm:ClientWindowViewModel"
+		CanResize="False"
 		Name="clientWindow"
         Title="Client"
-		Background="White">
+		WindowStartupLocation="CenterScreen">
 
 	<Window.DataContext>
 		<vm:ClientWindowViewModel/>
 	</Window.DataContext>
 	
-	<StackPanel>
-		
-		<Label Name="username"/>
-		<Button Content="Подключиться"
-				Command="{Binding ConnectServerCommand}"/>
-		<Button Content="Отключиться"
-				Command="{Binding CloseConnectionCommand}"/>
-		
-		<Label Content="{Binding Ip}"/>
-		<Label Content="{Binding Port}"/>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
-		<TextBox Text="{Binding Input}"/>
-		<Button Content="Отправить" Command="{Binding SendCommand}"/>
+	<Window.Styles>
+		<StyleInclude Source="\Resourses\Styles1.axaml"/>
+	</Window.Styles>
+
+	<Panel>
 		
-	</StackPanel>
-	
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+				<ExperimentalAcrylicBorder.Material>
+					<ExperimentalAcrylicMaterial
+						BackgroundSource="Digger"
+						TintColor="Yellow"
+						TintOpacity="1"
+						MaterialOpacity="0.75" />
+				</ExperimentalAcrylicBorder.Material>
+			</ExperimentalAcrylicBorder>
+		
+		<StackPanel>
+
+			<StackPanel>
+
+				<Label Content="{Binding Username}"/>
+				<Button Content="Подключиться"
+						Command="{Binding ConnectServerCommand}"
+						Classes="MenuButton"/>
+				<Button Name="button"
+						Content="Отключиться"
+						Command="{Binding DisconnectOnButtonCommand}"
+						Classes="MenuButton"/>
+			
+				<TextBox Text="{Binding Input}"/>
+				<Button Content="Отправить" 
+						Command="{Binding SendCommand}"
+						Classes="MenuButton"/>
+
+			</StackPanel>
+
+			<RelativePanel VerticalAlignment="Bottom">
+
+				<Label Content="IP Сервера: " x:Name="IpTitle"/>
+				<Label Content="{Binding Ip}" x:Name="IpValue"
+					   RelativePanel.RightOf="IpTitle"/>
+
+				<Label Content="Порт сервера: " x:Name="PortTitle"
+					   RelativePanel.Below="IpTitle"/>
+				<Label Content="{Binding Port}"
+					   RelativePanel.RightOf="PortTitle"
+					   RelativePanel.Below="IpValue"/>
+
+			</RelativePanel>
+
+		</StackPanel>
+	</Panel>
+
 </Window>
