@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
-        mc:Ignorable="d" Width="600" Height="400"
+        mc:Ignorable="d" Width="900" Height="400"
 		xmlns:fluent="using:FluentTheme"
         x:Class="MLSTART_GUI.Views.ClientWindow"
 		x:DataType="vm:ClientWindowViewModel"
@@ -93,11 +93,15 @@
 			
 		</Panel>
 
-		<ListBox Width="200" Height="400" HorizontalAlignment="Right">
-			<ItemsControl Name="serverResponses">
-				
-			</ItemsControl>
-		</ListBox>
+		<Panel HorizontalAlignment="Right" Width="500" Height="400"
+			   Margin="0,25,0,0">
+
+			<TextBlock Text="Сообщения сети" HorizontalAlignment="Center"/>
+			<ListBox Width="460" Height="340" HorizontalAlignment="Center"
+					 ItemsSource="{Binding NetworkMessages}"
+					 Margin="0,5,0,0"/>
+			
+		</Panel>
 		
 	</Panel>
 

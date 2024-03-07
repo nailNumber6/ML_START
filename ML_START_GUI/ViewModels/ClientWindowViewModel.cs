@@ -15,11 +15,24 @@ using MsBox.Avalonia.Enums;
 using MLSTART_GUI.Views;
 using ToolLibrary;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 
 namespace MLSTART_GUI.ViewModels;
+public enum ConnectionStateEnum { Отключен = 0, Подключен = 1 }
+
 internal partial class ClientWindowViewModel : ObservableObject
 {
+    public ClientWindowViewModel()
+    {
+        IsAuthorized = false;
+        _networkMessages = [];
+    }
+
+    private string _username = "Гость";
+
+    private ObservableCollection<string> _networkMessages;
+
     [ObservableProperty]
     private ConnectionStateEnum _connectionState = ConnectionStateEnum.Отключен;
 
@@ -37,16 +50,11 @@ internal partial class ClientWindowViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
     private string? _input;
 
-    private string _username = "Гость";
-
-    public ClientWindowViewModel()
+    public ObservableCollection<string> NetworkMessages
     {
-        IsAuthorized = false;
+        get => _networkMessages;
+        set => SetProperty(ref _networkMessages, value);
     }
-
-    public enum ConnectionStateEnum { Отключен = 0, Подключен = 1 }
-
-
     public bool IsAuthorized { get; set; }
     public bool ClientIsConnected { get => ConnectionState == ConnectionStateEnum.Подключен; }
     public string Username 
@@ -86,6 +94,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                     await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
 
                     ConnectionState = ConnectionStateEnum.Подключен;
+                    NetworkMessages.Add("Покдлючен к серверу");
 
                     LoggingTool.LogByTemplate(
                             Serilog.Events.LogEventLevel.Information, note: "Успешное подключение к серверу");
@@ -147,6 +156,9 @@ internal partial class ClientWindowViewModel : ObservableObject
     {
         Client!.Client.Shutdown(SocketShutdown.Both);
         Client!.Close();
+
+        NetworkMessages.Add("Отключен от сервера");
+
         Client.Dispose();
         Client = null;
         ConnectionState = ConnectionStateEnum.Отключен;
@@ -172,7 +184,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             {
                 string response = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
-                new MessageBox(response, "Сообщение от сервера", MessageBoxIcon.Information).Show();
+                NetworkMessages.Add("Ответ сервера: " + response);
                 break;
             }
             #endregion
