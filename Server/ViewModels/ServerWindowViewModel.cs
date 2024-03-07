@@ -53,7 +53,7 @@ public partial class ServerWindowViewModel : ObservableObject
         try
         {
             tcpListener.Start();
-
+            LoggingTool.LogByTemplate(Information, note: "Сервер начал принимать подключения");
 
             while (true)
             { 
@@ -67,6 +67,7 @@ public partial class ServerWindowViewModel : ObservableObject
         finally
         {
             tcpListener.Stop();
+            LoggingTool.LogByTemplate(Information, note: "Сервер прекратил принимать подключения");
         }
 
         async Task ProcessClientAsync(TcpClient tcpClient)
@@ -89,11 +90,13 @@ public partial class ServerWindowViewModel : ObservableObject
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
+                LoggingTool.LogByTemplate(Information, note: $"Клиент отправил сообщение \"{receivedMessage}\" на сервер");
+
                 string response = "сообщение получено";
 
-                await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
-
                 NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
+                
+                await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
             }
             #endregion
         }

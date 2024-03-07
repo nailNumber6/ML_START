@@ -96,12 +96,13 @@ internal partial class ClientWindowViewModel : ObservableObject
                         ConnectionState = ConnectionStateEnum.Подключен;
 
                         NetworkMessages.Add("Покдлючен к серверу");
+
                         LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note: "Успешное подключение к серверу");
                     }
                     catch (SocketException ex)
                     {
                         LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error,
-                            ex, "Клиент принял попытку подключения к отключенному сереверу");
+                            ex, "Клиент предпринял попытку подключения к отключенному сереверу");
 
                         NetworkMessages.Add("Ошибка: Сервер не принимает подключения");
                     }
@@ -159,6 +160,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         Client!.Client.Shutdown(SocketShutdown.Both);
         Client!.Close();
 
+        LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note: "Клиент отключился от сервера");
         NetworkMessages.Add("Отключен от сервера");
 
         Client.Dispose();

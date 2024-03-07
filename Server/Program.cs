@@ -24,6 +24,9 @@ internal class Program
     {
         LoggingTool.WriteToFile(Debug, Information, Warning, Error);
 
+        var os = Environment.OSVersion;
+        LoggingTool.LogByTemplate(Debug, note: $"Проект запустился на платформе ОС: {os.Platform}, версии: {os.Version}");
+
         #region creating or reading config file
         if (!File.Exists(CONFIG_FILE_NAME))
         {

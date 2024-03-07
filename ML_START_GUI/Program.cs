@@ -17,6 +17,9 @@ internal class Program
     {
         LoggingTool.WriteToFile(Debug, Information, Warning, Error);
 
+        var os = Environment.OSVersion;
+        LoggingTool.LogByTemplate(Debug, note: $"Проект запустился на платформе ОС: {os.Platform}, версии: {os.Version}");
+
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }
