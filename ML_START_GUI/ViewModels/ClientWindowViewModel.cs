@@ -1,9 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
@@ -12,15 +14,14 @@ using MsBox.Avalonia.Enums;
 
 using MLSTART_GUI.Views;
 using ToolLibrary;
-using System;
-using Avalonia.Threading;
+using System.Collections.Generic;
 
 
 namespace MLSTART_GUI.ViewModels;
 internal partial class ClientWindowViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string _connectionState = "не подключен";
+    private ConnectionStateEnum _connectionState = ConnectionStateEnum.Отключен;
 
     [ObservableProperty]
     private string? _ip = "127.0.0.1";
@@ -43,12 +44,11 @@ internal partial class ClientWindowViewModel : ObservableObject
         IsAuthorized = false;
     }
 
+    public enum ConnectionStateEnum { Отключен = 0, Подключен = 1 }
+
+
     public bool IsAuthorized { get; set; }
-    public bool ClientIsConnected { get
-        {
-            return ConnectionState == "подключен";
-        } 
-    }
+    public bool ClientIsConnected { get => ConnectionState == ConnectionStateEnum.Подключен; }
     public string Username 
     {
         get => _username;
@@ -85,7 +85,8 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     await Client.ConnectAsync(IPAddress.Parse(Ip!), Port);
 
-                    ConnectionState = "подключен";
+                    ConnectionState = ConnectionStateEnum.Подключен;
+
                     LoggingTool.LogByTemplate(
                             Serilog.Events.LogEventLevel.Information, note: "Пользователь подключился");
                 }
@@ -149,10 +150,10 @@ internal partial class ClientWindowViewModel : ObservableObject
         Client!.Close();
         Client.Dispose();
         Client = null;
-        ConnectionState = "не подключен";
+        ConnectionState = ConnectionStateEnum.Отключен;
     }
 
-    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState != "не подключен";
+    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState == ConnectionStateEnum.Подключен;
 
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]
     public async Task Send()

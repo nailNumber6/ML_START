@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
-        mc:Ignorable="d" Width="400" Height="400"
+        mc:Ignorable="d" Width="600" Height="400"
 		xmlns:fluent="using:FluentTheme"
         x:Class="MLSTART_GUI.Views.ClientWindow"
 		x:DataType="vm:ClientWindowViewModel"
@@ -29,65 +29,76 @@
 	<Panel>
 		
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
-					<ExperimentalAcrylicBorder.Material>
-						<ExperimentalAcrylicMaterial
-							BackgroundSource="Digger"
-							TintColor="Yellow"
-							TintOpacity="1"
-							MaterialOpacity="0.75" />
-					</ExperimentalAcrylicBorder.Material>
-				</ExperimentalAcrylicBorder>
+						<ExperimentalAcrylicBorder.Material>
+							<ExperimentalAcrylicMaterial
+								BackgroundSource="Digger"
+								TintColor="Yellow"
+								TintOpacity="1"
+								MaterialOpacity="0.75" />
+						</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
 		
-		<RelativePanel>
+		<Panel Width="400" Height="400" HorizontalAlignment="Left">
+		
+			<RelativePanel>
 			
-			<StackPanel x:Name="ServerConnectingPanel">
+				<StackPanel x:Name="ServerConnectingPanel">
 
-				<Label Content="{Binding Username}" HorizontalAlignment="Center"/>
+					<Label Content="{Binding Username}" HorizontalAlignment="Center"/>
 				
-				<RelativePanel>
-					<Label Content="Состояние подключения:" x:Name="ConStateLabel"/>
-					<Label Content="{Binding ConnectionState}" RelativePanel.RightOf="ConStateLabel"/>
-				</RelativePanel>
+					<RelativePanel>
+						<Label Content="Состояние подключения:" x:Name="ConStateLabel"/>
+						<Label Content="{Binding ConnectionState}" RelativePanel.RightOf="ConStateLabel"/>
+					</RelativePanel>
 				
-				<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton">
-					<TextBlock Text="Подключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-				</Button>
+					<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton">
+						<TextBlock Text="Подключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Button>
 				
-				<Button Name="button" 
-						Command="{Binding DisconnectOnButtonCommand}"
-						Classes="MenuButton">
-					<TextBlock Text="Отключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-				</Button>
+					<Button Name="button" 
+							Command="{Binding DisconnectOnButtonCommand}"
+							Classes="MenuButton">
+						<TextBlock Text="Отключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Button>
 				
-			</StackPanel>
+				</StackPanel>
 
-				<TextBox Text="{Binding Input}" HorizontalAlignment="Stretch"
-						Margin="0, 30, 0, 0" x:Name="MessageTextBox" Width="400"
-						RelativePanel.Below="ServerConnectingPanel"/>
+					<TextBox Text="{Binding Input}" HorizontalAlignment="Stretch"
+							Margin="0, 30, 0, 0" x:Name="MessageTextBox" Width="400"
+							RelativePanel.Below="ServerConnectingPanel"/>
 						
-				<Button x:Name="SendButton"
-						Margin="65, 15, 0, 0"
-						HorizontalAlignment="Center"
-						RelativePanel.Below="MessageTextBox"
-						Content="Отправить сообщение на сервер"
-						Command="{Binding SendCommand}"
-						Classes="MenuButton"/>
+					<Button x:Name="SendButton"
+							Margin="65, 15, 0, 0"
+							HorizontalAlignment="Center"
+							RelativePanel.Below="MessageTextBox"
+							Content="Отправить сообщение на сервер"
+							Command="{Binding SendCommand}"
+							Classes="MenuButton"/>
 
-				<RelativePanel Margin="0, 135, 0, 0" RelativePanel.Below="SendButton">
+					<RelativePanel Margin="0, 135, 0, 0" RelativePanel.Below="SendButton">
 
-					<Label Content="IP Сервера: " x:Name="IpTitle"/>
-					<Label Content="{Binding Ip}" x:Name="IpValue"
-						   RelativePanel.RightOf="IpTitle"/>
+						<Label Content="IP Сервера: " x:Name="IpTitle"/>
+						<Label Content="{Binding Ip}" x:Name="IpValue"
+							   RelativePanel.RightOf="IpTitle"/>
 
-					<Label Content="Порт сервера: " x:Name="PortTitle"
-						   RelativePanel.RightOf="IpValue"
-						   Margin="30, 0, 0, 0"/>
-					<Label Content="{Binding Port}"
-						   RelativePanel.RightOf="PortTitle"/>
+						<Label Content="Порт сервера: " x:Name="PortTitle"
+							   RelativePanel.RightOf="IpValue"
+							   Margin="30, 0, 0, 0"/>
+						<Label Content="{Binding Port}"
+							   RelativePanel.RightOf="PortTitle"/>
 
-				</RelativePanel>
+					</RelativePanel>
 			
-		</RelativePanel>
+			</RelativePanel>
+			
+		</Panel>
+
+		<ListBox Width="200" Height="400" HorizontalAlignment="Right">
+			<ItemsControl Name="serverResponses">
+				
+			</ItemsControl>
+		</ListBox>
+		
 	</Panel>
 
 </Window>
