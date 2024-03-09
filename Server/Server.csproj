@@ -23,7 +23,19 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 	<PackageReference Include="CustomMessageBox.Avalonia" Version="11.0.0.2" />
+	<PackageReference Include="GitInfo" Version="3.3.4">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+	<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
   </ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="GitInfo" PrivateAssets="all" />
+	</ItemGroup>
 
 
   <ItemGroup>

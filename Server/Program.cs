@@ -1,69 +1,82 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Collections.Generic;
 
+using Serilog;
 using Avalonia;
 using Avalonia.ReactiveUI;
+using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
-using static Serilog.Events.LogEventLevel;
 
 
 namespace Server;
 
-internal record class Config(int NameLength, int LastNameLength, int ActionDelay, Dictionary<string, string>? ConnectionStrings);
-
 internal class Program
 {
-    internal const string CONFIG_FILE_NAME = "config.json";
-    internal static Config ConfigSettings { get; private set; } = null!;
+    internal static readonly string configFileName = "appsettings.json";
+
+    private static IConfiguration _configuration = null!;
+    public static IConfiguration Configuration { get { return _configuration; } }
 
     [STAThread]
     public static void Main(string[] args)
     {
-        LoggingTool.CreateLogDirectory();
-        LoggingTool.ConfigureByDefault(Debug, Debug, Information, Warning, Error);
-
-        var os = Environment.OSVersion;
-        LoggingTool.LogByTemplate(Debug, note: $"Проект запустился на платформе ОС: {os.Platform}, версии: {os.Version}");
-
-        #region creating or reading config file
-        if (!File.Exists(CONFIG_FILE_NAME))
+        #region "appsettings.json" creating if does not exists
+        if (!File.Exists(configFileName))
         {
-            var cfg = new Config(6, 6, 500,
-                new Dictionary<string, string>
+            var configurationSettings = new AppConfigurationSettings()
+            {
+                IntVariables = new()
                 {
-                    ["MSSQL Server"] = "Server=(localdb)\\MSSQLLocalDB;Database=Test;Trusted_Connection=True;TrustServerCertificate=True"
-                });
-            #pragma warning disable CA1869
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            #pragma warning restore CA1869
+                    ["N"] = 6,
+                    ["L"] = 6,
+                    ["action delay"] = 500
+                },
+                ConnectionStrings = new()
+                {
+                    ["MSSQL Server"] = "smth"
+                },
+                SerilogSettings = new()
+                {
+                    ["Using"] = "Serilog.Sinks.File",
+                    ["MinimumLevel"] = "Debug",
+                    ["WriteTo"] = new List<Dictionary<object, object>>()
+                    {
+                        new()
+                        {
+                            ["Name"] = "File",
+                            ["Args"] = new Dictionary<string,string>() { ["path"] = $"logs/log-.txt", ["rollingInterval"] = "Day"
+                        }
+                    }
+                }
+                }
+            };
+            var serializerOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            };
+            var jsonConfig = JsonSerializer.Serialize(configurationSettings, serializerOptions);
 
-            string configText = JsonSerializer.Serialize(cfg, options);
-
-            File.WriteAllText(CONFIG_FILE_NAME, configText);
-        }
-        string configFileContent = File.ReadAllText(CONFIG_FILE_NAME);
-
-        try
-        {
-            ConfigSettings = JsonSerializer
-                .Deserialize<Config>(configFileContent)!;
-        }
-        catch (JsonException ex)
-        {
-            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {CONFIG_FILE_NAME} вызвало ошибку");
-        }
-        catch (NullReferenceException ex)
-        {
-            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {CONFIG_FILE_NAME} вызвало ошибку");
-        }
-        catch (Exception ex)
-        {
-            LoggingTool.LogByTemplate(Error, ex, $"Чтение данных из файла {CONFIG_FILE_NAME} вызвало непредвиденную ошибку");
+            File.WriteAllText(configFileName, jsonConfig);
         }
         #endregion
+
+        _configuration = new ConfigurationBuilder()
+        .AddJsonFile(configFileName)
+        .Build();
+
+        Log.Logger = new LoggerConfiguration()
+           .ReadFrom.Configuration(_configuration)
+           .CreateLogger();
+
+        string projectName = Assembly.GetExecutingAssembly().GetName().Name!;
+        var os = Environment.OSVersion;
+
+        Log.Debug("Проект {projectName} запустился на платформе ОС: {osPlatform}, версии: {osVersion}", projectName, os.Platform, os.Version);
+        Log.Debug("Версия репозитория: {currentCommit}; Ветка: {currentBranch}", ThisAssembly.Git.Commit, ThisAssembly.Git.Branch);
 
         BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);

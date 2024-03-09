@@ -175,7 +175,7 @@ public partial class ServerWindowViewModel : ObservableObject
             }
             catch (FormatException ex)
             {
-                LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {Program.CONFIG_FILE_NAME} вызвало ошибку");
+                LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {Program.configFileName} вызвало ошибку");
             }
             catch (IndexOutOfRangeException ex)
             {
