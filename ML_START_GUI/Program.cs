@@ -50,10 +50,14 @@ internal class Program
                         new()
                         {
                             ["Name"] = "File",
-                            ["Args"] = new Dictionary<string,string>() { ["path"] = $"logs/log-.txt", ["rollingInterval"] = "Day"
+                            ["Args"] = new Dictionary<string,string>()
+                            {
+                                ["path"] = $"logs/log-.txt",
+                                ["rollingInterval"] = "Day",
+                                ["outputTemplate"] = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u11}] {Message:lj}{NewLine}{Exception}"
+                            }
                         }
                     }
-                }
                 }
             };
             var serializerOptions = new JsonSerializerOptions

@@ -66,9 +66,10 @@ internal partial class ClientWindowViewModel : ObservableObject
     private void DisconnectFromServer()
     {
         Client!.Client.Shutdown(SocketShutdown.Both);
+        Log.Information("Клиент с адресом {clientAddress} отключился от сервера", Client.Client.RemoteEndPoint);
+
         Client!.Close();
 
-        Log.Information("Клиент с адресом {clientAddress} отключился от сервера");
         NetworkMessages.Add("Отключен от сервера");
 
         Client.Dispose();
