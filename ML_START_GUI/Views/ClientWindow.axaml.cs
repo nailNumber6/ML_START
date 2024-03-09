@@ -11,7 +11,7 @@ public partial class ClientWindow : Window
 {
     public ClientWindow()
     {
-        InitializeComponent(); // Invalid Cast ex
+        InitializeComponent();
         Closing += ClientWindow_Closing;
     }
 

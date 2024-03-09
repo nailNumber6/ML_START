@@ -12,6 +12,7 @@ using Serilog;
 
 using ML_START_1;
 using static ML_START_1.CurrencyType;
+using System.Diagnostics;
 
 
 namespace Server.ViewModels;
@@ -63,7 +64,7 @@ public partial class ServerWindowViewModel : ObservableObject
         finally
         {
             tcpListener.Stop();
-            Log.Information("Сервер прекратил подключения");
+            Log.Information("Сервер прекратил принимать подключения");
         }
 
         async Task ProcessClientAsync(TcpClient tcpClient)
@@ -71,12 +72,12 @@ public partial class ServerWindowViewModel : ObservableObject
             #region connected client into ListBox
             string? clientRow = tcpClient.Client.RemoteEndPoint!.ToString();
 
-            NetworkMessages.Add($"Клиент {clientRow!} покдлючился!");
+            NetworkMessages.Add($"Клиент {clientRow!} подключился!");
             #endregion
 
             Log.Information("Подключился клиент с адресом {clientEndPoint}", tcpClient.Client.RemoteEndPoint);
 
-            #region reading and responding to the client's message
+            #region reading client's message and responding to it 
             var tcpStream = tcpClient.GetStream();
 
             byte[] buffer = new byte[256];
@@ -96,6 +97,8 @@ public partial class ServerWindowViewModel : ObservableObject
                 Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
+            NetworkMessages.Add($"Клиент {clientRow!} отключился!");
+            Log.Information("Отключился от сервера клиент с адресом {clientAddress}", tcpClient.Client.RemoteEndPoint);
         }
     }
 
@@ -148,7 +151,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
             try
             {
-                var variables = Program.Configuration.GetSection("Integer varibles");
+                var variables = Program.Configuration.GetSection("Integer variables");
                 int N = Convert.ToInt32(variables["N"]);
                 int L = Convert.ToInt32(variables["L"]);
                 actionDelay = Convert.ToInt32(variables["action delay"]);

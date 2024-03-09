@@ -108,8 +108,8 @@ internal partial class ClientWindowViewModel : ObservableObject
                         Client.Connect(IPAddress.Parse(Ip!), Port);
                         ConnectionState = ConnectionStateEnum.Подключен;
 
-                        Log.Information("Клиент с адресом {clientAddress} подлключился к серверу", Client.Client.RemoteEndPoint);
-                        NetworkMessages.Add("Покдлючен к серверу");
+                        Log.Information("Клиент с адресом {clientAddress} подключился к серверу", Client.Client.RemoteEndPoint);
+                        NetworkMessages.Add("Подключен к серверу");
                     }
                     catch (SocketException ex)
                     {
