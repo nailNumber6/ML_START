@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 using ToolLibrary;
 
@@ -10,9 +13,17 @@ using ToolLibrary;
 namespace Server.Models.TestDB;
 public partial class TestContext : DbContext
 {
-    private string? _connectionString = Program.ConfigSettings.ConnectionStrings?["MSSQL Server"];
+    private readonly string? _connectionString;
     public TestContext()
     {
+        try
+        { 
+            _connectionString = Program.Configuration.GetConnectionString("MSSQ Server")!; 
+        } 
+        catch 
+        {
+            Log.Error("Произошла ошибка при чтении строки подключения из файла конфигурации");
+        }
     }
 
     public TestContext(DbContextOptions<TestContext> options)
@@ -30,7 +41,8 @@ public partial class TestContext : DbContext
         }
         catch (Exception ex) 
         {
-            LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error, ex);
+            Log.Error("При настройке конфигурации контекста данных было вызвано исключение {exType} : {exMessage}"
+                ,ex.GetType(), ex.Message);
         }
     }
 

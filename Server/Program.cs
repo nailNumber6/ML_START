@@ -37,7 +37,7 @@ internal class Program
                 },
                 ConnectionStrings = new()
                 {
-                    ["MSSQL Server"] = "smth"
+                    ["MSSQL Server"] = "Server=(localdb)\\MSSQLLocalDB;Database=Test;Trusted_Connection=True;TrustServerCertificate=True"
                 },
                 SerilogSettings = new()
                 {

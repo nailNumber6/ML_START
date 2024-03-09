@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 
 using static Serilog.Events.LogEventLevel;
+using Serilog;
 
 
 namespace ToolLibrary;
@@ -24,15 +25,10 @@ public static class Md5HashingTool
 
             hashedString = Convert.ToString(sb)!;
         }
-        catch (ArgumentNullException ex)
-        {
-            LoggingTool.LogByTemplate(Information, ex, "В качестве параметра передана пустая строка");
-        }
         catch (Exception ex)
         {
-            LoggingTool.LogByTemplate(Warning, ex, "Не удалось совершить хэширование строки");
+            Log.Error("Источник: {exSource}; Исключение: {exType}; Сообщение: {exMessage}", ex.Source, ex.GetType(), ex.Message);
         }
-
         return hashedString;
     }
 }

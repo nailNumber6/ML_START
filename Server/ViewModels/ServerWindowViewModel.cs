@@ -2,20 +2,16 @@
 using System.Net;
 using System.Text;
 using System.Linq;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-using Avalonia.Threading;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CustomMessageBox.Avalonia;
+using Serilog;
 
 using ML_START_1;
-using ToolLibrary;
 using static ML_START_1.CurrencyType;
-using static Serilog.Events.LogEventLevel;
-using System.Collections.ObjectModel;
 
 
 namespace Server.ViewModels;
@@ -53,7 +49,7 @@ public partial class ServerWindowViewModel : ObservableObject
         try
         {
             tcpListener.Start();
-            LoggingTool.LogByTemplate(Information, note: "Сервер начал принимать подключения");
+            Log.Information("Сервер запустился и начал принимать подключения");
 
             while (true)
             { 
@@ -67,7 +63,7 @@ public partial class ServerWindowViewModel : ObservableObject
         finally
         {
             tcpListener.Stop();
-            LoggingTool.LogByTemplate(Information, note: "Сервер прекратил принимать подключения");
+            Log.Information("Сервер прекратил подключения");
         }
 
         async Task ProcessClientAsync(TcpClient tcpClient)
@@ -78,7 +74,7 @@ public partial class ServerWindowViewModel : ObservableObject
             NetworkMessages.Add($"Клиент {clientRow!} покдлючился!");
             #endregion
 
-            LoggingTool.LogByTemplate(Information, note: $"Подключился клиент с адресом {tcpClient.Client.RemoteEndPoint}");
+            Log.Information("Подключился клиент с адресом {clientEndPoint}", tcpClient.Client.RemoteEndPoint);
 
             #region reading and responding to the client's message
             var tcpStream = tcpClient.GetStream();
@@ -90,13 +86,14 @@ public partial class ServerWindowViewModel : ObservableObject
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
-                LoggingTool.LogByTemplate(Information, note: $"Клиент отправил сообщение \"{receivedMessage}\" на сервер");
+                Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
                 string response = "сообщение получено";
 
                 NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
                 
                 await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
         }
@@ -131,20 +128,16 @@ public partial class ServerWindowViewModel : ObservableObject
                     {
                         double expression = 0.5 / (Math.Tan(2 * x[j]) + (2.0 / 3.0));
                         k2[i, j] = Math.Pow(expression, Math.Pow(Math.Pow(x[j], 1.0 / 3.0), 1.0 / 3.0));
-                        if (double.IsNaN(k2[i, j]))
-                            LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
                     }
                     else if (k[i] == 9)
                     {
                         k2[i, j] = Math.Sin(Math.Sin(Math.Pow(x[j] / (x[j] + 0.5), x[j])));
-                        if (double.IsNaN(k2[i, j]))
-                            LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                        if (double.IsNaN(k2[i, j])) ;
                     }
                     else
                     {
                         k2[i, j] = Math.Tan(Math.Pow(((Math.Pow(Math.E, 1 - x[j] / Math.PI) / 3.0) / 4.0), 3.0));
-                        if (double.IsNaN(k2[i, j]))
-                            LoggingTool.LogByTemplate(Warning, note: $"В результате вычислений элементу k2[{i}, {j}] было присвоено NaN");
+                        if (double.IsNaN(k2[i, j])) ;
                     }
                 }
             }
@@ -157,9 +150,10 @@ public partial class ServerWindowViewModel : ObservableObject
 
             try
             {
-                int N = Convert.ToInt32(Program.ConfigSettings.NameLength);
-                int L = Convert.ToInt32(Program.ConfigSettings.LastNameLength);
-                actionDelay = Program.ConfigSettings.ActionDelay;
+                var variables = Program.Configuration.GetSection("Integer varibles");
+                int N = Convert.ToInt32(variables["N"]);
+                int L = Convert.ToInt32(variables["L"]);
+                actionDelay = Convert.ToInt32(variables["action delay"]);
 
                 double[] subArray1 = Enumerable.Range(0, k2.GetLength(1))
                                 .Select(col => k2[N % 8, col])
@@ -173,13 +167,10 @@ public partial class ServerWindowViewModel : ObservableObject
 
                 totalSum = minElement + averageValue; // 6 Задание
             }
-            catch (FormatException ex)
+            catch (Exception ex)
             {
-                LoggingTool.LogByTemplate(Error, ex, $"Преобразование данных из файла {Program.configFileName} вызвало ошибку");
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                LoggingTool.LogByTemplate(Error, ex, "Индекс вышел за границы массива");
+                Log.Error("Чтение значений переменных из конфигурационного файла {configFile} вызвало исключение: {exType}. Сообщение: {exMessage}", 
+                    Program.configFileName, ex.GetType(), ex.Message);
             }
             #endregion
 
