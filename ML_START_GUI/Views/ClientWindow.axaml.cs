@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 
 using MLSTART_GUI.ViewModels;
-using ToolLibrary;
 
 
 namespace MLSTART_GUI.Views;
@@ -29,10 +28,6 @@ public partial class ClientWindow : Window
                     e.Cancel = false;
                     clientWindow.Closing -= ClientWindow_Closing;
                     Dispatcher.UIThread.Invoke(Close);
-
-                    LoggingTool
-                    .LogByTemplate(Serilog.Events.LogEventLevel.Information,
-                        note: "Клиент был отключен после закрытия окна");
                 }
                 else
                 {

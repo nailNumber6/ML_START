@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -11,11 +10,9 @@ using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using Serilog;
 
 using MLSTART_GUI.Views;
-using ToolLibrary;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 
 namespace MLSTART_GUI.ViewModels;
@@ -29,7 +26,13 @@ internal partial class ClientWindowViewModel : ObservableObject
         _networkMessages = [];
     }
 
+    #region Observable properties
     private string _username = "Гость";
+    public string Username 
+    {
+        get => _username;
+        set => _username = value;
+    }
 
     private ObservableCollection<string> _networkMessages;
 
@@ -55,15 +58,25 @@ internal partial class ClientWindowViewModel : ObservableObject
         get => _networkMessages;
         set => SetProperty(ref _networkMessages, value);
     }
+    #endregion
+
     public bool IsAuthorized { get; set; }
     public bool ClientIsConnected { get => ConnectionState == ConnectionStateEnum.Подключен; }
-    public string Username 
+
+    private void DisconnectFromServer()
     {
-        get => _username;
-        set => _username = value;
+        Client!.Client.Shutdown(SocketShutdown.Both);
+        Client!.Close();
+
+        Log.Information("Клиент с адресом {clientAddress} отключился от сервера");
+        NetworkMessages.Add("Отключен от сервера");
+
+        Client.Dispose();
+        Client = null;
+        ConnectionState = ConnectionStateEnum.Отключен;
     }
 
-
+    #region Methods for binding commands
     [RelayCommand]
     public async Task ConnectServer()
     {
@@ -95,14 +108,13 @@ internal partial class ClientWindowViewModel : ObservableObject
                         Client.Connect(IPAddress.Parse(Ip!), Port);
                         ConnectionState = ConnectionStateEnum.Подключен;
 
+                        Log.Information("Клиент с адресом {clientAddress} подлключился к серверу", Client.Client.RemoteEndPoint);
                         NetworkMessages.Add("Покдлючен к серверу");
-
-                        LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note: "Успешное подключение к серверу");
                     }
                     catch (SocketException ex)
                     {
-                        LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Error,
-                            ex, "Клиент предпринял попытку подключения к отключенному сереверу");
+                        Log.Error("Попытка подключения клиента с адресом {clientAddress} вызвала исключение {exType} : {exMessage}",
+                            Client.Client.RemoteEndPoint, ex.GetType(), ex.Message);
 
                         NetworkMessages.Add("Ошибка: Сервер не принимает подключения");
                     }
@@ -110,65 +122,6 @@ internal partial class ClientWindowViewModel : ObservableObject
             }
         }
     }
-
-    [RelayCommand]
-    public async Task DisconnectOnButton()
-    {
-        if (ClientIsConnected)
-        {
-            DisconnectClient();
-        }
-        else
-        {
-            await MessageBoxManager
-                .GetMessageBoxStandard("Клиент", 
-                "Клиент не подключен к серверу",
-                ButtonEnum.Ok, Icon.Info)
-                .ShowAsync();
-        }
-    }
-
-    public async Task<bool> IsClientDisconnectionAccepted()
-    {
-        if (ClientIsConnected)
-        {
-            var dialogResult = await MessageBoxManager
-                .GetMessageBoxStandard("Клиент",
-                "В данный момент клиент подключен к серверу" +
-                "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
-                .ShowAsync().ContinueWith(async task =>
-                {
-                    if (task.Result == ButtonResult.Ok)
-                    {
-                        Dispatcher.UIThread.Invoke(DisconnectClient);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                });
-
-            if (dialogResult.Result == false) return false;
-            else return true;
-        }
-        return true;
-    }
-
-    private void DisconnectClient()
-    {
-        Client!.Client.Shutdown(SocketShutdown.Both);
-        Client!.Close();
-
-        LoggingTool.LogByTemplate(Serilog.Events.LogEventLevel.Information, note: "Клиент отключился от сервера");
-        NetworkMessages.Add("Отключен от сервера");
-
-        Client.Dispose();
-        Client = null;
-        ConnectionState = ConnectionStateEnum.Отключен;
-    }
-
-    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState == ConnectionStateEnum.Подключен;
 
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]
     public async Task Send()
@@ -198,5 +151,55 @@ internal partial class ClientWindowViewModel : ObservableObject
         {
             new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Warning).Show();
         }
+    }
+    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState == ConnectionStateEnum.Подключен;
+
+    [RelayCommand]
+    public async Task DisconnectOnButton()
+    {
+        if (ClientIsConnected)
+        {
+            DisconnectFromServer();
+        }
+        else
+        {
+            await MessageBoxManager
+                .GetMessageBoxStandard("Клиент", 
+                "Клиент не подключен к серверу",
+                ButtonEnum.Ok, Icon.Info)
+                .ShowAsync();
+        }
+    }
+    #endregion
+
+    /// <summary>
+    /// Если клиент подключен к серверу - вызывает MessageBox, в котором спрашивается подтверждение отключения клиента. Если было нажато OK - отключает клиента от сервера.
+    /// </summary>
+    /// <returns>Возвращает true - если клиент не подключен к серверу или если в диалоговом было нажато - OK, false - в других случаях.</returns>
+    public async Task<bool> IsClientDisconnectionAccepted()
+    {
+        if (ClientIsConnected)
+        {
+            var dialogResult = await MessageBoxManager
+                .GetMessageBoxStandard("Клиент",
+                "В данный момент клиент подключен к серверу" +
+                "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
+                .ShowAsync().ContinueWith(async task =>
+                {
+                    if (task.Result == ButtonResult.Ok)
+                    {
+                        Dispatcher.UIThread.Invoke(DisconnectFromServer);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                });
+
+            if (dialogResult.Result == false) return false;
+            else return true;
+        }
+        return true;
     }
 }

@@ -132,12 +132,10 @@ public partial class ServerWindowViewModel : ObservableObject
                     else if (k[i] == 9)
                     {
                         k2[i, j] = Math.Sin(Math.Sin(Math.Pow(x[j] / (x[j] + 0.5), x[j])));
-                        if (double.IsNaN(k2[i, j])) ;
                     }
                     else
                     {
                         k2[i, j] = Math.Tan(Math.Pow(((Math.Pow(Math.E, 1 - x[j] / Math.PI) / 3.0) / 4.0), 3.0));
-                        if (double.IsNaN(k2[i, j])) ;
                     }
                 }
             }
