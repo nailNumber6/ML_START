@@ -60,7 +60,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DisconnectOnButtonCommand))]
-    private TcpClient? _client;
+    private TcpClient? _currentClient;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
@@ -78,11 +78,12 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     private void DisconnectFromServer()
     {
-        Client!.Client.Shutdown(SocketShutdown.Both);
-        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", Client.Client.RemoteEndPoint);
+        CurrentClient!.Client.Shutdown(SocketShutdown.Both);
+        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", CurrentClient.Client.RemoteEndPoint);
 
-        Client!.Close();
-        Log.Information("Клиент отключен от сервера");
+        CurrentClient!.Close();
+        CurrentClient = null;
+        Log.Information("Клиент закрыт");
 
         NetworkMessages.Add("Отключен от сервера");
         ConnectionState = ConnectionStateEnum.Отключен;
@@ -114,10 +115,10 @@ internal partial class ClientWindowViewModel : ObservableObject
             }
             else
             {
-                if (Client == null)
+                if (CurrentClient == null)
                 {
-                    Client = new TcpClient();
-                    Log.Information("Создан клиент с адресом {clientAddress}", Client.Client.RemoteEndPoint!.ToString());
+                    CurrentClient = new TcpClient();
+                    Log.Information("Создан клиент (класс TcpClient)");
                 }
 
                 var connectionParameters = Program.Configuration.GetSection("Other parameters");
@@ -125,16 +126,16 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     try
                     {
-                        Client.Connect(_serverIp, _serverPort);
+                        CurrentClient.Connect(_serverIp, _serverPort);
                         ConnectionState = ConnectionStateEnum.Подключен;
 
-                        Log.Information("Клиент с адресом {clientAddress} подключился к серверу", Client.Client.RemoteEndPoint!.ToString());
+                        Log.Information("Клиент с адресом {clientAddress} подключился к серверу", CurrentClient.Client.LocalEndPoint!);
                         NetworkMessages.Add("Подключен к серверу");
                     }
                     catch (SocketException ex)
                     {
                         Log.Error("Попытка подключения клиента с адресом {clientAddress} вызвала исключение {exType} : {exMessage}",
-                            Client.Client.RemoteEndPoint, ex.GetType(), ex.Message);
+                            CurrentClient.Client.RemoteEndPoint, ex.GetType(), ex.Message);
 
                         NetworkMessages.Add("Ошибка: Сервер не принимает подключения");
                     }
@@ -148,7 +149,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     {
         if (ClientIsConnected)
         {
-            NetworkStream tcpStream = Client!.GetStream();
+            NetworkStream tcpStream = CurrentClient!.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
 
             await tcpStream.WriteAsync(encodedMessage);
