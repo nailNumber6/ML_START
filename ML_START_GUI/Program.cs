@@ -86,6 +86,7 @@ internal class Program
 
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
+        Log.CloseAndFlush();
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
