@@ -34,6 +34,9 @@ internal partial class ClientWindowViewModel : ObservableObject
         set => _username = value;
     }
 
+    [ObservableProperty]
+    private bool _isWindowClosingAllowed;
+
     private ObservableCollection<string> _networkMessages;
 
     [ObservableProperty]
@@ -77,7 +80,9 @@ internal partial class ClientWindowViewModel : ObservableObject
         ConnectionState = ConnectionStateEnum.Отключен;
     }
 
-    #region Methods for binding commands
+    #region methods for bindings
+
+    #region network interaction methods
     [RelayCommand]
     public async Task ConnectServer()
     {
@@ -174,14 +179,14 @@ internal partial class ClientWindowViewModel : ObservableObject
     #endregion
 
     /// <summary>
-    /// Если клиент подключен к серверу - вызывает MessageBox, в котором спрашивается подтверждение отключения клиента. Если было нажато OK - отключает клиента от сервера.
+    /// При попытке закрытия окна, если клиент покдлючен в серверу, вызывает диалоговое окно. 
+    /// В нем спрашивается согласен ли пользователь закрыть программу и отключиться от сервера.
     /// </summary>
-    /// <returns>Возвращает true - если клиент не подключен к серверу или если в диалоговом было нажато - OK, false - в других случаях.</returns>
-    public async Task<bool> IsClientDisconnectionAccepted()
+    public void AskForWindowClosing()
     {
         if (ClientIsConnected)
         {
-            var dialogResult = await MessageBoxManager
+            var dialogResult = MessageBoxManager
                 .GetMessageBoxStandard("Клиент",
                 "В данный момент клиент подключен к серверу" +
                 "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
@@ -189,18 +194,17 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     if (task.Result == ButtonResult.Ok)
                     {
-                        Dispatcher.UIThread.Invoke(DisconnectFromServer);
-                        return true;
+                        Dispatcher.UIThread.InvokeAsync(DisconnectFromServer);
+                        IsWindowClosingAllowed = true;
                     }
                     else
                     {
-                        return false;
+                        IsWindowClosingAllowed = false;
+                        await Task.CompletedTask;
                     }
                 });
-
-            if (dialogResult.Result == false) return false;
-            else return true;
         }
-        return true;
+        else IsWindowClosingAllowed = true;
     }
+    #endregion
 }

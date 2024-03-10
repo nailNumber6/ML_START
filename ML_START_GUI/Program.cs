@@ -4,14 +4,13 @@ using System.Text.Json;
 using System.Collections.Generic;
 
 using Avalonia;
-using Avalonia.ReactiveUI;
 
 using Serilog;
-using static Serilog.Events.LogEventLevel;
 using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
 using System.Reflection;
+using Avalonia.Xaml.Interactivity;
 
 
 namespace MLSTART_GUI;
@@ -86,14 +85,17 @@ internal class Program
 
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
+
         Log.CloseAndFlush();
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        GC.KeepAlive(typeof(Interaction).Assembly);
+        GC.KeepAlive(typeof(ComparisonConditionType).Assembly);
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont()
-            .LogToTrace()
-            .UseReactiveUI();
+            .LogToTrace();
+    }
 }

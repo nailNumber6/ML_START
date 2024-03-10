@@ -3,20 +3,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
-        mc:Ignorable="d" Width="900" Height="400"
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+        xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions.Custom"
+        mc:Ignorable="d" 
+		Width="900" Height="400"
+		Design.Width="900" Design.Height="400"
 		xmlns:fluent="using:FluentTheme"
         x:Class="MLSTART_GUI.Views.ClientWindow"
 		x:DataType="vm:ClientWindowViewModel"
+		x:CompileBindings="True"
 		CanResize="False"
 		Name="clientWindow"
+		x:Name="ThisWindow"
         Title="Client"
 		FontFamily="Calibri"
 		FontSize="20"
 		WindowStartupLocation="CenterScreen">
-
-	<Window.DataContext>
-		<vm:ClientWindowViewModel/>
-	</Window.DataContext>
 	
 	<Design.DataContext>
 		<vm:MainWindowViewModel/>
@@ -27,6 +30,14 @@
 	</Window.Styles>
 
 	<Panel>
+
+		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing" 
+				  IsVisible="False" IsEnabled="False"/>
+		<i:Interaction.Behaviors>
+			<ia:EventTriggerBehavior EventName="Closing" SourceObject="ThisWindow">
+				<ia:CallMethodAction TargetObject="{Binding}" MethodName="AskForWindowClosing"/>
+			</ia:EventTriggerBehavior>
+		</i:Interaction.Behaviors>
 		
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
 						<ExperimentalAcrylicBorder.Material>

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using Serilog;
 using Avalonia;
-using Avalonia.ReactiveUI;
+using Avalonia.Xaml.Interactivity;
 using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
@@ -84,14 +84,17 @@ internal class Program
 
         BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
+
         Log.CloseAndFlush();
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        GC.KeepAlive(typeof(Interaction).Assembly);
+        GC.KeepAlive(typeof(ComparisonConditionType).Assembly);
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont()
-            .LogToTrace()
-            .UseReactiveUI();
+            .LogToTrace();
+    }
 }

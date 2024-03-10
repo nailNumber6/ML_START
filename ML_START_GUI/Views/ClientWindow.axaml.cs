@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
@@ -15,26 +16,15 @@ public partial class ClientWindow : Window
         Closing += ClientWindow_Closing;
     }
 
-    private async void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
+    private void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
-        e.Cancel = true;
-        ClientWindowViewModel vm = (ClientWindowViewModel)DataContext!;
-
-        await Dispatcher.UIThread.InvokeAsync(vm.IsClientDisconnectionAccepted, DispatcherPriority.MaxValue)
-            .ContinueWith(t =>
-            {
-                if (t.Result == true)
-                {
-                    e.Cancel = false;
-                    clientWindow.Closing -= ClientWindow_Closing;
-                    Dispatcher.UIThread.Invoke(Close);
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            });
-
-        await Task.CompletedTask;
+        if (allowWindowClosing.IsChecked == false)
+        {
+            e.Cancel = true;
+        }
+        else
+        {
+            e.Cancel = false;
+        }
     }
 }
