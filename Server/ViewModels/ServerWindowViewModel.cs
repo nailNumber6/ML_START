@@ -66,7 +66,8 @@ public partial class ServerWindowViewModel : ObservableObject
         try
         {
             tcpListener.Start();
-            Log.Information("Сервер с адресом {ip} : {port} запустился и начал принимать подключения");
+            Log.Information("Сервер с адресом {ip} : {port} запустился и начал принимать подключения",
+                _serverIp, _serverPort);
 
             while (true)
             { 

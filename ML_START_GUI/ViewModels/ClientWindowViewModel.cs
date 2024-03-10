@@ -79,14 +79,12 @@ internal partial class ClientWindowViewModel : ObservableObject
     private void DisconnectFromServer()
     {
         Client!.Client.Shutdown(SocketShutdown.Both);
-        Log.Information("Клиент с адресом {clientAddress} отключился от сервера", Client.Client.RemoteEndPoint);
+        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", Client.Client.RemoteEndPoint);
 
         Client!.Close();
+        Log.Information("Клиент отключен от сервера");
 
         NetworkMessages.Add("Отключен от сервера");
-
-        Client.Dispose();
-        Client = null;
         ConnectionState = ConnectionStateEnum.Отключен;
     }
 
@@ -116,7 +114,11 @@ internal partial class ClientWindowViewModel : ObservableObject
             }
             else
             {
-                Client ??= new();
+                if (Client == null)
+                {
+                    Client = new TcpClient();
+                    Log.Information("Создан клиент с адресом {clientAddress}", Client.Client.RemoteEndPoint!.ToString());
+                }
 
                 var connectionParameters = Program.Configuration.GetSection("Other parameters");
                 await Dispatcher.UIThread.InvokeAsync(() =>
@@ -126,7 +128,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                         Client.Connect(_serverIp, _serverPort);
                         ConnectionState = ConnectionStateEnum.Подключен;
 
-                        Log.Information("Клиент с адресом {clientAddress} подключился к серверу", Client.Client.RemoteEndPoint);
+                        Log.Information("Клиент с адресом {clientAddress} подключился к серверу", Client.Client.RemoteEndPoint!.ToString());
                         NetworkMessages.Add("Подключен к серверу");
                     }
                     catch (SocketException ex)
@@ -206,7 +208,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     if (task.Result == ButtonResult.Ok)
                     {
-                        Dispatcher.UIThread.InvokeAsync(DisconnectFromServer);
+                        await Dispatcher.UIThread.InvokeAsync(DisconnectFromServer);
                         IsWindowClosingAllowed = true;
                     }
                     else
