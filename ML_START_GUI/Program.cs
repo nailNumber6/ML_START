@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Collections.Generic;
 
 using Avalonia;
+using Avalonia.Xaml.Interactivity;
 
 using Serilog;
 using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
-using System.Reflection;
-using Avalonia.Xaml.Interactivity;
 
 
 namespace MLSTART_GUI;
@@ -57,6 +57,11 @@ internal class Program
                             }
                         }
                     }
+                },
+                ConnectionParameters = new()
+                {
+                    ["Server IP"] = "127.0.0.1",
+                    ["Server port"] = "8080"
                 }
             };
             var serializerOptions = new JsonSerializerOptions

@@ -52,7 +52,7 @@
 		<Panel Width="400" Height="400" HorizontalAlignment="Left"
 			   Margin="15,0,0,0">
 		
-			<RelativePanel>
+			<RelativePanel VerticalAlignment="Center">
 			
 				<StackPanel x:Name="ServerConnectingPanel">
 
@@ -86,20 +86,6 @@
 							Content="Отправить сообщение на сервер"
 							Command="{Binding SendCommand}"
 							Classes="MenuButton"/>
-
-					<RelativePanel Margin="0, 135, 0, 0" RelativePanel.Below="SendButton">
-
-						<Label Content="IP Сервера: " x:Name="IpTitle"/>
-						<Label Content="{Binding Ip}" x:Name="IpValue"
-							   RelativePanel.RightOf="IpTitle"/>
-
-						<Label Content="Порт сервера: " x:Name="PortTitle"
-							   RelativePanel.RightOf="IpValue"
-							   Margin="30, 0, 0, 0"/>
-						<Label Content="{Binding Port}"
-							   RelativePanel.RightOf="PortTitle"/>
-
-					</RelativePanel>
 			
 			</RelativePanel>
 			

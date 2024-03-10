@@ -1,10 +1,4 @@
-using System.Threading;
-using System.Threading.Tasks;
-
 using Avalonia.Controls;
-using Avalonia.Threading;
-
-using MLSTART_GUI.ViewModels;
 
 
 namespace MLSTART_GUI.Views;

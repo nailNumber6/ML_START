@@ -3,7 +3,7 @@
 
 namespace ToolLibrary;
 
-public class AppConfigurationSettings
+public sealed class AppConfigurationSettings
 {
     [JsonPropertyName("Integer variables")]
     public Dictionary<string, int>? IntVariables { get; init; }
@@ -12,4 +12,7 @@ public class AppConfigurationSettings
 
     [JsonPropertyName("Serilog")]
     public Dictionary<string, object>? SerilogSettings { get; init; }
+
+    [JsonPropertyName("Connection parameters")]
+    public Dictionary<string, object>? ConnectionParameters { get; init; }
 }

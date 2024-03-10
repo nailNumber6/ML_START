@@ -13,6 +13,7 @@ using MsBox.Avalonia.Enums;
 using Serilog;
 
 using MLSTART_GUI.Views;
+using System;
 
 
 namespace MLSTART_GUI.ViewModels;
@@ -20,8 +21,23 @@ public enum ConnectionStateEnum { Отключен = 0, Подключен = 1 }
 
 internal partial class ClientWindowViewModel : ObservableObject
 {
+    private IPAddress _serverIp;
+    private int _serverPort;
+
     public ClientWindowViewModel()
     {
+        try
+        {
+            var connectionParameters = Program.Configuration.GetSection("Connection parameters");
+            _serverIp = IPAddress.Parse(connectionParameters["Server IP"]!);
+            _serverPort = int.Parse(connectionParameters["Server port"]!);
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Источник: {thisProject}.При попытке прочитать значения для подключения из файла {config} произошла ошибка {exType} : {exMessage}",
+                ex.Source,Program.configFileName, ex.GetType(), ex.Message);
+        }
+
         IsAuthorized = false;
         _networkMessages = [];
     }
@@ -41,12 +57,6 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private ConnectionStateEnum _connectionState = ConnectionStateEnum.Отключен;
-
-    [ObservableProperty]
-    private string? _ip = "127.0.0.1";
-
-    [ObservableProperty]
-    private int _port = 8080;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DisconnectOnButtonCommand))]
@@ -107,11 +117,13 @@ internal partial class ClientWindowViewModel : ObservableObject
             else
             {
                 Client ??= new();
+
+                var connectionParameters = Program.Configuration.GetSection("Other parameters");
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     try
                     {
-                        Client.Connect(IPAddress.Parse(Ip!), Port);
+                        Client.Connect(_serverIp, _serverPort);
                         ConnectionState = ConnectionStateEnum.Подключен;
 
                         Log.Information("Клиент с адресом {clientAddress} подключился к серверу", Client.Client.RemoteEndPoint);

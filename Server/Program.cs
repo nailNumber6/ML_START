@@ -56,6 +56,11 @@ internal class Program
                             }
                         }
                     }
+                },
+                ConnectionParameters = new()
+                {
+                    ["Server IP"] = "127.0.0.1",
+                    ["Server port"] = "8080"
                 }
             };
             var serializerOptions = new JsonSerializerOptions
@@ -68,6 +73,7 @@ internal class Program
         }
         #endregion
 
+        #region logging configuring
         _configuration = new ConfigurationBuilder()
         .AddJsonFile(configFileName)
         .Build();
@@ -75,6 +81,7 @@ internal class Program
         Log.Logger = new LoggerConfiguration()
            .ReadFrom.Configuration(_configuration)
            .CreateLogger();
+        #endregion
 
         string projectName = Assembly.GetExecutingAssembly().GetName().Name!;
         var os = Environment.OSVersion;

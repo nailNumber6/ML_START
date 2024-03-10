@@ -18,8 +18,29 @@ using System.Diagnostics;
 namespace Server.ViewModels;
 public partial class ServerWindowViewModel : ObservableObject
 {
-    public string IpAddress => "127.0.0.1";
-    public int Port { get; private set; } = 8080;
+    private IPAddress _serverIp;
+    private int _serverPort;
+
+    public ServerWindowViewModel()
+    {
+        try
+        {
+            var connectionParameters = Program.Configuration.GetSection("Connection parameters");
+            _serverIp = IPAddress.Parse(connectionParameters["Server IP"]!);
+            _serverPort = int.Parse(connectionParameters["Server port"]!);
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Источник: {thisProject}.При попытке прочитать значения для подключения из файла {config} произошла ошибка {exType} : {exMessage}",
+                ex.Source, Program.configFileName, ex.GetType(), ex.Message);
+        }
+
+        _items = [];
+        _networkMessages = [];
+    }
+
+    public IPAddress IpAddress { get { return _serverIp; } }
+    public int Port { get { return _serverPort; } }
 
     private ObservableCollection<string> _items;
 
@@ -37,20 +58,15 @@ public partial class ServerWindowViewModel : ObservableObject
         set { SetProperty(ref _networkMessages, value); }
     }
 
-    public ServerWindowViewModel()
-    {
-        _items = [];
-        _networkMessages = [];
-    }
 
     public async Task StartServer()
     {
-        var tcpListener = new TcpListener(IPAddress.Parse(IpAddress), Port);
+        TcpListener tcpListener = new(IpAddress, Port);
 
         try
         {
             tcpListener.Start();
-            Log.Information("Сервер запустился и начал принимать подключения");
+            Log.Information("Сервер с адресом {ip} : {port} запустился и начал принимать подключения");
 
             while (true)
             { 
@@ -60,6 +76,10 @@ public partial class ServerWindowViewModel : ObservableObject
                 Task.Run(async () => await ProcessClientAsync(tcpClient));
 #pragma warning restore CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
             }
+        }
+        catch(Exception ex)
+        {
+            Log.Error("Во время работы сервера произошла ошибка {exType} : {exMessage}", ex.GetType(), ex.Message);
         }
         finally
         {
