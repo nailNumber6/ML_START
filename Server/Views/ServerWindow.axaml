@@ -26,6 +26,10 @@
 			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StartServer"/>
 			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StartAndShowStory"/>
 		</ia:EventTriggerBehavior>
+
+		<ia:EventTriggerBehavior EventName="Closing" SourceObject="ThisWindow">
+			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StopServer"/>
+		</ia:EventTriggerBehavior>
 	</i:Interaction.Behaviors>
 
 	<Panel>

@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using Serilog;
+using CustomMessageBox.Avalonia;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 using ML_START_1;
+using Server.Models.Network;
 using static ML_START_1.CurrencyType;
-using System.Diagnostics;
 
 
 namespace Server.ViewModels;
@@ -21,9 +22,11 @@ public partial class ServerWindowViewModel : ObservableObject
     private IPAddress _serverIp;
     private int _serverPort;
 
+    TcpServer _server;
+
     public ServerWindowViewModel()
     {
-        #region Server address reading from the config file
+        #region server address reading from the config file
         try
         {
             var connectionParameters = Program.Configuration.GetSection("Connection parameters");
@@ -44,7 +47,7 @@ public partial class ServerWindowViewModel : ObservableObject
     public IPAddress IpAddress { get { return _serverIp; } }
     public int Port { get { return _serverPort; } }
 
-    #region Server window collections
+    #region ServerWindow collections
     private ObservableCollection<string> _items;
 
     public ObservableCollection<string> Items
@@ -65,18 +68,17 @@ public partial class ServerWindowViewModel : ObservableObject
 
     public async Task StartServer()
     {
-        TcpListener tcpListener = new(IpAddress, Port);
+        _server = new TcpServer(IpAddress, Port);
 
         try
         {
-            tcpListener.Start();
+            _server.Start();
             Log.Information("Сервер с адресом {ip} : {port} запустился и начал принимать подключения",
                 _serverIp, _serverPort);
 
-            while (true)
-            { 
-                var tcpClient = await tcpListener.AcceptTcpClientAsync();
-
+            while (_server.Active)
+            {
+                TcpClient? tcpClient = await _server.AcceptTcpClientAsync();
 #pragma warning disable CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
                 Task.Run(async () => await ProcessClientAsync(tcpClient));
 #pragma warning restore CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
@@ -86,15 +88,10 @@ public partial class ServerWindowViewModel : ObservableObject
         {
             Log.Error("Во время работы сервера произошла ошибка {exType} : {exMessage}", ex.GetType(), ex.Message);
         }
-        finally
-        {
-            tcpListener.Stop();
-            Log.Information("Сервер {serverIp} : {serverPort} отключен", _serverIp, _serverPort);
-        }
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            #region connected client into ListBox
+            #region connected client putting into ListBox
             string? clientRow = tcpClient.Client.RemoteEndPoint!.ToString();
 
             NetworkMessages.Add($"Клиент {clientRow!} подключился!");
@@ -122,8 +119,18 @@ public partial class ServerWindowViewModel : ObservableObject
                 Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
+
             NetworkMessages.Add($"Клиент {clientRow!} отключился!");
             Log.Information("Отключился от сервера клиент с адресом {clientAddress}", tcpClient.Client.RemoteEndPoint);
+        }
+    }
+
+    public void StopServer()
+    {
+        if (_server != null)
+        {
+            _server.Stop();
+            Log.Information("Сервер {serverIp} : {serverPort} отключен", _serverIp, _serverPort);
         }
     }
 

@@ -164,6 +164,8 @@ internal partial class ClientWindowViewModel : ObservableObject
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
 
             await tcpStream.WriteAsync(encodedMessage);
+            Log.Information("Клиент {clientAddress} отправил на сервер сообщение: {message}",
+                CurrentClient.Client.LocalEndPoint, encodedMessage);
 
             #region response from the server
             byte[] buffer = new byte[256];
