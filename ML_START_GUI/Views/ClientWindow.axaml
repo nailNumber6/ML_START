@@ -29,15 +29,16 @@
 		<StyleInclude Source="\Resourses\Styles1.axaml"/>
 	</Window.Styles>
 
+	<i:Interaction.Behaviors>
+		<ia:EventTriggerBehavior EventName="Closing" SourceObject="ThisWindow">
+			<ia:CallMethodAction TargetObject="{Binding}" MethodName="AskForWindowClosing"/>
+		</ia:EventTriggerBehavior>
+	</i:Interaction.Behaviors>
+	
 	<Panel>
 
 		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing" 
 				  IsVisible="False" IsEnabled="False"/>
-		<i:Interaction.Behaviors>
-			<ia:EventTriggerBehavior EventName="Closing" SourceObject="ThisWindow">
-				<ia:CallMethodAction TargetObject="{Binding}" MethodName="AskForWindowClosing"/>
-			</ia:EventTriggerBehavior>
-		</i:Interaction.Behaviors>
 		
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
 						<ExperimentalAcrylicBorder.Material>
@@ -60,7 +61,7 @@
 				
 					<RelativePanel>
 						<Label Content="Состояние подключения:" x:Name="ConStateLabel"/>
-						<Label Content="{Binding ConnectionState}" RelativePanel.RightOf="ConStateLabel"/>
+						<Label Content="{Binding ConnectionStateText}" RelativePanel.RightOf="ConStateLabel"/>
 					</RelativePanel>
 				
 					<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton">

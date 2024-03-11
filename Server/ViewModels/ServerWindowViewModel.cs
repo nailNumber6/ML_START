@@ -23,6 +23,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
     public ServerWindowViewModel()
     {
+        #region Server address reading from the config file
         try
         {
             var connectionParameters = Program.Configuration.GetSection("Connection parameters");
@@ -34,6 +35,7 @@ public partial class ServerWindowViewModel : ObservableObject
             Log.Error("Источник: {thisProject}.При попытке прочитать значения для подключения из файла {config} произошла ошибка {exType} : {exMessage}",
                 ex.Source, Program.configFileName, ex.GetType(), ex.Message);
         }
+        #endregion
 
         _items = [];
         _networkMessages = [];
@@ -42,6 +44,7 @@ public partial class ServerWindowViewModel : ObservableObject
     public IPAddress IpAddress { get { return _serverIp; } }
     public int Port { get { return _serverPort; } }
 
+    #region Server window collections
     private ObservableCollection<string> _items;
 
     public ObservableCollection<string> Items
@@ -57,6 +60,7 @@ public partial class ServerWindowViewModel : ObservableObject
         get { return _networkMessages; }
         set { SetProperty(ref _networkMessages, value); }
     }
+    #endregion
 
 
     public async Task StartServer()

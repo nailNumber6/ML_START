@@ -17,7 +17,6 @@ using System;
 
 
 namespace MLSTART_GUI.ViewModels;
-public enum ConnectionStateEnum { Отключен = 0, Подключен = 1 }
 
 internal partial class ClientWindowViewModel : ObservableObject
 {
@@ -46,19 +45,9 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     #region Observable properties
     private string _username = "Гость";
-    public string Username 
-    {
-        get => _username;
-        set => _username = value;
-    }
 
     [ObservableProperty]
     private bool _isWindowClosingAllowed;
-
-    private ObservableCollection<string> _networkMessages;
-
-    [ObservableProperty]
-    private ConnectionStateEnum _connectionState = ConnectionStateEnum.Отключен;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DisconnectOnButtonCommand))]
@@ -66,7 +55,9 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
+
     private string? _input;
+    private ObservableCollection<string> _networkMessages;
 
     public ObservableCollection<string> NetworkMessages
     {
@@ -75,8 +66,26 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
     #endregion
 
+    public bool ClientIsConnected
+    {
+        get { return CurrentClient != null && CurrentClient.Connected; }  
+    }
+
+    public string? ConnectionStateText
+    {
+        get
+        {
+            return ClientIsConnected ? "подключен" : "отключен";
+        }
+    }
+
+    public string Username 
+    {
+        get => _username;
+        set => _username = value;
+    }
+
     public bool IsAuthorized { get; set; }
-    public bool ClientIsConnected { get => ConnectionState == ConnectionStateEnum.Подключен; }
 
     #region methods for bindings
 
@@ -107,16 +116,17 @@ internal partial class ClientWindowViewModel : ObservableObject
                 if (CurrentClient == null)
                 {
                     CurrentClient = new TcpClient();
-                    Log.Information("Создан клиент (класс TcpClient)");
+                    Log.Information("Создан клиент");
                 }
 
                 var connectionParameters = Program.Configuration.GetSection("Other parameters");
+
+                #region client connection to the server
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     try
                     {
                         CurrentClient.Connect(_serverIp, _serverPort);
-                        ConnectionState = ConnectionStateEnum.Подключен;
 
                         Log.Information("Клиент с адресом {clientAddress} подключился к серверу", CurrentClient.Client.LocalEndPoint!);
                         NetworkMessages.Add("Подключен к серверу");
@@ -129,20 +139,20 @@ internal partial class ClientWindowViewModel : ObservableObject
                         NetworkMessages.Add("Ошибка: Сервер не принимает подключения");
                     }
                 });
+                #endregion
             }
         }
     }
     private void DisconnectFromServer()
     {
         CurrentClient!.Client.Shutdown(SocketShutdown.Both);
-        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", CurrentClient.Client.RemoteEndPoint);
+        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", CurrentClient.Client.LocalEndPoint);
 
         CurrentClient!.Close();
         CurrentClient = null;
         Log.Information("Клиент закрыт");
 
         NetworkMessages.Add("Отключен от сервера");
-        ConnectionState = ConnectionStateEnum.Отключен;
     }
 
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]
@@ -174,7 +184,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Warning).Show();
         }
     }
-    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ConnectionState == ConnectionStateEnum.Подключен;
+    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ClientIsConnected;
 
     [RelayCommand]
     public async Task DisconnectOnButton()
