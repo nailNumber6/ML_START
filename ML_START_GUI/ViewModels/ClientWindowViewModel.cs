@@ -26,6 +26,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     public ClientWindowViewModel()
     {
+        #region Server address reading from the config file
         try
         {
             var connectionParameters = Program.Configuration.GetSection("Connection parameters");
@@ -37,6 +38,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             Log.Error("Источник: {thisProject}.При попытке прочитать значения для подключения из файла {config} произошла ошибка {exType} : {exMessage}",
                 ex.Source,Program.configFileName, ex.GetType(), ex.Message);
         }
+        #endregion
 
         IsAuthorized = false;
         _networkMessages = [];
@@ -75,19 +77,6 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     public bool IsAuthorized { get; set; }
     public bool ClientIsConnected { get => ConnectionState == ConnectionStateEnum.Подключен; }
-
-    private void DisconnectFromServer()
-    {
-        CurrentClient!.Client.Shutdown(SocketShutdown.Both);
-        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", CurrentClient.Client.RemoteEndPoint);
-
-        CurrentClient!.Close();
-        CurrentClient = null;
-        Log.Information("Клиент закрыт");
-
-        NetworkMessages.Add("Отключен от сервера");
-        ConnectionState = ConnectionStateEnum.Отключен;
-    }
 
     #region methods for bindings
 
@@ -142,6 +131,18 @@ internal partial class ClientWindowViewModel : ObservableObject
                 });
             }
         }
+    }
+    private void DisconnectFromServer()
+    {
+        CurrentClient!.Client.Shutdown(SocketShutdown.Both);
+        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", CurrentClient.Client.RemoteEndPoint);
+
+        CurrentClient!.Close();
+        CurrentClient = null;
+        Log.Information("Клиент закрыт");
+
+        NetworkMessages.Add("Отключен от сервера");
+        ConnectionState = ConnectionStateEnum.Отключен;
     }
 
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]

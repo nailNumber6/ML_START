@@ -3,19 +3,30 @@
         xmlns:vm="using:Server.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+        xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions.Custom"
+		x:CompileBindings="True"
         mc:Ignorable="d" Width="1200" Height="720"
 		CanResize="False"
         x:Class="Server.Views.ServerWindow"
         x:DataType="vm:ServerWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Server"
-		Name="serverWindow">
+		x:Name="ThisWindow">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:ServerWindowViewModel/>
     </Design.DataContext>
+
+	<i:Interaction.Behaviors>
+		<ia:EventTriggerBehavior EventName="Loaded" SourceObject="ThisWindow">
+			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StartServer"/>
+			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StartAndShowStory"/>
+		</ia:EventTriggerBehavior>
+	</i:Interaction.Behaviors>
 
 	<Panel>
 		

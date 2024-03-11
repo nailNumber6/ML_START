@@ -85,7 +85,7 @@ public partial class ServerWindowViewModel : ObservableObject
         finally
         {
             tcpListener.Stop();
-            Log.Information("Сервер прекратил принимать подключения");
+            Log.Information("Сервер {serverIp} : {serverPort} отключен", _serverIp, _serverPort);
         }
 
         async Task ProcessClientAsync(TcpClient tcpClient)
