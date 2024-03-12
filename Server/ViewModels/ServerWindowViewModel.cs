@@ -14,6 +14,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ML_START_1;
 using Server.Models.Network;
 using static ML_START_1.CurrencyType;
+using System.Threading;
+using ToolLibrary;
+using Avalonia.Threading;
+using System.Diagnostics;
 
 
 namespace Server.ViewModels;
@@ -21,6 +25,7 @@ public partial class ServerWindowViewModel : ObservableObject
 {
     private IPAddress _serverIp;
     private int _serverPort;
+    CancellationTokenSource _cancelServerWorking;
 
     TcpServer _server;
 
@@ -69,16 +74,15 @@ public partial class ServerWindowViewModel : ObservableObject
     public async Task StartServer()
     {
         _server = new TcpServer(IpAddress, Port);
-
         try
         {
             _server.Start();
             Log.Information("Сервер с адресом {ip} : {port} запустился и начал принимать подключения",
                 _serverIp, _serverPort);
-
-            while (_server.Active)
+      
+            while (true)
             {
-                TcpClient? tcpClient = await _server.AcceptTcpClientAsync();
+                TcpClient tcpClient = await _server.AcceptTcpClientAsync();
 #pragma warning disable CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
                 Task.Run(async () => await ProcessClientAsync(tcpClient));
 #pragma warning restore CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
@@ -109,6 +113,10 @@ public partial class ServerWindowViewModel : ObservableObject
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
+                #region message processing
+
+                #endregion
+
                 Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
                 string response = "сообщение получено";
@@ -122,15 +130,6 @@ public partial class ServerWindowViewModel : ObservableObject
 
             NetworkMessages.Add($"Клиент {clientRow!} отключился!");
             Log.Information("Отключился от сервера клиент с адресом {clientAddress}", tcpClient.Client.RemoteEndPoint);
-        }
-    }
-
-    public void StopServer()
-    {
-        if (_server != null)
-        {
-            _server.Stop();
-            Log.Information("Сервер {serverIp} : {serverPort} отключен", _serverIp, _serverPort);
         }
     }
 
