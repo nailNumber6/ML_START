@@ -8,16 +8,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using Serilog;
-using CustomMessageBox.Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using ML_START_1;
 using Server.Models.Network;
 using static ML_START_1.CurrencyType;
 using System.Threading;
-using ToolLibrary;
-using Avalonia.Threading;
-using System.Diagnostics;
 
 
 namespace Server.ViewModels;

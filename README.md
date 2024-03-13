@@ -1,9 +1,9 @@
-#Краткая характеристика программы
+# Краткая характеристика программы
 
-##Как создать БД
-Для создания БД можно в package manager консоли запустить команду `Update-Database InitMigrationAttempt1000`
+## Как создать БД
+Для создания БД можно в package manager консоли выполнить команду `Update-Database InitMigrationAttempt1000`
 
-##Основные сведения
+## Основные сведения
 1) **Точки входа**: 2 (Server, ML_START_GUI)
 2) **Пути к файлам логов**: C:\VS Projects\ML_START\ML_START_GUI\bin\Debug\net7.0\logs, C:\VS Projects\ML_START\Server\bin\Debug\net7.0\logs 
 3) **Пути к файлам конфигурации**: C:\VS Projects\ML_START\Server\bin\Debug\net8.0, C:\VS Projects\ML_START_1\ML_START_GUI\bin\Debug\net7.0

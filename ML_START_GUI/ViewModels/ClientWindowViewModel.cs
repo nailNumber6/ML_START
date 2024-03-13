@@ -127,6 +127,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                     try
                     {
                         CurrentClient.Connect(_serverIp, _serverPort);
+                        OnPropertyChanged(nameof(ConnectionStateText));
 
                         Log.Information("Клиент с адресом {clientAddress} подключился к серверу", CurrentClient.Client.LocalEndPoint!);
                         NetworkMessages.Add("Подключен к серверу");
@@ -161,11 +162,15 @@ internal partial class ClientWindowViewModel : ObservableObject
         if (ClientIsConnected)
         {
             NetworkStream tcpStream = CurrentClient!.GetStream();
-            byte[] encodedMessage = Encoding.UTF8.GetBytes(Input ?? "пустая строка");
+            byte[] encodedMessage = Encoding.UTF8.GetBytes(Input!);
 
             await tcpStream.WriteAsync(encodedMessage);
+
+            NetworkMessages.Add($"На сервер отправлено сообщение: {Input}");
             Log.Information("Клиент {clientAddress} отправил на сервер сообщение: {message}",
-                CurrentClient.Client.LocalEndPoint, encodedMessage);
+                CurrentClient.Client.LocalEndPoint, Input);
+
+            Input = string.Empty;
 
             #region response from the server
             byte[] buffer = new byte[256];
@@ -217,7 +222,9 @@ internal partial class ClientWindowViewModel : ObservableObject
             var dialogResult = MessageBoxManager
                 .GetMessageBoxStandard("Клиент",
                 "В данный момент клиент подключен к серверу" +
-                "\nЗакрыть подключение?", ButtonEnum.OkCancel, Icon.Warning)
+                "\nЗакрыть подключение?" +
+                "\nПосле нажатия ОК нужно повторно нажать кнопку закрытия", 
+                ButtonEnum.OkCancel, Icon.Warning)
                 .ShowAsync().ContinueWith(async task =>
                 {
                     if (task.Result == ButtonResult.Ok)
