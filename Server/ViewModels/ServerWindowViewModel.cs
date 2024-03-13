@@ -114,11 +114,12 @@ public partial class ServerWindowViewModel : ObservableObject
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
                 #region message processing
-
+                // TODO: Обработка сообщения
                 #endregion
 
                 Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
+                //var messageParams = NetworkMessageProcessor.ReadMessage("Message fff"); // TODO: Исправить System.ArgumentOutOfRangeException
                 string response = "сообщение получено";
 
                 NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);

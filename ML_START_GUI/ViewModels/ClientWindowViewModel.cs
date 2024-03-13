@@ -122,7 +122,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 var connectionParameters = Program.Configuration.GetSection("Other parameters");
 
                 #region client connection to the server
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                await Dispatcher.UIThread.InvokeAsync(async () =>
                 {
                     try
                     {
