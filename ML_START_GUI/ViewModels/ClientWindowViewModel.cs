@@ -173,7 +173,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             Input = string.Empty;
 
             #region response from the server
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[1024];
             int readTotal;
 
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)

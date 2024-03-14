@@ -102,7 +102,7 @@ public partial class ServerWindowViewModel : ObservableObject
             #region reading client's message and responding to it 
             var tcpStream = tcpClient.GetStream();
 
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[1024];
             int readTotal;
 
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
