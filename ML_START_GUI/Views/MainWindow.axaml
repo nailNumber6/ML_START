@@ -1,6 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:MLSTART_GUI.ViewModels"
+        xmlns:vm="clr-namespace:MLSTART_GUI.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		WindowStartupLocation="CenterScreen"
@@ -8,14 +8,14 @@
 		xmlns:fluent="using:FluentTheme"
         mc:Ignorable="d" Width="600" Height="400"
         x:Class="MLSTART_GUI.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:DataType="vm:ClientWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Авторизация"
 		FontFamily="Calibri"
 		Foreground="White"
 		Name="authentificationWindow">
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:ClientWindowViewModel/>
     </Design.DataContext>
 	
 	<Window.Styles>

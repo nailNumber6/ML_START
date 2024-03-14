@@ -54,6 +54,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     private TcpClient? _currentClient;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RegisterUserCommand), nameof(LogUserInCommand))]
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
 
     private string? _input;
@@ -68,12 +69,15 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     #region Observable properties for MainWindow (Authorization)
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RegisterUserCommand), nameof(LogUserInCommand))]
     private string? _loginInput;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RegisterUserCommand), nameof(LogUserInCommand))]
     private string? _passwordInput;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RegisterUserCommand), nameof(LogUserInCommand))]
     private string? _repeatPasswordInput;
     #endregion
 
@@ -98,10 +102,14 @@ internal partial class ClientWindowViewModel : ObservableObject
     #region methods for bindings
 
     #region Methods for MainWindow
+    public bool CanValidate() =>
+        !string.IsNullOrEmpty(LoginInput) &&
+        !string.IsNullOrEmpty(PasswordInput) &&
+        !string.IsNullOrEmpty(RepeatPasswordInput);
+
+    [RelayCommand(CanExecute = nameof(CanValidate))]
     public async Task LogUserIn()
     {
-        using NetworkStream tcpStream = CurrentClient!.GetStream();
-
         string authorizationString;
 
         if (PasswordInput == RepeatPasswordInput)
@@ -111,11 +119,37 @@ internal partial class ClientWindowViewModel : ObservableObject
                 // authorization string sending to the server
                 authorizationString = $"login {LoginInput} {PasswordInput}";
 
-                byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
+                CurrentClient = new();
+                using var tcpStream = CurrentClient.GetStream();
 
+                byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
                 await tcpStream.WriteAsync(encodedMessage);
-                Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}", 
+
+                Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
                     CurrentClient.Client.LocalEndPoint, authorizationString);
+
+                byte[] buffer = new byte[1024];
+                int readTotal;
+                string response = string.Empty;
+
+                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+                {
+                    response = Encoding.UTF8.GetString(buffer, 0, readTotal);
+
+                    NetworkMessages.Add("Ответ сервера: " + response);
+                    break;
+                }
+
+                if (response == "success")
+                {
+                    Username = LoginInput;
+                    Log.Information("Пользователь {username} успешно вошел в систему", Username);
+                    new MessageBox("Вы успешно вошли!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                }
+                else
+                {
+                    CurrentClient = null;
+                }
             }
         }
         else
@@ -124,9 +158,18 @@ internal partial class ClientWindowViewModel : ObservableObject
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanValidate))]
     public void RegisterUser()
     {
 
+    }
+
+    [RelayCommand]
+    public void ResetInputFields()
+    {
+        LoginInput = string.Empty;
+        PasswordInput = string.Empty;
+        RepeatPasswordInput = string.Empty;
     }
     #endregion
 
@@ -138,10 +181,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         {
             var authorizationWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel
-                {
-                    SourceWindowViewModel = this
-                },
+                DataContext = this,
             };
             authorizationWindow.Show();
         }
@@ -222,6 +262,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 string response = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
                 NetworkMessages.Add("Ответ сервера: " + response);
+                Log.Information("Получен ответ от сервера: {response}", response);
                 break;
             }
             #endregion

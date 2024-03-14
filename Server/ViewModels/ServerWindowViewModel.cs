@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text;
 using System.Linq;
+using System.Threading;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ using Serilog;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using ML_START_1;
-using Server.Models.Network;
 using static ML_START_1.CurrencyType;
-using System.Threading;
+using Server.Models.Network;
+using Server.Models.TestDB;
 
 
 namespace Server.ViewModels;
@@ -105,22 +106,46 @@ public partial class ServerWindowViewModel : ObservableObject
             byte[] buffer = new byte[1024];
             int readTotal;
 
+            string response = string.Empty;
+
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
-
-                #region message processing
-                // TODO: Обработка сообщения
-                #endregion
-
                 Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
-                //var messageParams = NetworkMessageProcessor.ReadMessage("Message fff"); // TODO: Исправить System.ArgumentOutOfRangeException
-                string response = "сообщение получено";
+                #region message processing
+                // getting parts of message
+                string[] messageParts = receivedMessage.Split();
+
+                string command = messageParts[0];
+
+                if (command == "login")
+                {
+                    using TestContext context = new();
+
+                    var login = messageParts[1]; var pswd = messageParts[2];
+
+                    if (await context.UserExistsAsync(login, pswd))
+                    {
+                        response = "success";
+                        Log.Information("Пользователь {userLogin} успешно авторизовался", login);
+                    }
+                    else
+                    {
+                        response = "fail";
+                        Log.Information("Пользователь {userLogin} не авторизовался", login);
+                    }
+                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                }
+                else if (command == "message")
+                {
+                    response = "сообщение получено";
+                    Log.Information("От клиента {clientAddress} получено простое сообщение");
+                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                }
+                #endregion
 
                 NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
-                
-                await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                 Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
@@ -132,7 +157,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
     public async Task StartAndShowStory()
     {
-        await Task.Delay(1000); // в это время завершается чтение конфига
+        await Task.Delay(1000); // during this time configuration is being read
         Random random = new();
 
         while (true)
