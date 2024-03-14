@@ -43,7 +43,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         _networkMessages = [];
     }
 
-    #region Observable properties
+    #region Observable properties for ClientWindow
     private string _username = "Гость";
 
     [ObservableProperty]
@@ -66,6 +66,17 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
     #endregion
 
+    #region Observable properties for MainWindow (Authorization)
+    [ObservableProperty]
+    private string? _loginInput;
+
+    [ObservableProperty]
+    private string? _passwordInput;
+
+    [ObservableProperty]
+    private string? _repeatPasswordInput;
+    #endregion
+
     public bool ClientIsConnected
     {
         get { return CurrentClient != null && CurrentClient.Connected; }  
@@ -73,10 +84,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     public string? ConnectionStateText
     {
-        get
-        {
-            return ClientIsConnected ? "подключен" : "отключен";
-        }
+        get { return ClientIsConnected ? "подключен" : "отключен"; }
     }
 
     public string Username 
@@ -88,6 +96,39 @@ internal partial class ClientWindowViewModel : ObservableObject
     public bool IsAuthorized { get; set; }
 
     #region methods for bindings
+
+    #region Methods for MainWindow
+    public async Task LogUserIn()
+    {
+        using NetworkStream tcpStream = CurrentClient!.GetStream();
+
+        string authorizationString;
+
+        if (PasswordInput == RepeatPasswordInput)
+        {
+            if (LoginInput!.Length > 20)
+            {
+                // authorization string sending to the server
+                authorizationString = $"login {LoginInput} {PasswordInput}";
+
+                byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
+
+                await tcpStream.WriteAsync(encodedMessage);
+                Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}", 
+                    CurrentClient.Client.LocalEndPoint, authorizationString);
+            }
+        }
+        else
+        {
+            new MessageBox("Пароли не совпадают", "Ошибка", MessageBoxIcon.Warning).Show();
+        }
+    }
+
+    public void RegisterUser()
+    {
+
+    }
+    #endregion
 
     #region network interaction methods
     [RelayCommand]
@@ -161,7 +202,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     {
         if (ClientIsConnected)
         {
-            NetworkStream tcpStream = CurrentClient!.GetStream();
+            using NetworkStream tcpStream = CurrentClient!.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes(Input!);
 
             await tcpStream.WriteAsync(encodedMessage);
