@@ -36,10 +36,6 @@ internal class Program
                     ["L"] = 6,
                     ["action delay"] = 500
                 },
-                ConnectionStrings = new()
-                {
-                    ["MSSQL Server"] = "Server=(localdb)\\MSSQLLocalDB;Database=Test;Trusted_Connection=True;TrustServerCertificate=True"
-                },
                 SerilogSettings = new()
                 {
                     ["Using"] = "Serilog.Sinks.File",

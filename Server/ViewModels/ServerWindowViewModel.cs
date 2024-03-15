@@ -15,6 +15,7 @@ using ML_START_1;
 using static ML_START_1.CurrencyType;
 using Server.Models.Network;
 using Server.Models.TestDB;
+using Azure;
 
 
 namespace Server.ViewModels;
@@ -92,11 +93,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            #region connected client putting into ListBox
             string? clientRow = tcpClient.Client.RemoteEndPoint!.ToString();
-
-            NetworkMessages.Add($"Клиент {clientRow!} подключился!");
-            #endregion
 
             Log.Information("Подключился клиент с адресом {clientEndPoint}", tcpClient.Client.RemoteEndPoint);
 
@@ -121,13 +118,17 @@ public partial class ServerWindowViewModel : ObservableObject
 
                 if (command == "login")
                 {
+                    Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientRow);
                     using TestContext context = new();
 
-                    var login = messageParts[1]; var pswd = messageParts[2];
+                    var login = messageParts[1]; var password = messageParts[2];
 
-                    if (await context.UserExistsAsync(login, pswd))
+                    if (await context.UserExistsAsync(login, password))
                     {
                         response = "success";
+
+                        NetworkMessages.Add($"Клиент {clientRow!} подключился!");
+
                         Log.Information("Пользователь {userLogin} успешно авторизовался", login);
                     }
                     else
@@ -137,15 +138,38 @@ public partial class ServerWindowViewModel : ObservableObject
                     }
                     await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                 }
+                else if (command == "register")
+                {
+                    Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientRow);
+                    using TestContext context = new();
+
+                    var login = messageParts[1]; var password = messageParts[2];
+
+                    if (!await context.UserExistsAsync(login, password))
+                    {
+                        var newUser = User.Create(login, password);
+                        await context.AddAsync(newUser);
+                        await context.SaveChangesAsync();
+
+                        response = "success";
+                    }
+                    else
+                    {
+                        response = "exists";
+                    }
+                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                }
                 else if (command == "message")
                 {
                     response = "сообщение получено";
                     Log.Information("От клиента {clientAddress} получено простое сообщение");
+
+                    NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
+
                     await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                 }
                 #endregion
 
-                NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
                 Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
@@ -155,6 +179,7 @@ public partial class ServerWindowViewModel : ObservableObject
         }
     }
 
+    #region story displaying methods
     public async Task StartAndShowStory()
     {
         await Task.Delay(1000); // during this time configuration is being read
@@ -319,4 +344,5 @@ public partial class ServerWindowViewModel : ObservableObject
         }
         Items.Clear();
     }
+    #endregion
 }

@@ -18,7 +18,7 @@ public partial class TestContext : DbContext
     {
         try
         { 
-            _connectionString = Program.Configuration.GetConnectionString("MSSQ Server")!; 
+            _connectionString = Program.Configuration.GetConnectionString("MSSQL Server")!; 
         } 
         catch 
         {
