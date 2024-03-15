@@ -152,6 +152,7 @@ public partial class ServerWindowViewModel : ObservableObject
                         await context.SaveChangesAsync();
 
                         response = "success";
+                        NetworkMessages.Add($"Клиент {clientRow} подключился!");
                     }
                     else
                     {

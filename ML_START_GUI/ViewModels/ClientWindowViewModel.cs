@@ -67,7 +67,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
     #endregion
 
-    #region Observable properties for MainWindow (Authorization)
+    #region observable properties for MainWindow (Authorization)
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RegisterUserCommand), nameof(LogUserInCommand))]
     private string? _loginInput;
@@ -101,7 +101,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     #region methods for bindings
 
-    #region Methods for MainWindow
+    #region methods for MainWindow
     public bool CanValidate() =>
         !string.IsNullOrEmpty(LoginInput) &&
         !string.IsNullOrEmpty(PasswordInput) &&
@@ -137,11 +137,16 @@ internal partial class ClientWindowViewModel : ObservableObject
                 while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                 {
                     response = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                    Log.Information("Ответ сервера: {response}");
+                    Log.Information("Ответ сервера: {response}", response);
 
                     if (response == "success")
                     {
                         Username = LoginInput;
+                        IsAuthorized = true;
+
+                        OnPropertyChanged(nameof(ConnectionStateText));
+                        OnPropertyChanged(nameof(Username));
+
                         Log.Information("Пользователь {username} успешно вошел в систему", Username);
                         new MessageBox("Вы успешно вошли!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
                     }
@@ -152,7 +157,6 @@ internal partial class ClientWindowViewModel : ObservableObject
                         CurrentClient.Close();
                         CurrentClient = null;
                     }
-                    break;
                 }
             }
         }
@@ -192,11 +196,16 @@ internal partial class ClientWindowViewModel : ObservableObject
                 while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                 {
                     response = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                    Log.Information("Ответ сервера: {response}");
+                    Log.Information("Ответ сервера: {response}", response);
 
                     if (response == "success")
                     {
                         Username = LoginInput;
+                        IsAuthorized = true;
+
+                        OnPropertyChanged(nameof(ConnectionStateText));
+                        OnPropertyChanged(nameof(Username));
+
                         Log.Information("Пользователь {username} успешно зарегистрирован", Username);
                         new MessageBox("Вы успешно зарегистрировались!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
                     }
@@ -207,7 +216,6 @@ internal partial class ClientWindowViewModel : ObservableObject
                         CurrentClient.Close();
                         CurrentClient = null;
                     }
-                    break;
                 }
             }
         }
@@ -238,7 +246,6 @@ internal partial class ClientWindowViewModel : ObservableObject
             };
             authorizationWindow.Show();
         }
-
         else
         {
             if (ClientIsConnected)
@@ -296,7 +303,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         if (ClientIsConnected)
         {
             using NetworkStream tcpStream = CurrentClient!.GetStream();
-            byte[] encodedMessage = Encoding.UTF8.GetBytes(Input!);
+            byte[] encodedMessage = Encoding.UTF8.GetBytes("message" + " " + Input!);
 
             await tcpStream.WriteAsync(encodedMessage);
 
