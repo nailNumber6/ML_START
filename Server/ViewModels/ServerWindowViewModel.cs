@@ -105,7 +105,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
             string response = string.Empty;
 
-            while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+            while (tcpClient.Connected && (readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
                 Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
