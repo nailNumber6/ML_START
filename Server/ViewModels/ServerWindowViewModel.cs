@@ -16,6 +16,7 @@ using static ML_START_1.CurrencyType;
 using Server.Models.Network;
 using Server.Models.TestDB;
 using Azure;
+using Avalonia.Threading;
 
 
 namespace Server.ViewModels;
@@ -23,7 +24,6 @@ public partial class ServerWindowViewModel : ObservableObject
 {
     private IPAddress _serverIp;
     private int _serverPort;
-    CancellationTokenSource _cancelServerWorking;
 
     TcpServer _server;
 
@@ -171,12 +171,12 @@ public partial class ServerWindowViewModel : ObservableObject
                 }
                 #endregion
 
-                Log.Information("Клиенту отправлен ответ: {response}", response);
+                 Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
 
             NetworkMessages.Add($"Клиент {clientRow!} отключился!");
-            Log.Information("Отключился от сервера клиент с адресом {clientAddress}", tcpClient.Client.RemoteEndPoint);
+            Log.Information("Отключился от сервера клиент с адресом {clientAddress}", clientRow);
         }
     }
 

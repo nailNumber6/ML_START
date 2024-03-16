@@ -134,7 +134,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 int readTotal;
                 string response = string.Empty;
 
-                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+                while (CurrentClient != null && (readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                 {
                     response = Encoding.UTF8.GetString(buffer, 0, readTotal);
                     Log.Information("Ответ сервера: {response}", response);
@@ -154,7 +154,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                     {
                         new MessageBox("Вы не вошли в систему", "Отказ в доступе", MessageBoxIcon.Information).Show();
                         Log.Information("Клиент {clientAddress} не смог войти в систему", CurrentClient.Client.LocalEndPoint);
-                        CurrentClient.Close();
+                        CurrentClient.Client.Close();
                         CurrentClient = null;
                     }
                 }
@@ -287,12 +287,14 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
     private void DisconnectFromServer()
     {
+        string clientAddressString = CurrentClient!.Client.LocalEndPoint!.ToString()!;
+
         CurrentClient!.Client.Shutdown(SocketShutdown.Both);
-        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", CurrentClient.Client.LocalEndPoint);
+        Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", clientAddressString);
 
         CurrentClient!.Close();
         CurrentClient = null;
-        Log.Information("Клиент закрыт");
+        Log.Information("Клиент {clientAddress} закрыт", clientAddressString);
 
         NetworkMessages.Add("Отключен от сервера");
     }
