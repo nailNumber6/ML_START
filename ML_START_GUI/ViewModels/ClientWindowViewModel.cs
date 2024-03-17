@@ -136,7 +136,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                         Log.Error("Попытка подключения клиента с адресом {clientAddress} вызвала исключение {exType} : {exMessage}",
                             CurrentClient.Client.RemoteEndPoint, ex.GetType(), ex.Message);
 
-                        NetworkMessages.Add("Ошибка: Сервер не принимает подключения");
+                        NetworkMessages.Add($"Ошибка: Сервер {_serverIp} : {_serverPort} не принимает подключения");
                     }
                 });
                 #endregion
@@ -150,10 +150,13 @@ internal partial class ClientWindowViewModel : ObservableObject
         CurrentClient!.Client.Shutdown(SocketShutdown.Both);
         Log.Information("Клиент с адресом {clientAddress} теперь не может принимать и посылать сообщения на сервер", clientAddressString);
 
-        CurrentClient!.Close();
+        CurrentClient!.Client.Close();
+
         CurrentClient = null;
 
+        OnPropertyChanged(nameof(ClientIsConnected));
         OnPropertyChanged(nameof(ConnectionStateText));
+        OnPropertyChanged(nameof(CanSend));
 
         Log.Information("Клиент {clientAddress} закрыт", clientAddressString);
 
@@ -233,7 +236,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                 {
                     if (task.Result == ButtonResult.Ok)
                     {
-                        await Dispatcher.UIThread.InvokeAsync(DisconnectFromServer);
+                        Dispatcher.UIThread.Invoke(DisconnectFromServer);
                         IsWindowClosingAllowed = true;
                     }
                     else

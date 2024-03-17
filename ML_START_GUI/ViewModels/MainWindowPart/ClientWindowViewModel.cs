@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
 using Serilog;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MLSTART_GUI.ViewModels;
@@ -83,8 +82,7 @@ internal partial class ClientWindowViewModel
                         new MessageBox("Вы не вошли в систему", "Отказ в доступе", MessageBoxIcon.Information).Show();
                         Log.Information("Клиент {clientAddress} не смог войти в систему", CurrentClient.Client.LocalEndPoint);
 
-                        CurrentClient.Close();
-                        CurrentClient = null;
+                        DisconnectFromServer();
                     }
                     break;
                 }
@@ -145,8 +143,7 @@ internal partial class ClientWindowViewModel
                     {
                         new MessageBox("Пользователь с такими данными уже существует", "Отказ в доступе", MessageBoxIcon.Information).Show();
                         Log.Information("Клиент {clientAddress} не зарегистрирован", CurrentClient.Client.LocalEndPoint);
-                        CurrentClient.Close();
-                        CurrentClient = null;
+                        DisconnectFromServer();
                     }
                     else if (response == "error")
                     {

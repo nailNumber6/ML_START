@@ -98,8 +98,10 @@ public partial class ServerWindowViewModel : ObservableObject
 
             Log.Information("Подключился клиент с адресом {clientEndPoint}", tcpClient.Client.RemoteEndPoint);
 
+            NetworkMessages.Add($"Клиент {clientAddress} подключился!");
+
             #region reading client's message and responding to it 
-            
+
             var tcpStream = tcpClient.GetStream();
 
             byte[] buffer = new byte[1024];
@@ -107,20 +109,19 @@ public partial class ServerWindowViewModel : ObservableObject
 
             string response = string.Empty;
 
-            while (tcpClient.Connected)
+            while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
-                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
-                {
-                    string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                    Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
+                
+                string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
+                Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
-                    #region message processing
-                    // getting parts of message
-                    string[] messageParts = receivedMessage.Split();
+                #region message processing
+                // getting parts of message
+                string[] messageParts = receivedMessage.Split();
 
-                    string command = messageParts[0];
+                string command = messageParts[0];
 
-                    if (command == "login")
+                if (command == "login")
                     {
                         Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientAddress);
                         using TestContext context = new();
@@ -131,8 +132,6 @@ public partial class ServerWindowViewModel : ObservableObject
                         {
                             response = "success";
 
-                            NetworkMessages.Add($"Клиент {clientAddress!} подключился!");
-
                             Log.Information("Пользователь {userLogin} успешно авторизовался", login);
                         }
                         else
@@ -142,7 +141,7 @@ public partial class ServerWindowViewModel : ObservableObject
                         }
                         await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                     }
-                    else if (command == "register")
+                else if (command == "register")
                     {
                         Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientAddress);
                         using TestContext context = new();
@@ -157,7 +156,6 @@ public partial class ServerWindowViewModel : ObservableObject
                             {
                                 await context.SaveChangesAsync();
                                 response = "success";
-                                NetworkMessages.Add($"Клиент {clientAddress} подключился!");
                             }
                             catch (Exception ex)
                             {
@@ -172,19 +170,18 @@ public partial class ServerWindowViewModel : ObservableObject
                         }
                         await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                     }
-                    else if (command == "message")
-                    {
-                        response = "сообщение получено";
-                        Log.Information("От клиента {clientAddress} получено простое сообщение", clientAddress);
+                else if (command == "message")
+                {
+                    response = "сообщение получено";
+                    Log.Information("От клиента {clientAddress} получено простое сообщение", clientAddress);
 
-                        NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + messageParts[1]);
+                    NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + messageParts[1]);
 
-                        await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
-                    }
-                    #endregion
-
-                    Log.Information("Клиенту отправлен ответ: {response}", response);
+                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                 }
+                #endregion
+
+                Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
 
