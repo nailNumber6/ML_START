@@ -94,7 +94,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            string? clientRow = tcpClient.Client.RemoteEndPoint!.ToString();
+            string? clientAddress = tcpClient.Client.RemoteEndPoint!.ToString();
 
             Log.Information("Подключился клиент с адресом {clientEndPoint}", tcpClient.Client.RemoteEndPoint);
 
@@ -107,78 +107,81 @@ public partial class ServerWindowViewModel : ObservableObject
 
             string response = string.Empty;
 
-            while (tcpClient.Connected && (readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+            while (tcpClient.Connected)
             {
-                string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
-
-                #region message processing
-                // getting parts of message
-                string[] messageParts = receivedMessage.Split();
-
-                string command = messageParts[0];
-
-                if (command == "login")
+                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                 {
-                    Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientRow);
-                    using TestContext context = new();
+                    string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
+                    Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
-                    var login = messageParts[1]; var password = messageParts[2];
+                    #region message processing
+                    // getting parts of message
+                    string[] messageParts = receivedMessage.Split();
 
-                    if (await context.UserExistsAsync(login, password))
+                    string command = messageParts[0];
+
+                    if (command == "login")
                     {
-                        response = "success";
+                        Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientAddress);
+                        using TestContext context = new();
 
-                        NetworkMessages.Add($"Клиент {clientRow!} подключился!");
+                        var login = messageParts[1]; var password = messageParts[2];
 
-                        Log.Information("Пользователь {userLogin} успешно авторизовался", login);
+                        if (await context.UserExistsAsync(login, password))
+                        {
+                            response = "success";
+
+                            NetworkMessages.Add($"Клиент {clientAddress!} подключился!");
+
+                            Log.Information("Пользователь {userLogin} успешно авторизовался", login);
+                        }
+                        else
+                        {
+                            response = "fail";
+                            Log.Information("Пользователь {userLogin} не авторизовался", login);
+                        }
+                        await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                     }
-                    else
+                    else if (command == "register")
                     {
-                        response = "fail";
-                        Log.Information("Пользователь {userLogin} не авторизовался", login);
+                        Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientAddress);
+                        using TestContext context = new();
+
+                        var login = messageParts[1]; var password = messageParts[2];
+
+                        if (!await context.UserExistsAsync(login, password))
+                        {
+                            var newUser = User.Create(login, password);
+                            await context.AddAsync(newUser);
+                            await context.SaveChangesAsync();
+
+                            response = "success";
+                            NetworkMessages.Add($"Клиент {clientAddress} подключился!");
+                        }
+                        else
+                        {
+                            response = "exists";
+                        }
+                        await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                     }
-                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                    else if (command == "message")
+                    {
+                        response = "сообщение получено";
+                        Log.Information("От клиента {clientAddress} получено простое сообщение", clientAddress);
+
+                        NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + messageParts[1]);
+
+                        await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                    }
+                    #endregion
+
+                    Log.Information("Клиенту отправлен ответ: {response}", response);
                 }
-                else if (command == "register")
-                {
-                    Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientRow);
-                    using TestContext context = new();
-
-                    var login = messageParts[1]; var password = messageParts[2];
-
-                    if (!await context.UserExistsAsync(login, password))
-                    {
-                        var newUser = User.Create(login, password);
-                        await context.AddAsync(newUser);
-                        await context.SaveChangesAsync();
-
-                        response = "success";
-                        NetworkMessages.Add($"Клиент {clientRow} подключился!");
-                    }
-                    else
-                    {
-                        response = "exists";
-                    }
-                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
-                }
-                else if (command == "message")
-                {
-                    response = "сообщение получено";
-                    Log.Information("От клиента {clientAddress} получено простое сообщение");
-
-                    NetworkMessages.Add($"Сообщение от клиента {clientRow}: " + receivedMessage);
-
-                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
-                }
-                #endregion
-
-                Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
 
-            NetworkMessages.Add($"Клиент {clientRow!} отключился!");
-            Log.Information("Отключился от сервера клиент с адресом {clientAddress}", clientRow);
+            NetworkMessages.Add($"Клиент {clientAddress!} отключился!");
+            Log.Information("Отключился от сервера клиент с адресом {clientAddress}", clientAddress);
         }
     }
 

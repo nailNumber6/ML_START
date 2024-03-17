@@ -2,11 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MLSTART_GUI.ViewModels;
@@ -37,6 +34,7 @@ internal partial class ClientWindowViewModel
     [RelayCommand(CanExecute = nameof(CanValidate))]
     public async Task LogUserIn()
     {
+
         string authorizationString;
 
         if (PasswordInput == RepeatPasswordInput)
@@ -81,9 +79,11 @@ internal partial class ClientWindowViewModel
                     {
                         new MessageBox("Вы не вошли в систему", "Отказ в доступе", MessageBoxIcon.Information).Show();
                         Log.Information("Клиент {clientAddress} не смог войти в систему", CurrentClient.Client.LocalEndPoint);
+
                         CurrentClient.Close();
                         CurrentClient = null;
                     }
+                    break;
                 }
             }
         }

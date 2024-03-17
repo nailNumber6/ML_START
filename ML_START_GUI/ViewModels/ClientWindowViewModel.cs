@@ -183,6 +183,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
                 NetworkMessages.Add("Ответ сервера: " + response);
                 Log.Information("Получен ответ от сервера: {response}", response);
+                break;
             }
             #endregion
         }
