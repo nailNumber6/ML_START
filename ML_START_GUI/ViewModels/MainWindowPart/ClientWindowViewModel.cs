@@ -59,7 +59,7 @@ internal partial class ClientWindowViewModel
                 string response;
                 byte[] buffer = new byte[1024];
 
-                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0) // IO.Exception
+                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                 {
                     response = Encoding.UTF8.GetString(buffer, 0, readTotal);
                     Log.Information("Ответ сервера: {response}", response);
@@ -72,8 +72,11 @@ internal partial class ClientWindowViewModel
                         OnPropertyChanged(nameof(ConnectionStateText));
                         OnPropertyChanged(nameof(Username));
 
+                        NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+
                         Log.Information("Пользователь {username} успешно вошел в систему", Username);
-                        new MessageBox("Вы успешно вошли!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                        new MessageBox("Вы успешно вошли!\n" +
+                            "Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
                     }
                     else
                     {
@@ -108,7 +111,7 @@ internal partial class ClientWindowViewModel
                 CurrentClient = new();
                 CurrentClient.Connect(_serverIp, _serverPort);
 
-                using var tcpStream = CurrentClient.GetStream();
+                var tcpStream = CurrentClient.GetStream();
 
                 byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
                 await tcpStream.WriteAsync(encodedMessage);
@@ -133,6 +136,8 @@ internal partial class ClientWindowViewModel
                         OnPropertyChanged(nameof(ConnectionStateText));
                         OnPropertyChanged(nameof(Username));
 
+                        NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+
                         Log.Information("Пользователь {username} успешно зарегистрирован", Username);
                         new MessageBox("Вы успешно зарегистрировались!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
                     }
@@ -143,6 +148,14 @@ internal partial class ClientWindowViewModel
                         CurrentClient.Close();
                         CurrentClient = null;
                     }
+                    else if (response == "error")
+                    {
+                        new MessageBox("При регистрации на стороне сервера произошла ошибка", "Отказ в доступе", MessageBoxIcon.Information).Show();
+                        Log.Information("Клиент {clientAddress} не зарегистрирован", CurrentClient.Client.LocalEndPoint);
+                        CurrentClient.Close();
+                        CurrentClient = null;
+                    }
+                    break;
                 }
             }
         }

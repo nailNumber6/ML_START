@@ -152,12 +152,15 @@ internal partial class ClientWindowViewModel : ObservableObject
 
         CurrentClient!.Close();
         CurrentClient = null;
+
+        OnPropertyChanged(nameof(ConnectionStateText));
+
         Log.Information("Клиент {clientAddress} закрыт", clientAddressString);
 
-        NetworkMessages.Add("Отключен от сервера");
+        NetworkMessages.Add($"Отключен от сервера {_serverIp} : {_serverPort}");
     }
 
-    [RelayCommand(CanExecute = nameof(InputNotEmpty))]
+    [RelayCommand(CanExecute = nameof(CanSend))]
     public async Task Send()
      {
         if (ClientIsConnected)
@@ -167,7 +170,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
             await tcpStream.WriteAsync(encodedMessage);
 
-            NetworkMessages.Add($"На сервер отправлено сообщение: {Input}");
+            NetworkMessages.Add($"На сервер {_serverIp} : {_serverPort} отправлено сообщение: {Input}");
             Log.Information("Клиент {clientAddress} отправил на сервер сообщение: {message}",
                 CurrentClient.Client.LocalEndPoint, Input);
 
@@ -181,7 +184,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             {
                 string response = Encoding.UTF8.GetString(buffer, 0, readTotal);
 
-                NetworkMessages.Add("Ответ сервера: " + response);
+                NetworkMessages.Add($"Ответ сервера {_serverIp} : {_serverPort}: {response}");
                 Log.Information("Получен ответ от сервера: {response}", response);
                 break;
             }
@@ -192,7 +195,7 @@ internal partial class ClientWindowViewModel : ObservableObject
             new MessageBox("Клиент не подключен", "Клиент", MessageBoxIcon.Warning).Show();
         }
     }
-    private bool InputNotEmpty() => !string.IsNullOrEmpty(Input) && ClientIsConnected;
+    private bool CanSend() => !string.IsNullOrEmpty(Input) && ClientIsConnected;
 
     [RelayCommand]
     public async Task DisconnectOnButton()

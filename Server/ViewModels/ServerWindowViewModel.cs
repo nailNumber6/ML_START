@@ -153,10 +153,18 @@ public partial class ServerWindowViewModel : ObservableObject
                         {
                             var newUser = User.Create(login, password);
                             await context.AddAsync(newUser);
-                            await context.SaveChangesAsync();
+                            try
+                            {
+                                await context.SaveChangesAsync();
+                                response = "success";
+                                NetworkMessages.Add($"Клиент {clientAddress} подключился!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error("При попытке обновления базы данных вызвано исключение {exType} : {exMessage}", ex.GetType(), ex.Message);
+                                response = "error";
+                            }
 
-                            response = "success";
-                            NetworkMessages.Add($"Клиент {clientAddress} подключился!");
                         }
                         else
                         {
