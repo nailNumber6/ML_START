@@ -129,7 +129,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                         OnPropertyChanged(nameof(ConnectionStateText));
 
                         Log.Information("Клиент с адресом {clientAddress} подключился к серверу", CurrentClient.Client.LocalEndPoint!);
-                        NetworkMessages.Add("Подключен к серверу");
+                        NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
                     }
                     catch (SocketException ex)
                     {
@@ -159,10 +159,10 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(InputNotEmpty))]
     public async Task Send()
-    {
+     {
         if (ClientIsConnected)
         {
-            using NetworkStream tcpStream = CurrentClient!.GetStream();
+            NetworkStream tcpStream = CurrentClient!.GetStream();
             byte[] encodedMessage = Encoding.UTF8.GetBytes("message" + " " + Input!);
 
             await tcpStream.WriteAsync(encodedMessage);
@@ -174,8 +174,8 @@ internal partial class ClientWindowViewModel : ObservableObject
             Input = string.Empty;
 
             #region response from the server
-            byte[] buffer = new byte[1024];
             int readTotal;
+            byte[] buffer = new byte[1024];
 
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
@@ -183,7 +183,6 @@ internal partial class ClientWindowViewModel : ObservableObject
 
                 NetworkMessages.Add("Ответ сервера: " + response);
                 Log.Information("Получен ответ от сервера: {response}", response);
-                break;
             }
             #endregion
         }

@@ -17,6 +17,7 @@ using Server.Models.Network;
 using Server.Models.TestDB;
 using Azure;
 using Avalonia.Threading;
+using System.Diagnostics;
 
 
 namespace Server.ViewModels;
@@ -98,6 +99,7 @@ public partial class ServerWindowViewModel : ObservableObject
             Log.Information("Подключился клиент с адресом {clientEndPoint}", tcpClient.Client.RemoteEndPoint);
 
             #region reading client's message and responding to it 
+            
             var tcpStream = tcpClient.GetStream();
 
             byte[] buffer = new byte[1024];
@@ -165,13 +167,13 @@ public partial class ServerWindowViewModel : ObservableObject
                     response = "сообщение получено";
                     Log.Information("От клиента {clientAddress} получено простое сообщение");
 
-                    NetworkMessages.Add("Сообщение от клиента: " + receivedMessage);
+                    NetworkMessages.Add($"Сообщение от клиента {clientRow}: " + receivedMessage);
 
                     await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                 }
                 #endregion
 
-                 Log.Information("Клиенту отправлен ответ: {response}", response);
+                Log.Information("Клиенту отправлен ответ: {response}", response);
             }
             #endregion
 

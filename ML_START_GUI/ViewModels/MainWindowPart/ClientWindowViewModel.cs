@@ -4,6 +4,7 @@ using CustomMessageBox.Avalonia;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ internal partial class ClientWindowViewModel
                 CurrentClient = new();
                 CurrentClient.Connect(_serverIp, _serverPort);
 
-                using var tcpStream = CurrentClient.GetStream();
+                var tcpStream = CurrentClient.GetStream();
 
                 byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
                 await tcpStream.WriteAsync(encodedMessage);
@@ -56,11 +57,11 @@ internal partial class ClientWindowViewModel
                 Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
                     CurrentClient.Client.LocalEndPoint, authorizationString);
 
-                byte[] buffer = new byte[1024];
                 int readTotal;
-                string response = string.Empty;
+                string response;
+                byte[] buffer = new byte[1024];
 
-                while (CurrentClient != null && (readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0) // IO.Exception
                 {
                     response = Encoding.UTF8.GetString(buffer, 0, readTotal);
                     Log.Information("Ответ сервера: {response}", response);
@@ -80,7 +81,7 @@ internal partial class ClientWindowViewModel
                     {
                         new MessageBox("Вы не вошли в систему", "Отказ в доступе", MessageBoxIcon.Information).Show();
                         Log.Information("Клиент {clientAddress} не смог войти в систему", CurrentClient.Client.LocalEndPoint);
-                        CurrentClient.Client.Close();
+                        CurrentClient.Close();
                         CurrentClient = null;
                     }
                 }
@@ -115,9 +116,9 @@ internal partial class ClientWindowViewModel
                 Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
                     CurrentClient.Client.LocalEndPoint, authorizationString);
 
-                byte[] buffer = new byte[1024];
                 int readTotal;
-                string response = string.Empty;
+                string response;
+                byte[] buffer = new byte[1024];
 
                 while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                 {
