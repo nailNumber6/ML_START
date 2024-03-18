@@ -36,7 +36,7 @@
 	</i:Interaction.Behaviors>
 	
 	<Panel>
-
+		<!--Checks if window closing using CLose button is allowed-->
 		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing" 
 				  IsVisible="False" IsEnabled="False"/>
 		
@@ -57,7 +57,10 @@
 			
 				<StackPanel x:Name="ServerConnectingPanel">
 
-					<Label Content="{Binding Username}" HorizontalAlignment="Center"/>
+					<RelativePanel>
+						<Label Content="Имя пользователя:" x:Name="UserNameTitle"/>
+						<Label Content="{Binding Username}" RelativePanel.RightOf="UserNameTitle"/>
+					</RelativePanel>
 				
 					<RelativePanel>
 						<Label Content="Состояние подключения:" x:Name="ConStateLabel"/>

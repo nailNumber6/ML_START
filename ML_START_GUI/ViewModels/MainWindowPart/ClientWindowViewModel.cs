@@ -1,7 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Data;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
+using MLSTART_GUI.Models;
 using Serilog;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,51 +44,61 @@ internal partial class ClientWindowViewModel
         {
             if (LoginInput!.Length <= 20)
             {
-                // authorization string sending to the server
                 authorizationString = $"login {LoginInput} {PasswordInput}";
 
                 CurrentClient = new();
-                CurrentClient.Connect(_serverIp, _serverPort);
+                bool connectionIsSuccessful = CurrentClient.TryConnect(_serverIp, _serverPort);
 
-                var tcpStream = CurrentClient.GetStream();
-
-                byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
-                await tcpStream.WriteAsync(encodedMessage);
-
-                Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
-                    CurrentClient.Client.LocalEndPoint, authorizationString);
-
-                int readTotal;
-                string response;
-                byte[] buffer = new byte[1024];
-
-                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+                if (connectionIsSuccessful)
                 {
-                    response = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                    Log.Information("Ответ сервера: {response}", response);
+                    # region authorization data sending to the server
+                    var tcpStream = CurrentClient.GetStream();
 
-                    if (response == "success")
+                    byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
+                    await tcpStream.WriteAsync(encodedMessage);
+
+                    Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
+                        CurrentClient.Client.LocalEndPoint, authorizationString);
+                    #endregion
+
+                    #region server response processing
+                    int readTotal;
+                    string response;
+                    byte[] buffer = new byte[1024];
+
+                    while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                     {
-                        Username = LoginInput;
-                        IsAuthorized = true;
+                        response = Encoding.UTF8.GetString(buffer, 0, readTotal);
+                        Log.Information("Ответ сервера: {response}", response);
 
-                        OnPropertyChanged(nameof(ConnectionStateText));
-                        OnPropertyChanged(nameof(Username));
+                        if (response == "success")
+                        {
+                            Username = LoginInput;
+                            IsAuthorized = true;
 
-                        NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+                            OnPropertyChanged(nameof(ConnectionStateText));
+                            OnPropertyChanged(nameof(Username));
 
-                        Log.Information("Пользователь {username} успешно вошел в систему", Username);
-                        new MessageBox("Вы успешно вошли!\n" +
-                            "Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                            NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+
+                            Log.Information("Пользователь {username} успешно вошел в систему", Username);
+                            new MessageBox("Вы успешно вошли!\n" +
+                                "Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                        }
+                        else
+                        {
+                            new MessageBox("Вы не вошли в систему", "Отказ в доступе", MessageBoxIcon.Information).Show();
+                            Log.Information("Клиент {clientAddress} не смог войти в систему", CurrentClient.Client.LocalEndPoint);
+
+                            DisconnectFromServer();
+                        }
+                        break;
                     }
-                    else
-                    {
-                        new MessageBox("Вы не вошли в систему", "Отказ в доступе", MessageBoxIcon.Information).Show();
-                        Log.Information("Клиент {clientAddress} не смог войти в систему", CurrentClient.Client.LocalEndPoint);
-
-                        DisconnectFromServer();
-                    }
-                    break;
+                    #endregion
+                }
+                else
+                {
+                    new MessageBox("Ошибка при подключении", "Авторизация", MessageBoxIcon.Error).Show();
                 }
             }
         }
@@ -107,52 +121,74 @@ internal partial class ClientWindowViewModel
                 authorizationString = $"register {LoginInput} {PasswordInput}";
 
                 CurrentClient = new();
-                CurrentClient.Connect(_serverIp, _serverPort);
+                bool connectionSuccessful = CurrentClient.TryConnect(_serverIp, _serverPort);
 
-                var tcpStream = CurrentClient.GetStream();
-
-                byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
-                await tcpStream.WriteAsync(encodedMessage);
-
-                Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
-                    CurrentClient.Client.LocalEndPoint, authorizationString);
-
-                int readTotal;
-                string response;
-                byte[] buffer = new byte[1024];
-
-                while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
+                if (connectionSuccessful)
                 {
-                    response = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                    Log.Information("Ответ сервера: {response}", response);
+                    #region authorization data sending to the server
+                    var tcpStream = CurrentClient.GetStream();
 
-                    if (response == "success")
+                    byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
+                    await tcpStream.WriteAsync(encodedMessage);
+
+                    Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
+                        CurrentClient.Client.LocalEndPoint, authorizationString);
+                    #endregion
+
+                    #region server response processing
+                    int readTotal;
+                    string response;
+                    byte[] buffer = new byte[1024];
+
+                    while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
                     {
-                        Username = LoginInput;
-                        IsAuthorized = true;
+                        response = Encoding.UTF8.GetString(buffer, 0, readTotal);
+                        Log.Information("Ответ сервера: {response}", response);
 
-                        OnPropertyChanged(nameof(ConnectionStateText));
-                        OnPropertyChanged(nameof(Username));
+                        switch (response)
+                        {
+                            case "success":
+                                {
+                                    Username = LoginInput;
+                                    IsAuthorized = true;
 
-                        NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+                                    OnPropertyChanged(nameof(ConnectionStateText));
+                                    OnPropertyChanged(nameof(Username));
 
-                        Log.Information("Пользователь {username} успешно зарегистрирован", Username);
-                        new MessageBox("Вы успешно зарегистрировались!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                                    NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+
+                                    Log.Information("Пользователь {username} успешно зарегистрирован", Username);
+                                    new MessageBox("Вы успешно зарегистрировались!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                                    break;
+                                }
+                            case "exists":
+                                {
+                                    new MessageBox("Пользователь с такими данными уже существует", "Отказ в доступе", MessageBoxIcon.Information).Show();
+                                    Log.Information("Клиент {clientAddress} не зарегистрирован", CurrentClient.Client.LocalEndPoint);
+                                    DisconnectFromServer();
+                                    break;
+                                }
+                            case "error":
+                                {
+                                    new MessageBox("При регистрации на стороне сервера произошла ошибка", "Отказ в доступе", MessageBoxIcon.Information).Show();
+                                    Log.Information("Клиент {clientAddress} не зарегистрирован", CurrentClient.Client.LocalEndPoint);
+                                    CurrentClient.Close();
+                                    CurrentClient = null;
+                                    break;
+                                }
+                            default:
+                                {
+                                    Log.Warning("Поступил неожидаемый ответ от сервера {response}", response);
+                                    break;
+                                }
+                        }
+                        break;
                     }
-                    else if (response == "exists")
-                    {
-                        new MessageBox("Пользователь с такими данными уже существует", "Отказ в доступе", MessageBoxIcon.Information).Show();
-                        Log.Information("Клиент {clientAddress} не зарегистрирован", CurrentClient.Client.LocalEndPoint);
-                        DisconnectFromServer();
-                    }
-                    else if (response == "error")
-                    {
-                        new MessageBox("При регистрации на стороне сервера произошла ошибка", "Отказ в доступе", MessageBoxIcon.Information).Show();
-                        Log.Information("Клиент {clientAddress} не зарегистрирован", CurrentClient.Client.LocalEndPoint);
-                        CurrentClient.Close();
-                        CurrentClient = null;
-                    }
-                    break;
+                    #endregion
+                }
+                else
+                {
+                    new MessageBox("Ошибка при подключении", "Авторизация", MessageBoxIcon.Error).Show();
                 }
             }
         }

@@ -14,6 +14,7 @@ using Serilog;
 
 using MLSTART_GUI.Views;
 using System;
+using MLSTART_GUI.Models;
 
 
 namespace MLSTART_GUI.ViewModels;
@@ -45,7 +46,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
 
     #region Observable properties for ClientWindow
-    private string _username = "Гость";
+    private string _username = "-";
 
     [ObservableProperty]
     private bool _isWindowClosingAllowed;
@@ -121,22 +122,17 @@ internal partial class ClientWindowViewModel : ObservableObject
                 var connectionParameters = Program.Configuration.GetSection("Other parameters");
 
                 #region client connection to the server
-                await Dispatcher.UIThread.InvokeAsync(async () =>
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    try
+                    bool connectionIsSuccessful = CurrentClient.TryConnect(_serverIp, _serverPort);
+                    if (connectionIsSuccessful)
                     {
-                        CurrentClient.Connect(_serverIp, _serverPort);
                         OnPropertyChanged(nameof(ConnectionStateText));
-
-                        Log.Information("Клиент с адресом {clientAddress} подключился к серверу", CurrentClient.Client.LocalEndPoint!);
                         NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
                     }
-                    catch (SocketException ex)
+                    else
                     {
-                        Log.Error("Попытка подключения клиента с адресом {clientAddress} вызвала исключение {exType} : {exMessage}",
-                            CurrentClient.Client.RemoteEndPoint, ex.GetType(), ex.Message);
-
-                        NetworkMessages.Add($"Ошибка: Сервер {_serverIp} : {_serverPort} не принимает подключения");
+                        new MessageBox("Ошибка при подключении", "Подключение", MessageBoxIcon.Error).Show();
                     }
                 });
                 #endregion
