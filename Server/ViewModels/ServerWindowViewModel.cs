@@ -8,16 +8,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using Serilog;
+using Microsoft.EntityFrameworkCore;
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using Server.Models.TestDB;
+using Server.Models.Network;
 using ML_START_1;
 using static ML_START_1.CurrencyType;
-using Server.Models.Network;
-using Server.Models.TestDB;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 
 namespace Server.ViewModels;
@@ -72,13 +69,10 @@ public partial class ServerWindowViewModel : ObservableObject
     public async Task CreateDatabase()
     {
         TestContext context = new();
-        bool dataBaseCreated = await context.Database.EnsureCreatedAsync();
+        bool dataBaseCreated = context.Database.EnsureCreated();
 
         if (dataBaseCreated)
         {
-            Log.Information("Базы данных с пользователями не существует");
-            await context.Database.MigrateAsync();
-            await context.SaveChangesAsync();
             Log.Information("База данных создана. путь к базе данных: {dbPath}", context.DatabasePath);
         }
     }
@@ -91,7 +85,7 @@ public partial class ServerWindowViewModel : ObservableObject
             _server.Start();
             Log.Information("Сервер с адресом {ip} : {port} запустился и начал принимать подключения",
                 _serverIp, _serverPort);
-      
+
             while (true)
             {
                 TcpClient tcpClient = await _server.AcceptTcpClientAsync();
@@ -100,7 +94,7 @@ public partial class ServerWindowViewModel : ObservableObject
 #pragma warning restore CS4014 // Так как этот вызов не ожидается, выполнение существующего метода продолжается до тех пор, пока вызов не будет завершен
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Error("Во время работы сервера произошла ошибка {exType} : {exMessage}", ex.GetType(), ex.Message);
         }
@@ -124,7 +118,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
             while ((readTotal = await tcpStream.ReadAsync(buffer)) != 0)
             {
-                
+
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
                 Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
@@ -135,54 +129,54 @@ public partial class ServerWindowViewModel : ObservableObject
                 string command = messageParts[0];
 
                 if (command == "login")
+                {
+                    Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientAddress);
+                    using TestContext context = new();
+
+                    var login = messageParts[1]; var password = messageParts[2];
+
+                    if (await context.UserExistsAsync(login, password))
                     {
-                        Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientAddress);
-                        using TestContext context = new();
+                        response = "success";
 
-                        var login = messageParts[1]; var password = messageParts[2];
-
-                        if (await context.UserExistsAsync(login, password))
-                        {
-                            response = "success";
-
-                            Log.Information("Пользователь {userLogin} успешно авторизовался", login);
-                        }
-                        else
-                        {
-                            response = "fail";
-                            Log.Information("Пользователь {userLogin} не авторизовался", login);
-                        }
-                        await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                        Log.Information("Пользователь {userLogin} успешно авторизовался", login);
                     }
+                    else
+                    {
+                        response = "fail";
+                        Log.Information("Пользователь {userLogin} не авторизовался", login);
+                    }
+                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                }
                 else if (command == "register")
+                {
+                    Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientAddress);
+                    using TestContext context = new();
+
+                    var login = messageParts[1]; var password = messageParts[2];
+
+                    if (!await context.UserExistsAsync(login, password))
                     {
-                        Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientAddress);
-                        using TestContext context = new();
-
-                        var login = messageParts[1]; var password = messageParts[2];
-
-                        if (!await context.UserExistsAsync(login, password))
+                        var newUser = User.Create(login, password);
+                        await context.AddAsync(newUser);
+                        try
                         {
-                            var newUser = User.Create(login, password);
-                            await context.AddAsync(newUser);
-                            try
-                            {
-                                await context.SaveChangesAsync();
-                                response = "success";
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error("При попытке обновления базы данных вызвано исключение {exType} : {exMessage}", ex.GetType(), ex.Message);
-                                response = "error";
-                            }
-
+                            await context.SaveChangesAsync();
+                            response = "success";
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            response = "exists";
+                            Log.Error("При попытке обновления базы данных вызвано исключение {exType} : {exMessage}", ex.GetType(), ex.Message);
+                            response = "error";
                         }
-                        await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+
                     }
+                    else
+                    {
+                        response = "exists";
+                    }
+                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                }
                 else if (command == "message")
                 {
                     response = "сообщение получено";
@@ -272,7 +266,7 @@ public partial class ServerWindowViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Log.Error("Чтение значений переменных из конфигурационного файла {configFile} вызвало исключение: {exType}. Сообщение: {exMessage}", 
+                Log.Error("Чтение значений переменных из конфигурационного файла {configFile} вызвало исключение: {exType}. Сообщение: {exMessage}",
                     Program.configFileName, ex.GetType(), ex.Message);
             }
             #endregion
@@ -353,7 +347,7 @@ public partial class ServerWindowViewModel : ObservableObject
             }
 
             StoryBuilder.AddSentence($"В результате {bank.TotalCapacity}, хранившиеся в {bank.GetChestsCount()} несгораемых сундуках, были быстро распроданы.");
-            
+
             await DisplayStory(StoryBuilder.Story, 500);
             #endregion
         }

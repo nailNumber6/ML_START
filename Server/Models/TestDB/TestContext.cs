@@ -26,9 +26,6 @@ public partial class TestContext : DbContext
         {
             Log.Error("Произошла ошибка при чтении строки подключения из файла конфигурации");
         }
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        DatabasePath = System.IO.Path.Join(path, "Test.db");
     }
 
     public TestContext(DbContextOptions<TestContext> options)
