@@ -10,6 +10,8 @@ using Avalonia.Xaml.Interactivity;
 using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 
 namespace Server;
@@ -90,7 +92,7 @@ internal class Program
         Log.Debug("Версия репозитория: {currentCommit}; Ветка: {currentBranch}", ThisAssembly.Git.Commit, ThisAssembly.Git.Branch);
 
         BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(args);
+            .StartWithClassicDesktopLifetime(args);
 
         Log.CloseAndFlush();
     }

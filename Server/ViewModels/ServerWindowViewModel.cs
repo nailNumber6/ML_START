@@ -2,7 +2,6 @@
 using System.Net;
 using System.Text;
 using System.Linq;
-using System.Threading;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -15,9 +14,10 @@ using ML_START_1;
 using static ML_START_1.CurrencyType;
 using Server.Models.Network;
 using Server.Models.TestDB;
-using Azure;
-using Avalonia.Threading;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 
 namespace Server.ViewModels;
@@ -69,6 +69,19 @@ public partial class ServerWindowViewModel : ObservableObject
     }
     #endregion
 
+    public async Task CreateDatabase()
+    {
+        TestContext context = new();
+        bool dataBaseCreated = await context.Database.EnsureCreatedAsync();
+
+        if (dataBaseCreated)
+        {
+            Log.Information("Базы данных с пользователями не существует");
+            await context.Database.MigrateAsync();
+            await context.SaveChangesAsync();
+            Log.Information("База данных создана. путь к базе данных: {dbPath}", context.DatabasePath);
+        }
+    }
 
     public async Task StartServer()
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
 using Serilog;
 
 using ToolLibrary;
@@ -14,16 +14,21 @@ namespace Server.Models.TestDB;
 public partial class TestContext : DbContext
 {
     private readonly string? _connectionString;
+
+    public string DatabasePath { get; }
     public TestContext()
     {
         try
-        { 
-            _connectionString = Program.Configuration.GetConnectionString("MSSQL Server")!; 
-        } 
-        catch 
+        {
+            _connectionString = Program.Configuration.GetConnectionString("MSSQL Server")!;
+        }
+        catch
         {
             Log.Error("Произошла ошибка при чтении строки подключения из файла конфигурации");
         }
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        DatabasePath = System.IO.Path.Join(path, "Test.db");
     }
 
     public TestContext(DbContextOptions<TestContext> options)
@@ -36,13 +41,13 @@ public partial class TestContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         try
-        { 
-            optionsBuilder.UseSqlServer(_connectionString); 
+        {
+            optionsBuilder.UseSqlServer(_connectionString);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             Log.Error("При настройке конфигурации контекста данных было вызвано исключение {exType} : {exMessage}"
-                ,ex.GetType(), ex.Message);
+                , ex.GetType(), ex.Message);
         }
     }
 
@@ -52,13 +57,13 @@ public partial class TestContext : DbContext
         {
             entity.Property(e => e.Login)
                 .HasMaxLength(20)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.AuthorizationDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Authorization date");
             entity.Property(e => e.Password)
                 .HasMaxLength(50)
-                .IsUnicode(false);
+                .IsUnicode(true);
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -25,6 +25,7 @@
 		<ia:EventTriggerBehavior EventName="Loaded" SourceObject="ThisWindow">
 			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StartServer"/>
 			<ia:CallMethodAction TargetObject="{Binding}" MethodName="StartAndShowStory"/>
+			<ia:CallMethodAction TargetObject="{Binding}" MethodName="CreateDatabase"/>
 		</ia:EventTriggerBehavior>
 	</i:Interaction.Behaviors>
 
