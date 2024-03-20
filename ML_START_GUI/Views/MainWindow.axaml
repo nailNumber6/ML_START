@@ -33,6 +33,9 @@
 					MaterialOpacity="0.75" />
 			</ExperimentalAcrylicBorder.Material>
 		</ExperimentalAcrylicBorder>
+		
+		<CheckBox Name="isAuthorized" IsVisible="False"
+				  IsEnabled="False" IsChecked="{Binding IsAuthorized}"/>
 
 		<TextBlock
 			Text="АВТОРИЗАЦИЯ" 

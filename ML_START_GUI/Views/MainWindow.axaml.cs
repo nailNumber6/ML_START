@@ -4,15 +4,20 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Input;
 using Avalonia.Media;
+using CustomMessageBox.Avalonia;
+
 
 namespace MLSTART_GUI.Views;
-
 public partial class MainWindow : Window
 {
     public MainWindow()
     {
         InitializeComponent();
-        Initialized += MainWindow_Initialized;
+
+        Loaded += MainWindow_Loaded;
+
+        // если пользователь не авторизовалс€ - он не сможет выйти (жестоко)
+        Closing += MainWindow_Closing;
 
         SignInButton.KeyDown += MenuButton_Click;
         SignUpButton.KeyDown += MenuButton_Click;
@@ -39,9 +44,28 @@ public partial class MainWindow : Window
         #endregion
     }
 
-    private void MainWindow_Initialized(object? sender, EventArgs e)
+    private void UserAuthorized(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        Close();
+    }
+
+    private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+    {
+        if (isAuthorized.IsChecked == false)
+        {
+            e.Cancel = true;
+            new MessageBox("¬ы не авторизовались", "ѕредупреждение", MessageBoxIcon.Warning).Show();
+        }
+        else
+        {
+            Closing -= MainWindow_Closing;
+        }
+    }
+
+    private void MainWindow_Loaded(object? sender, EventArgs e)
     {
         LoginField.Focus();
+        isAuthorized.PropertyChanged += UserAuthorized;
     }
 
     private void MenuButton_Click(object? sender, KeyEventArgs e)

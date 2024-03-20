@@ -99,11 +99,11 @@ internal partial class ClientWindowViewModel : ObservableObject
     {
         if (IsAuthorized == false)
         {
-            var authorizationWindow = new MainWindow
-            {
-                DataContext = this,
-            };
-            authorizationWindow.Show();
+            //var authorizationWindow = new MainWindow
+            //{
+            //    DataContext = this,
+            //};
+            //authorizationWindow.Show();
         }
         else
         {

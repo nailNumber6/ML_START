@@ -39,6 +39,8 @@
 		<!--Checks if window closing using CLose button is allowed-->
 		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing"
 				  IsVisible="False" IsEnabled="False"/>
+		<CheckBox IsChecked="{Binding IsAuthorized}" Name="isAuthorized"
+				  IsVisible="False" IsEnabled="False"/>
 
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
 			<ExperimentalAcrylicBorder.Material>
@@ -69,7 +71,7 @@
 						<Label Content="{Binding ConnectionStateText}" RelativePanel.RightOf="ConStateLabel"/>
 					</RelativePanel>
 
-					<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton">
+					<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton" Name="connectButton">
 						<TextBlock Text="Подключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Button>
 

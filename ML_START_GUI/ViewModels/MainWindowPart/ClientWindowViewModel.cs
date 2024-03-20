@@ -76,10 +76,10 @@ internal partial class ClientWindowViewModel
 
                             OnPropertyChanged(nameof(ConnectionStateText));
                             OnPropertyChanged(nameof(Username));
+                            OnPropertyChanged(nameof(IsAuthorized));
 
                             Log.Information("Пользователь {username} успешно вошел в систему", Username);
-                            new MessageBox("Вы успешно вошли!\n" +
-                                "Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                            new MessageBox("Вы успешно вошли!\n", "Успех", MessageBoxIcon.Information).Show();
                         }
                         else
                         {
@@ -152,9 +152,10 @@ internal partial class ClientWindowViewModel
 
                                     OnPropertyChanged(nameof(ConnectionStateText));
                                     OnPropertyChanged(nameof(Username));
+                                    OnPropertyChanged(nameof(IsAuthorized));
 
                                     Log.Information("Пользователь {username} успешно зарегистрирован", Username);
-                                    new MessageBox("Вы успешно зарегистрировались!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();
+                                    new MessageBox("Вы успешно зарегистрировались!", "Успех", MessageBoxIcon.Information).Show();
                                     break;
                                 }
                             case "exists":
