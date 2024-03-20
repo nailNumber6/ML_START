@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="150"
+		Width="350" Height="150"
+        x:Class="MLSTART_GUI.Views.WindowClosingDialog"
+        Title="WindowClosingDialog"
+		WindowStartupLocation="CenterOwner">
+	<RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBlock x:Name="P1" Text="На данный момент клиент подключен к серверу"/>
+		<TextBlock x:Name="P2" Text="Вы уверены что хотите выйти?" RelativePanel.Below="P1"
+				   Margin="50,0,0,0"/>
+		<Button x:Name="OkButton" Margin="80,10,0,0"
+				Width="70" Height="32" RelativePanel.Below="P2"
+				Background="Green">
+			<TextBlock Text="ОК" HorizontalAlignment="Center"/>
+		</Button>
+		<Button x:Name="CancelButton" Content="Отмена"
+				RelativePanel.RightOf="OkButton" Margin="10" Width="70" RelativePanel.Below="P2"
+			Background="Red"/>
+	</RelativePanel>
+</Window>

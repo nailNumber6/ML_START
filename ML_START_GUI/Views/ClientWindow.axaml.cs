@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Media;
+using System.Threading;
 
 
 namespace MLSTART_GUI.Views;
@@ -38,15 +39,18 @@ public partial class ClientWindow : Window
         }
     }
 
-    private void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
+    private async void ClientWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
-        if (allowWindowClosing.IsChecked == false)
+        if (connectionStateText.Content!.ToString() == "подключен")
         {
             e.Cancel = true;
-        }
-        else
-        {
-            e.Cancel = false;
+            var dialog = new WindowClosingDialog();
+            var result = await dialog.ShowDialog<bool>(this);
+            if (result == true)
+            {
+                Closing -= ClientWindow_Closing;
+                Close();
+            }
         }
     }
 }

@@ -29,12 +29,6 @@
 		<StyleInclude Source="\Resourses\Styles1.axaml"/>
 	</Window.Styles>
 
-	<i:Interaction.Behaviors>
-		<ia:EventTriggerBehavior EventName="Closing" SourceObject="ThisWindow">
-			<ia:CallMethodAction TargetObject="{Binding}" MethodName="AskForWindowClosing"/>
-		</ia:EventTriggerBehavior>
-	</i:Interaction.Behaviors>
-
 	<Panel>
 		<!--Checks if window closing using CLose button is allowed-->
 		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing"
@@ -68,7 +62,8 @@
 
 					<RelativePanel>
 						<Label Content="Состояние подключения:" x:Name="ConStateLabel"/>
-						<Label Content="{Binding ConnectionStateText}" RelativePanel.RightOf="ConStateLabel"/>
+						<Label Name="connectionStateText" Content="{Binding ConnectionStateText}" 
+							   RelativePanel.RightOf="ConStateLabel"/>
 					</RelativePanel>
 
 					<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton" Name="connectButton">

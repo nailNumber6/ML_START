@@ -37,7 +37,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         catch (Exception ex)
         {
             Log.Error("Источник: {thisProject}.При попытке прочитать значения для подключения из файла {config} произошла ошибка {exType} : {exMessage}",
-                ex.Source,Program.configFileName, ex.GetType(), ex.Message);
+                ex.Source, Program.configFileName, ex.GetType(), ex.Message);
         }
         #endregion
 
@@ -74,7 +74,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     /// </summary>
     public bool ClientIsConnected
     {
-        get { return CurrentClient != null && CurrentClient.Connected; }  
+        get { return CurrentClient != null && CurrentClient.Connected; }
     }
 
     public string? ConnectionStateText
@@ -82,7 +82,7 @@ internal partial class ClientWindowViewModel : ObservableObject
         get { return ClientIsConnected ? "подключен" : "отключен"; }
     }
 
-    public string Username 
+    public string Username
     {
         get => _username;
         set => _username = value;
@@ -91,52 +91,35 @@ internal partial class ClientWindowViewModel : ObservableObject
     public bool IsAuthorized { get; set; }
 
     #region methods for bindings
-
-    
-    #region network interaction methods
     [RelayCommand]
     public async Task ConnectServer()
     {
-        if (IsAuthorized == false)
+        if (ClientIsConnected)
         {
-            //var authorizationWindow = new MainWindow
-            //{
-            //    DataContext = this,
-            //};
-            //authorizationWindow.Show();
+            new MessageBox("Клиент уже подключен к серверу", "Клиент", MessageBoxIcon.Information).Show();
         }
         else
         {
-            if (ClientIsConnected)
+            if (CurrentClient == null)
             {
-                new MessageBox("Клиент уже подключен к серверу", "Клиент", MessageBoxIcon.Information).Show();
+                CurrentClient = new TcpClient();
+                Log.Information("Создан клиент");
             }
-            else
+            var connectionParameters = Program.Configuration.GetSection("Other parameters");
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (CurrentClient == null)
+                bool connectionIsSuccessful = CurrentClient.TryConnect(_serverIp, _serverPort);
+                if (connectionIsSuccessful)
                 {
-                    CurrentClient = new TcpClient();
-                    Log.Information("Создан клиент");
+                    OnPropertyChanged(nameof(ConnectionStateText));
+                    NetworkMessages.Add($"Клиент {CurrentClient.Client.LocalEndPoint} подключен к серверу {_serverIp} : {_serverPort}");
                 }
-
-                var connectionParameters = Program.Configuration.GetSection("Other parameters");
-
-                #region client connection to the server
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                else
                 {
-                    bool connectionIsSuccessful = CurrentClient.TryConnect(_serverIp, _serverPort);
-                    if (connectionIsSuccessful)
-                    {
-                        OnPropertyChanged(nameof(ConnectionStateText));
-                        NetworkMessages.Add($"Клиент {CurrentClient.Client.LocalEndPoint} подключен к серверу {_serverIp} : {_serverPort}");
-                    }
-                    else
-                    {
-                        new MessageBox("Ошибка при подключении", "Подключение", MessageBoxIcon.Error).Show();
-                    }
-                });
-                #endregion
-            }
+                    new MessageBox("Ошибка при подключении", "Подключение", MessageBoxIcon.Error).Show();
+                }
+            });
         }
     }
     private void DisconnectFromServer()
@@ -161,7 +144,7 @@ internal partial class ClientWindowViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     public async Task Send()
-     {
+    {
         if (ClientIsConnected)
         {
             NetworkStream tcpStream = CurrentClient!.GetStream();
@@ -206,43 +189,11 @@ internal partial class ClientWindowViewModel : ObservableObject
         else
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Клиент", 
+                .GetMessageBoxStandard("Клиент",
                 "Клиент не подключен к серверу",
                 ButtonEnum.Ok, Icon.Info)
                 .ShowAsync();
         }
-    }
-    #endregion
-
-    /// <summary>
-    /// При попытке закрытия окна, если клиент покдлючен в серверу, вызывает диалоговое окно. 
-    /// В нем спрашивается согласен ли пользователь закрыть программу и отключиться от сервера.
-    /// </summary>
-    public void AskForWindowClosing()
-    {
-        if (ClientIsConnected)
-        {
-            var dialogResult = MessageBoxManager
-                .GetMessageBoxStandard("Клиент",
-                "В данный момент клиент подключен к серверу" +
-                "\nЗакрыть подключение?" +
-                "\nПосле нажатия ОК нужно повторно нажать кнопку закрытия", 
-                ButtonEnum.OkCancel, Icon.Warning)
-                .ShowAsync().ContinueWith(async task =>
-                {
-                    if (task.Result == ButtonResult.Ok)
-                    {
-                        Dispatcher.UIThread.Invoke(DisconnectFromServer);
-                        IsWindowClosingAllowed = true;
-                    }
-                    else
-                    {
-                        IsWindowClosingAllowed = false;
-                        await Task.CompletedTask;
-                    }
-                });
-        }
-        else IsWindowClosingAllowed = true;
     }
     #endregion
 }
