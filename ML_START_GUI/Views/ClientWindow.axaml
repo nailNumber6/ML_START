@@ -6,7 +6,7 @@
 		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
         xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions.Custom"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
 		Width="900" Height="400"
 		Design.Width="900" Design.Height="400"
 		xmlns:fluent="using:FluentTheme"
@@ -20,7 +20,7 @@
 		FontFamily="Calibri"
 		FontSize="20"
 		WindowStartupLocation="CenterScreen">
-	
+
 	<Design.DataContext>
 		<vm:ClientWindowViewModel/>
 	</Design.DataContext>
@@ -34,65 +34,67 @@
 			<ia:CallMethodAction TargetObject="{Binding}" MethodName="AskForWindowClosing"/>
 		</ia:EventTriggerBehavior>
 	</i:Interaction.Behaviors>
-	
+
 	<Panel>
 		<!--Checks if window closing using CLose button is allowed-->
-		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing" 
+		<CheckBox IsChecked="{Binding IsWindowClosingAllowed}" Name="allowWindowClosing"
 				  IsVisible="False" IsEnabled="False"/>
-		
+
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
-						<ExperimentalAcrylicBorder.Material>
-							<ExperimentalAcrylicMaterial
-								BackgroundSource="Digger"
-								TintColor="Yellow"
-								TintOpacity="1"
-								MaterialOpacity="0.75" />
-						</ExperimentalAcrylicBorder.Material>
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Yellow"
+					TintOpacity="1"
+					MaterialOpacity="0.75" />
+			</ExperimentalAcrylicBorder.Material>
 		</ExperimentalAcrylicBorder>
-		
+
 		<Panel Width="400" Height="400" HorizontalAlignment="Left"
 			   Margin="15,0,0,0">
-		
+
 			<RelativePanel VerticalAlignment="Center">
-			
+
 				<StackPanel x:Name="ServerConnectingPanel">
 
 					<RelativePanel>
-						<Label Content="Имя пользователя:" x:Name="UserNameTitle"/>
-						<Label Content="{Binding Username}" RelativePanel.RightOf="UserNameTitle"/>
+						<Label Content="Имя пользователя:" x:Name="UsernameTitle" IsVisible="False"
+							   Name="usernameTitle"/>
+						<Label Name="username" Content="{Binding Username}" Foreground="Red"
+							   RelativePanel.RightOf="UsernameTitle"/>
 					</RelativePanel>
-				
+
 					<RelativePanel>
 						<Label Content="Состояние подключения:" x:Name="ConStateLabel"/>
 						<Label Content="{Binding ConnectionStateText}" RelativePanel.RightOf="ConStateLabel"/>
 					</RelativePanel>
-				
+
 					<Button Command="{Binding ConnectServerCommand}" Classes="MenuButton">
 						<TextBlock Text="Подключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Button>
-				
-					<Button Name="button" 
+
+					<Button Name="button"
 							Command="{Binding DisconnectOnButtonCommand}"
 							Classes="MenuButton">
 						<TextBlock Text="Отключиться" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Button>
-				
+
 				</StackPanel>
 
-					<TextBox Text="{Binding Input}" HorizontalAlignment="Stretch"
-							Margin="0, 30, 0, 0" x:Name="MessageTextBox" Width="400"
-							RelativePanel.Below="ServerConnectingPanel"/>
-						
-					<Button x:Name="SendButton"
-							Margin="65, 15, 0, 0"
-							HorizontalAlignment="Center"
-							RelativePanel.Below="MessageTextBox"
-							Content="Отправить сообщение на сервер"
-							Command="{Binding SendCommand}"
-							Classes="MenuButton"/>
-			
+				<TextBox Text="{Binding Input}" HorizontalAlignment="Stretch"
+						Margin="0, 30, 0, 0" x:Name="MessageTextBox" Width="400"
+						RelativePanel.Below="ServerConnectingPanel"/>
+
+				<Button x:Name="SendButton"
+						Margin="65, 15, 0, 0"
+						HorizontalAlignment="Center"
+						RelativePanel.Below="MessageTextBox"
+						Content="Отправить сообщение на сервер"
+						Command="{Binding SendCommand}"
+						Classes="MenuButton"/>
+
 			</RelativePanel>
-			
+
 		</Panel>
 
 		<Panel HorizontalAlignment="Right" Width="500" Height="400"
@@ -102,9 +104,9 @@
 			<ListBox Width="460" Height="340" HorizontalAlignment="Center"
 					 ItemsSource="{Binding NetworkMessages}"
 					 Margin="0,5,0,0"/>
-			
+
 		</Panel>
-		
+
 	</Panel>
 
 </Window>

@@ -46,7 +46,7 @@ internal partial class ClientWindowViewModel : ObservableObject
     }
 
     #region Observable properties for ClientWindow
-    private string _username = "-";
+    private string _username = "Вы не авторизованы";
 
     [ObservableProperty]
     private bool _isWindowClosingAllowed;

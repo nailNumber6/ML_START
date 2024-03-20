@@ -1,13 +1,10 @@
-﻿using Avalonia.Data;
-using Avalonia.Threading;
+﻿using System.Text;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CustomMessageBox.Avalonia;
-using MLSTART_GUI.Models;
 using Serilog;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using MLSTART_GUI.Models;
 
 namespace MLSTART_GUI.ViewModels;
 
@@ -58,7 +55,7 @@ internal partial class ClientWindowViewModel
                     byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
                     await tcpStream.WriteAsync(encodedMessage);
 
-                    Log.Information("Клиент {clientAddress} отправил на сервер {serverIp} : {serverPort} данные для авторизации", 
+                    Log.Information("Клиент {clientAddress} отправил на сервер {serverIp} : {serverPort} данные для авторизации",
                         CurrentClient.Client.LocalEndPoint, _serverIp, _serverPort);
                     #endregion
 
