@@ -53,9 +53,4 @@
       <DependentUpon>ClientWindow.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Views\AuthorizationPages\" />
-  </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Input;
 using Avalonia.Media;
 using CustomMessageBox.Avalonia;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 namespace MLSTART_GUI.Views;
@@ -16,21 +17,31 @@ public partial class MainWindow : Window
 
         Loaded += MainWindow_Loaded;
 
-        // если пользователь не авторизовался - он не сможет выйти (жестоко)
+        // если пользователь не авторизовался - он не сможет выйти
         Closing += MainWindow_Closing;
 
-        SignInButton.KeyDown += MenuButton_Click;
+        registrationPage.GotFocus += RegistrationPage_GotFocus;
+        logInPage.GotFocus += LogInPage_GotFocus;
+
+        #region KeyDown events
         SignUpButton.KeyDown += MenuButton_Click;
         ResetButton.KeyDown += MenuButton_Click;
 
+        LoginField2.KeyDown += LoginField2_KeyDown;
+        PasswordField2.KeyDown += PasswordField2_KeyDown;
+        SignInButton.KeyDown += SignInButton_KeyDown1;
+        #endregion
+
         #region Button Focus events
-        SignInButton.GotFocus += MenuButton_GotFocus;
         SignUpButton.GotFocus += MenuButton_GotFocus;
         ResetButton.GotFocus += MenuButton_GotFocus;
+        SignInButton.GotFocus += MenuButton_GotFocus;
+        ResetButton2.GotFocus += MenuButton_GotFocus;
 
-        SignInButton.LostFocus += MenuButton_LostFocus; 
         SignUpButton.LostFocus += MenuButton_LostFocus;
         ResetButton.LostFocus += MenuButton_LostFocus;
+        SignInButton.LostFocus += MenuButton_LostFocus;
+        ResetButton2.LostFocus += MenuButton_LostFocus;
         #endregion
 
         #region Control navigation
@@ -38,10 +49,22 @@ public partial class MainWindow : Window
         PasswordField.KeyDown += PasswordField_KeyDown;
         RepeatPasswordField.KeyDown += RepeatPasswordField_KeyDown;
 
-        SignInButton.KeyDown += SignInButton_KeyDown;
         SignUpButton.KeyDown += SignUpButton_KeyDown;
         ResetButton.KeyDown += ResetButton_KeyDown;
         #endregion
+    }
+
+    private void LogInPage_GotFocus(object? sender, GotFocusEventArgs e)
+    {
+        LoginField.Clear();
+        PasswordField.Clear();
+        RepeatPasswordField.Clear();
+    }
+
+    private void RegistrationPage_GotFocus(object? sender, GotFocusEventArgs e)
+    {
+        LoginField2.Clear();
+        PasswordField2.Clear();
     }
 
     private void UserAuthorized(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -104,7 +127,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void PasswordField_KeyDown(object? sender, KeyEventArgs e)  
+    private void PasswordField_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Down)
         {
@@ -124,11 +147,44 @@ public partial class MainWindow : Window
         }
         else if (e.Key == Key.Down)
         {
+            SignUpButton.Focus();
+        }
+    }
+
+    // Log in buttons
+    private void SignInButton_KeyDown1(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Up)
+        {
+            PasswordField2.Focus();
+        }
+        else if (e.Key == Key.Down)
+        {
+            ResetButton2.Focus();
+        }
+    }
+
+    private void PasswordField2_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Up)
+        {
+            LoginField2.Focus();
+        }
+        else if (e.Key == Key.Down)
+        {
             SignInButton.Focus();
         }
     }
 
-    // Buttons
+    private void LoginField2_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Down)
+        {
+            PasswordField2.Focus();
+        };
+    }
+
+    // Registration Buttons
     private void SignInButton_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Up)
@@ -145,7 +201,7 @@ public partial class MainWindow : Window
     {
         if (e.Key == Key.Up)
         {
-            SignInButton.Focus();
+            PasswordField.Focus();
         }
         else if (e.Key == Key.Down)
         {
