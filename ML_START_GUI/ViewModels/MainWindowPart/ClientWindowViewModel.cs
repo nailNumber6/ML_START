@@ -50,6 +50,8 @@ internal partial class ClientWindowViewModel
 
                 if (connectionIsSuccessful)
                 {
+                    NetworkMessages.Add($"Клиент {CurrentClient.Client.LocalEndPoint} подключен к серверу {_serverIp} : {_serverPort}");
+
                     # region authorization data sending to the server
                     var tcpStream = CurrentClient.GetStream();
 
@@ -77,8 +79,6 @@ internal partial class ClientWindowViewModel
 
                             OnPropertyChanged(nameof(ConnectionStateText));
                             OnPropertyChanged(nameof(Username));
-
-                            NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
 
                             Log.Information("Пользователь {username} успешно вошел в систему", Username);
                             new MessageBox("Вы успешно вошли!\n" +
@@ -124,6 +124,8 @@ internal partial class ClientWindowViewModel
 
                 if (connectionSuccessful)
                 {
+                    NetworkMessages.Add($"Клиент {CurrentClient.Client.LocalEndPoint} подключен к серверу {_serverIp} : {_serverPort}");
+
                     #region authorization data sending to the server
                     var tcpStream = CurrentClient.GetStream();
 
@@ -153,8 +155,6 @@ internal partial class ClientWindowViewModel
 
                                     OnPropertyChanged(nameof(ConnectionStateText));
                                     OnPropertyChanged(nameof(Username));
-
-                                    NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
 
                                     Log.Information("Пользователь {username} успешно зарегистрирован", Username);
                                     new MessageBox("Вы успешно зарегистрировались!\n Окно авторизации можно закрыть", "Успех", MessageBoxIcon.Information).Show();

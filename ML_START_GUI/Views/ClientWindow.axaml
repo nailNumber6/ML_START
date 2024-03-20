@@ -22,7 +22,7 @@
 		WindowStartupLocation="CenterScreen">
 	
 	<Design.DataContext>
-		<vm:MainWindowViewModel/>
+		<vm:ClientWindowViewModel/>
 	</Design.DataContext>
 
 	<Window.Styles>

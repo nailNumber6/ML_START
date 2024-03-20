@@ -22,8 +22,8 @@ namespace MLSTART_GUI.ViewModels;
 // ClientWindowViewModel for interaction with ClientWindow
 internal partial class ClientWindowViewModel : ObservableObject
 {
-    private IPAddress _serverIp;
-    private int _serverPort;
+    private readonly IPAddress _serverIp;
+    private readonly int _serverPort;
 
     public ClientWindowViewModel()
     {
@@ -128,7 +128,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                     if (connectionIsSuccessful)
                     {
                         OnPropertyChanged(nameof(ConnectionStateText));
-                        NetworkMessages.Add($"Подключен к серверу {_serverIp} : {_serverPort}");
+                        NetworkMessages.Add($"Клиент {CurrentClient.Client.LocalEndPoint} подключен к серверу {_serverIp} : {_serverPort}");
                     }
                     else
                     {

@@ -10,8 +10,6 @@ using Avalonia.Xaml.Interactivity;
 using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 
 namespace Server;
