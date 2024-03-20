@@ -73,7 +73,7 @@ public partial class ServerWindowViewModel : ObservableObject
 
         if (dataBaseCreated)
         {
-            Log.Information("База данных создана. путь к базе данных: {dbPath}", context.DatabasePath);
+            Log.Information("База данных создана");
         }
     }
 
@@ -128,63 +128,69 @@ public partial class ServerWindowViewModel : ObservableObject
 
                 string command = messageParts[0];
 
-                if (command == "login")
+                switch (command)
                 {
-                    Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientAddress);
-                    using TestContext context = new();
-
-                    var login = messageParts[1]; var password = messageParts[2];
-
-                    if (await context.UserExistsAsync(login, password))
-                    {
-                        response = "success";
-
-                        Log.Information("Пользователь {userLogin} успешно авторизовался", login);
-                    }
-                    else
-                    {
-                        response = "fail";
-                        Log.Information("Пользователь {userLogin} не авторизовался", login);
-                    }
-                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
-                }
-                else if (command == "register")
-                {
-                    Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientAddress);
-                    using TestContext context = new();
-
-                    var login = messageParts[1]; var password = messageParts[2];
-
-                    if (!await context.UserExistsAsync(login, password))
-                    {
-                        var newUser = User.Create(login, password);
-                        await context.AddAsync(newUser);
-                        try
+                    case "login":
                         {
-                            await context.SaveChangesAsync();
-                            response = "success";
-                        }
-                        catch (Exception ex)
+                            Log.Information("Клиент {clientAddress} отправил запрос на вход в систему", clientAddress);
+                            using TestContext context = new();
+
+                            var login = messageParts[1]; var password = messageParts[2];
+
+                            if (await context.UserExistsAsync(login, password))
+                            {
+                                response = "success";
+
+                                Log.Information("Пользователь {userLogin} успешно авторизовался", login);
+                            }
+                            else
+                            {
+                                response = "fail";
+                                Log.Information("Пользователь {userLogin} не авторизовался", login);
+                            }
+                            await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                        } 
+                        break;
+                    case "register":
                         {
-                            Log.Error("При попытке обновления базы данных вызвано исключение {exType} : {exMessage}", ex.GetType(), ex.Message);
-                            response = "error";
+                            Log.Information("Клиент {clientAddress} отправил запрос на регистрацию в системе", clientAddress);
+                            using TestContext context = new();
+
+                            var login = messageParts[1]; var password = messageParts[2];
+
+                            if (!await context.UserExistsAsync(login, password))
+                            {
+                                var newUser = User.Create(login, password);
+                                await context.AddAsync(newUser);
+                                try
+                                {
+                                    await context.SaveChangesAsync();
+                                    response = "success";
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Error("При попытке обновления базы данных вызвано исключение {exType} : {exMessage}", ex.GetType(), ex.Message);
+                                    response = "error";
+                                }
+
+                            }
+                            else
+                            {
+                                response = "exists";
+                            }
+                            await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                         }
+                        break;
+                    case "message":
+                        {
+                            response = "сообщение получено";
+                            Log.Information("От клиента {clientAddress} получено простое сообщение", clientAddress);
 
-                    }
-                    else
-                    {
-                        response = "exists";
-                    }
-                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
-                }
-                else if (command == "message")
-                {
-                    response = "сообщение получено";
-                    Log.Information("От клиента {clientAddress} получено простое сообщение", clientAddress);
+                            NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + messageParts[1]);
 
-                    NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + messageParts[1]);
-
-                    await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                            await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
+                        }
+                        break;
                 }
                 #endregion
 

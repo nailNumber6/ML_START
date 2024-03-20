@@ -37,7 +37,6 @@ internal partial class ClientWindowViewModel
     [RelayCommand(CanExecute = nameof(CanValidate))]
     public async Task LogUserIn()
     {
-
         string authorizationString;
 
         if (PasswordInput == RepeatPasswordInput)
@@ -57,8 +56,8 @@ internal partial class ClientWindowViewModel
                     byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
                     await tcpStream.WriteAsync(encodedMessage);
 
-                    Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
-                        CurrentClient.Client.LocalEndPoint, authorizationString);
+                    Log.Information("Клиент {clientAddress} отправил на сервер {serverIp} : {serverPort} данные для авторизации", 
+                        CurrentClient.Client.LocalEndPoint, _serverIp, _serverPort);
                     #endregion
 
                     #region server response processing
@@ -131,8 +130,8 @@ internal partial class ClientWindowViewModel
                     byte[] encodedMessage = Encoding.UTF8.GetBytes(authorizationString);
                     await tcpStream.WriteAsync(encodedMessage);
 
-                    Log.Information("Клиент {clientAddress} отправил на сервер данные для авторизации: {authString}",
-                        CurrentClient.Client.LocalEndPoint, authorizationString);
+                    Log.Information("Клиент {clientAddress} отправил на сервер {serverIp} : {serverPort} данные для авторизации",
+                        CurrentClient.Client.LocalEndPoint, _serverIp, _serverPort);
                     #endregion
 
                     #region server response processing
