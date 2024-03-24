@@ -120,7 +120,6 @@ public partial class ServerWindowViewModel : ObservableObject
             {
 
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, readTotal);
-                Log.Information("Получено сообщение от клиента; Текст сообщения: {messageText}", receivedMessage);
 
                 #region message processing
                 // getting parts of message
@@ -183,10 +182,16 @@ public partial class ServerWindowViewModel : ObservableObject
                         break;
                     case "message":
                         {
-                            response = "сообщение получено";
-                            Log.Information("От клиента {clientAddress} получено простое сообщение", clientAddress);
+                            string[] messageBodyParts = new string[messageParts.Length-1];
 
-                            NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + messageParts[1]);
+                            // Copying everything extend command string
+                            Array.Copy(messageParts, 1, messageBodyParts, 0, messageBodyParts.Length);
+
+                            response = "сообщение получено";
+                            Log.Information("От клиента {clientAddress} получено сообщение {message}", 
+                                tcpClient.Client.RemoteEndPoint, string.Join(' ', messageBodyParts));
+
+                            NetworkMessages.Add($"Сообщение от клиента {clientAddress}: " + string.Join(' ', messageBodyParts));
 
                             await tcpStream.WriteAsync(Encoding.UTF8.GetBytes(response));
                         }
