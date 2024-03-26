@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Input;
 using Avalonia.Media;
 using CustomMessageBox.Avalonia;
+using Avalonia.Threading;
 
 
 namespace MLSTART_GUI.Views;
@@ -71,12 +72,22 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+    private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
         if (isAuthorized.IsChecked == false)
         {
             e.Cancel = true;
-            new MessageBox("Вы не авторизовались", "Предупреждение", MessageBoxIcon.Warning).Show();
+
+            var dialogResult = await new MessageBox("Вы не авторизовались\n" +
+                "Вы уверены что хотите выйти?", 
+                "Предупреждение", 
+                MessageBoxIcon.Warning).Show(MessageBoxButtons.YesNo);
+
+            if (dialogResult == MessageBoxResult.Yes)
+            {
+                Closing -= MainWindow_Closing;
+                Close();
+            }
         }
         else
         {

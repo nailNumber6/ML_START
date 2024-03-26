@@ -115,7 +115,7 @@ internal partial class ClientWindowViewModel : ObservableObject
                     OnPropertyChanged(nameof(ConnectionStateText));
                     NetworkMessages.Add($"Клиент {CurrentClient.Client.LocalEndPoint} подключен к серверу {_serverIp} : {_serverPort}");
                 }
-                else
+                else if (IsAuthorized && !connectionIsSuccessful)
                 {
                     new MessageBox("Ошибка при подключении", "Подключение", MessageBoxIcon.Error).Show();
                 }
