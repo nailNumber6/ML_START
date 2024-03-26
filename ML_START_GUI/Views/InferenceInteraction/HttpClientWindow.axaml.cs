@@ -10,6 +10,12 @@ public partial class HttpClientWindow : Window
         InitializeComponent();
 
         browseButton.Click += BrowseButton_Click;
+        filePathBox.GotFocus += FilePathBox_GotFocus;
+    }
+
+    private void FilePathBox_GotFocus(object? sender, Avalonia.Input.GotFocusEventArgs e)
+    {
+        statusMessage.Text = string.Empty;
     }
 
     private async void BrowseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

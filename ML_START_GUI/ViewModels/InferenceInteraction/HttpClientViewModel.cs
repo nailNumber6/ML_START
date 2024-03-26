@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 
 
 namespace MLSTART_GUI.ViewModels.InferenceInteraction;
@@ -12,6 +10,9 @@ public partial class HttpClientViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(SendImageCommand))]
     private string? _filePathText;
 
+    [ObservableProperty]
+    private string? _statusMessage;
+
     [RelayCommand(CanExecute = nameof(CanSendImage))]
     private void SendImage()
     {
@@ -19,7 +20,7 @@ public partial class HttpClientViewModel : ObservableObject
 
         if (fileExtensionString != ".jpg")
         {
-            Debug.WriteLine("неверный формат файла");
+            StatusMessage = "неверное имя или формат файла";
         }
     }
 

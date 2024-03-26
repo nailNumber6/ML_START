@@ -23,7 +23,7 @@
 		<Grid ShowGridLines=""
 			  Width="500" Height="150"
 			  ColumnDefinitions="*,2*,*,*"
-			  RowDefinitions="*, 2*, 6*"
+			  RowDefinitions="*, 2*, *, 6*"
 			  Margin="0,0,0,0"
 			  VerticalAlignment="Bottom">
 
@@ -50,8 +50,15 @@
 				
 			</Button>
 			
+			<TextBlock Name="statusMessage"
+					   Text="{Binding StatusMessage}" 
+					   Foreground="Red"
+					   Grid.Column="1" Grid.Row="3"
+					   Grid.ColumnSpan="2"
+					   HorizontalAlignment="Center"/>
+			
 			<Button Name="sendButton"
-					Grid.Row="2" Grid.Column="1"
+					Grid.Row="3" Grid.Column="1"
 					Grid.ColumnSpan="2"
 					HorizontalAlignment="Stretch"
 					Command="{Binding SendImageCommand}">
