@@ -5,7 +5,6 @@ using Avalonia.Interactivity;
 using Avalonia.Input;
 using Avalonia.Media;
 using CustomMessageBox.Avalonia;
-using Avalonia.Threading;
 
 
 namespace MLSTART_GUI.Views;

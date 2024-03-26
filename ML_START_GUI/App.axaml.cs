@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using MLSTART_GUI.ViewModels;
+using MLSTART_GUI.ViewModels.InferenceInteraction;
 using MLSTART_GUI.Views;
 
 namespace MLSTART_GUI
@@ -17,9 +17,9 @@ namespace MLSTART_GUI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new ClientWindow
+                desktop.MainWindow = new HttpClientWindow
                 {
-                    DataContext = new ClientWindowViewModel(), 
+                    DataContext = new HttpClientViewModel(), 
                 };
             }
 
