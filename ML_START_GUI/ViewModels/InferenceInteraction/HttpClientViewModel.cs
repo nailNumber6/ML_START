@@ -1,24 +1,30 @@
-﻿using Avalonia.Controls;
-using Avalonia.Threading;
-using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Diagnostics;
+﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 
 namespace MLSTART_GUI.ViewModels.InferenceInteraction;
 
 public partial class HttpClientViewModel : ObservableObject
 {
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SendImageCommand))]
+    private string? _filePathText;
+
     [RelayCommand(CanExecute = nameof(CanSendImage))]
-    private void OpenExplorer()
+    private void SendImage()
     {
-        //Process.Start("explorer.exe");
+        string fileExtensionString = FilePathText![^4..]; // = FilePathText.Substring(FilePathText.Length - 4)
+
+        if (fileExtensionString != ".jpg")
+        {
+            Debug.WriteLine("неверный формат файла");
+        }
     }
 
     private bool CanSendImage()
     {
-        return true;
+        return !string.IsNullOrEmpty(FilePathText);
     }
 }

@@ -33,6 +33,7 @@
 					   VerticalAlignment="Center"/>
 
 			<TextBox Name="filePathBox"
+					 Text="{Binding FilePathText}"
 					 Grid.Column="1" Grid.Row="1"
 					 Grid.ColumnSpan="2"
 					 Margin="0,0,0,0"
@@ -52,7 +53,8 @@
 			<Button Name="sendButton"
 					Grid.Row="2" Grid.Column="1"
 					Grid.ColumnSpan="2"
-					HorizontalAlignment="Stretch">
+					HorizontalAlignment="Stretch"
+					Command="{Binding SendImageCommand}">
 				
 				<TextBlock Text="Отправить" HorizontalAlignment="Center"/>
 				
