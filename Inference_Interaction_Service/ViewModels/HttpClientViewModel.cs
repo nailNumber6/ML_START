@@ -7,6 +7,8 @@ using CustomMessageBox.Avalonia;
 
 using Inference_Interaction_Service.Models;
 using System.Diagnostics;
+using System.Text;
+using Serilog;
 
 
 namespace Inference_Interaction_Service.ViewModels;
@@ -29,15 +31,21 @@ public partial class HttpClientViewModel : ObservableObject
 
         if (fileExtensionString != ".jpg")
         {
-            StatusMessage = "неверное имя или формат файла";
+            StatusMessage = "неверный формат файла";
         }
         else
         {
-            var response = await _httpService.SendImage($"{FilePathText}");
-            foreach (var line in response)
+            var response = await _httpService.SendImage(FilePathText);
+
+            StringBuilder responseText = new();
+
+            foreach (var responseLine in response)
             {
-                Debug.WriteLine(line);
+                responseText.Append($"{responseLine.Key} : {responseLine.Value}");
+                responseText.Append('\n');
             }
+
+            new MessageBox(responseText.ToString(), "Сведения", MessageBoxIcon.Information).Show();
         }
     }
     private bool CanSendImage()

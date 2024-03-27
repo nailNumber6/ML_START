@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using System.Diagnostics;
 
 
 namespace Inference_Interaction_Service.Views;
@@ -15,15 +16,20 @@ public partial class HttpClientWindow : Window
 
     private async void BrowseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // Start async operation to open the dialog
-        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        try
         {
-            Title = "Open Text File",
-            AllowMultiple = false
-        });
+            var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Open Text File",
+                AllowMultiple = false
+            });
+            string filePath = files[0].Path.LocalPath;
 
-        string filePath = files[0].Path.LocalPath;
-
-        filePathBox.Text = filePath;
+            filePathBox.Text = filePath;
+        }
+        catch
+        {
+            Debug.WriteLine("Окно выбора файла закрыто");
+        }
     }
 }

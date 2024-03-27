@@ -14,7 +14,7 @@ namespace Inference_Interaction_Service.Models;
 
 internal class HttpService
 {
-    private HttpClient _client;
+    private readonly HttpClient _client;
 
     public HttpService()
     {
@@ -30,15 +30,23 @@ internal class HttpService
         HttpStatusCode status = new();
         try
         {
+            #region config values reading
             var connectionConfig = Program.Configuration.GetSection("Connection parameters");
-
             string inferenceUri = connectionConfig["Inference URI"]!;
             string getUri = connectionConfig["GET URI"]!;
+            #endregion
 
-            using HttpResponseMessage response = await _client.GetAsync(
-                RequestUriBuilder.Build(inferenceUri, getUri));
+            #region receiving service response
+            string serviceUri = RequestUriBuilder.Build(inferenceUri, getUri);
+
+            using HttpResponseMessage response = await _client.GetAsync(serviceUri);
+
+            Log.Information("Отправлен GET-запрос сервису {serviceURI}", serviceUri);
 
             status = response.StatusCode;
+
+            Log.Information("Ответ от сервиса {serviceURI} : {responseText}", serviceUri, response.Content.ToString());
+            #endregion
         }
         catch (Exception ex)
         {
@@ -48,13 +56,18 @@ internal class HttpService
         return status;
     }
 
-    public async Task<Dictionary<string, object>> SendImage(string fullImagePath)
+    /// <summary>
+    /// Отправляет POST-запрос сервису инференса
+    /// </summary>
+    /// <param name="localImagePath">Локальный путь к изображению</param>
+    /// <returns>Содержание ответа сервиса + статус-код сообщения</returns>
+    public async Task<Dictionary<string, object>> SendImage(string localImagePath)
     {
-        var content = new ByteArrayContent(File.ReadAllBytes(fullImagePath));
+        var content = new ByteArrayContent(File.ReadAllBytes(localImagePath));
 
         var formData = new MultipartFormDataContent
         {
-            { content, "image", fullImagePath }
+            { content, "image", localImagePath }
         };
 
         #region config values reading
@@ -63,15 +76,23 @@ internal class HttpService
         string postUri = connectionConfig["POST URI"]!;
         #endregion
 
-        #region getting service response
-        using var response = await _client.PostAsync(RequestUriBuilder.Build(inferenceUri, postUri),
+        #region receiving service response
+        string serviceUri = RequestUriBuilder.Build(inferenceUri, postUri);
+
+        using var response = await _client.PostAsync(serviceUri,
             formData);
 
+        Log.Information("На сервис {serviceURI} отправлено изображение для изменения размера. Путь к изображению: {imagePath}",
+                serviceUri, localImagePath);
+
         string responseText = await response.Content.ReadAsStringAsync();
+
+        Log.Information("Ответ от сервиса {serviceURI} : {responseText}", serviceUri, responseText);
 
         var result = JsonSerializer.Deserialize<Dictionary<string, object>>(responseText);
 
         result!.Add("Статус", response.StatusCode.ToString());
+
         #endregion
 
         return result;

@@ -50,7 +50,7 @@ internal class Program
                 ConnectionParameters = new()
                 {
                     ["Inference URI"] = "http://localhost:8000",
-                    ["GET URI"] = "/docs",
+                    ["GET URI"] = "/health",
                     ["POST URI"] = "/file/"
                 }
             };
