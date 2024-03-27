@@ -1,7 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 
-namespace MLSTART_GUI;
+
+namespace Inference_Interaction_Service.Views;
 
 public partial class HttpClientWindow : Window
 {

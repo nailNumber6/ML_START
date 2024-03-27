@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using MLSTART_GUI.ViewModels;
-using MLSTART_GUI.Views;
+using Inference_Interaction_Service.ViewModels;
+using Inference_Interaction_Service.Views;
 
-namespace MLSTART_GUI
+namespace Inference_Interaction_Service
 {
     public partial class App : Application
     {
@@ -17,9 +17,9 @@ namespace MLSTART_GUI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new ClientWindow
+                desktop.MainWindow = new HttpClientWindow
                 {
-                    DataContext = new ClientWindowViewModel(), 
+                    DataContext = new HttpClientViewModel(),
                 };
             }
 

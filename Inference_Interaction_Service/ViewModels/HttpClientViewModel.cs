@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
 
-namespace MLSTART_GUI.ViewModels.InferenceInteraction;
+namespace Inference_Interaction_Service.ViewModels;
 
 public partial class HttpClientViewModel : ObservableObject
 {
