@@ -49,10 +49,9 @@ internal class Program
                 },
                 ConnectionParameters = new()
                 {
-                    ["Server IP"] = "127.0.0.1",
-                    ["Server port"] = "8080",
-                    ["GET path"] = "/docs",
-                    ["POST path"] = "/file/"
+                    ["Inference URI"] = "http://localhost:8000",
+                    ["GET URI"] = "/docs",
+                    ["POST URI"] = "/file/"
                 }
             };
             var serializerOptions = new JsonSerializerOptions

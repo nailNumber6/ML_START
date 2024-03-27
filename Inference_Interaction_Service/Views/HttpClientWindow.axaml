@@ -47,7 +47,7 @@
 
 				<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="TextChanged">
-						<ia:CallMethodAction TargetObject="{Binding}" MethodName="Clear" />
+						<ia:CallMethodAction TargetObject="{Binding}" MethodName="ClearStatusMessage" />
 					</ia:EventTriggerBehavior>
 				</i:Interaction.Behaviors>
 				
