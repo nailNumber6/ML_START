@@ -26,6 +26,15 @@ public partial class HttpClientViewModel : ObservableObject
 
     private bool CanSendImage()
     {
-        return !string.IsNullOrEmpty(FilePathText);
+        return !string.IsNullOrEmpty(FilePathText)
+            && FilePathText.Length > 4;
+    }
+
+    public void Clear()
+    {
+        if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            StatusMessage = string.Empty;
+        }
     }
 }

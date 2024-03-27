@@ -3,6 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="clr-namespace:Inference_Interaction_Service.ViewModels"
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+        xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions.Custom"
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
         x:Class="Inference_Interaction_Service.Views.HttpClientWindow"
         Title="Окно клиента"
@@ -17,45 +20,60 @@
 
 		<TextBlock HorizontalAlignment="Center"
 				   Margin="0,10,0,0">
-			ВЫБЕРИТЕ ИЗОБРАЖЕНИЕ С УСТРОЙСТВА
+			ВЫБЕРИТЕ ФАЙЛ С ИЗОБРАЖЕНИЕМ
 		</TextBlock>
 
 		<Grid ShowGridLines=""
 			  Width="500" Height="150"
 			  ColumnDefinitions="*,2*,*,*"
-			  RowDefinitions="*, 2*, *, 6*"
+			  RowDefinitions="*, 2.2*, 2*, 5*"
 			  Margin="0,0,0,0"
 			  VerticalAlignment="Bottom">
 
 			<TextBlock Grid.Column="0" Grid.Row="1"
 					   Text="Путь к файлу:"
 					   HorizontalAlignment="Center"
-					   VerticalAlignment="Center"/>
+					   VerticalAlignment="Center"
+					   Margin="10,0,0,0"/>
 
-			<TextBox Name="filePathBox"
+			<TextBox x:Name="FilePathBox"
+					 Name="filePathBox"
 					 Text="{Binding FilePathText}"
 					 Grid.Column="1" Grid.Row="1"
 					 Grid.ColumnSpan="2"
-					 Margin="0,0,0,0"
-					 Watermark="Например: C:\images\example.jpg"/>
+					 Margin="8,0,0,0"
+					 Watermark="Например: C:\images\example.jpg"
+				 ToolTip.Tip="путь к изображению .jpg расширения (минимум 5 символов)">
+
+				<i:Interaction.Behaviors>
+					<ia:EventTriggerBehavior EventName="TextChanged">
+						<ia:CallMethodAction TargetObject="{Binding}" MethodName="Clear" />
+					</ia:EventTriggerBehavior>
+				</i:Interaction.Behaviors>
+				
+			</TextBox>
 
 			<Button Name="browseButton"
 					Grid.Column="3" Grid.Row="1"
 					Width="70"
 					VerticalAlignment="Stretch"
-					HorizontalAlignment="Center">
+					HorizontalAlignment="Center"
+					ToolTip.Tip="выбрать изображение в проводнике">
 				
 				<TextBlock HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
 				Text="..."/>
 				
 			</Button>
 			
-			<TextBlock Name="statusMessage"
+			<TextBlock x:Name="StatusMessage"
+					   Name="statusMessage"
 					   Text="{Binding StatusMessage}" 
 					   Foreground="Red"
-					   Grid.Column="1" Grid.Row="3"
+					   Grid.Column="1" Grid.Row="2"
 					   Grid.ColumnSpan="2"
-					   HorizontalAlignment="Center"/>
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"/>
 			
 			<Button Name="sendButton"
 					Grid.Row="3" Grid.Column="1"

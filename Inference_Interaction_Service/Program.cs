@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 using ToolLibrary;
 
+
 namespace Inference_Interaction_Service;
 
 internal class Program
@@ -50,8 +51,8 @@ internal class Program
                 {
                     ["Server IP"] = "127.0.0.1",
                     ["Server port"] = "8080",
-                    ["GET path"] = @"\docs",
-                    ["POST path"] = @"\file\"
+                    ["GET path"] = "/docs",
+                    ["POST path"] = "/file/"
                 }
             };
             var serializerOptions = new JsonSerializerOptions
