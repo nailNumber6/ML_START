@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CustomMessageBox.Avalonia;
 
 using Inference_Interaction_Service.Models;
-using System.Diagnostics;
-using Microsoft.CodeAnalysis.Emit;
 
 
 namespace Inference_Interaction_Service.ViewModels;
@@ -36,11 +35,18 @@ public partial class HttpClientViewModel : ObservableObject
             // POST
         }
     }
-
     private bool CanSendImage()
     {
         return !string.IsNullOrEmpty(FilePathText)
             && FilePathText.Length > 4;
+    }
+
+    [RelayCommand]
+    private async Task CheckServiceHealth()
+    {
+        HttpStatusCode healthState = await _httpService.PerformHealthCheck();
+
+        new MessageBox($"Состояние : {healthState}", "Сведения", MessageBoxIcon.Information).Show();
     }
 
     public void ClearStatusMessage()

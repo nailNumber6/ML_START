@@ -23,10 +23,10 @@
 			ВЫБЕРИТЕ ФАЙЛ С ИЗОБРАЖЕНИЕМ
 		</TextBlock>
 
-		<Grid ShowGridLines=""
-			  Width="500" Height="150"
+		<Grid ShowGridLines="True"
+			  Width="500" Height="160"
 			  ColumnDefinitions="*,2*,*,*"
-			  RowDefinitions="*, 2.2*, 2*, 5*"
+			  RowDefinitions="*, 2.5*, 5*, 5*"
 			  Margin="0,0,0,0"
 			  VerticalAlignment="Bottom">
 
@@ -74,6 +74,16 @@
 					   Grid.ColumnSpan="2"
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"/>
+
+			<Button Grid.Row="2" Grid.Column="1"
+					Grid.ColumnSpan="2"
+					HorizontalAlignment="Stretch"
+					Command="{Binding CheckServiceHealthCommand}">
+				
+				<TextBlock Text="Проверить работоспособность сервиса"
+						    HorizontalAlignment="Center"/>
+				
+			</Button>
 			
 			<Button Name="sendButton"
 					Grid.Row="3" Grid.Column="1"
