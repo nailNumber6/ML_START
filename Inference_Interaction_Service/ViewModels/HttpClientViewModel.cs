@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CustomMessageBox.Avalonia;
 
 using Inference_Interaction_Service.Models;
+using System.Diagnostics;
 
 
 namespace Inference_Interaction_Service.ViewModels;
@@ -32,7 +33,11 @@ public partial class HttpClientViewModel : ObservableObject
         }
         else
         {
-            // POST
+            var response = await _httpService.SendImage($"{FilePathText}");
+            foreach (var line in response)
+            {
+                Debug.WriteLine(line);
+            }
         }
     }
     private bool CanSendImage()
